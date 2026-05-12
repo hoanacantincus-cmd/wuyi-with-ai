@@ -6,10 +6,10 @@
 
 | 访问区域 | 平台 | 网址 | 状态 |
 | --- | --- | --- | --- |
-| 国内优先 | Cloudflare Pages | https://wuyi-with-ai.pages.dev | 待部署后确认 |
-| 国外优先 | Vercel | https://wuyi-with-ai.vercel.app | 待部署后确认 |
+| 国内优先 | Cloudflare Pages | https://wuyi-with-ai.pages.dev | 已上线 |
+| 国外优先 | Vercel | https://wuyi-with-ai.vercel.app | 已上线 |
 
-> 如果平台项目名被占用，最终 URL 可能带账号或随机后缀。部署完成后需要把上表更新为平台返回的真实生产地址。
+> Cloudflare Pages 和 Vercel 均已部署为生产访问地址。
 
 ## 技术栈
 
