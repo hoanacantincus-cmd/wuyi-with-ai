@@ -4,7 +4,7 @@
 2026-05-12
 
 ## Branch
-- branch: not initialized when this file was created
+- branch: main
 
 ## User Goal
 - Publish the personal website to GitHub, Cloudflare Pages for domestic access, and Vercel for international access.
@@ -15,6 +15,7 @@
 - Added README, Git ignore rules, Vercel config, Cloudflare Pages Wrangler config, and project agent handoff rules.
 - Deployed the Vercel production site.
 - Created and deployed the Cloudflare Pages production site.
+- Created and pushed the GitHub repository.
 
 ## Changed Files
 - README.md
@@ -49,11 +50,10 @@
 - Cloudflare Pages production URL returns HTTP 200.
 
 ## Not Yet Verified
-- GitHub remote push.
+- None.
 
 ## Open Risks
-- GitHub CLI token is invalid and requires re-authentication.
-- Cloudflare and Vercel deployments are complete, but GitHub push still needs GitHub CLI re-authentication.
+- No open deployment blockers.
 
 ## Important Evidence
 - Vite React build output directory is `dist`.
@@ -61,6 +61,7 @@
 - Vercel Vite deployment uses the Vite framework preset, `npm run build`, and `dist`.
 - Vercel production alias is https://wuyi-with-ai.vercel.app.
 - Cloudflare Pages production URL is https://wuyi-with-ai.pages.dev.
+- GitHub repository is https://github.com/hoanacantincus-cmd/wuyi-with-ai.
 
 ## Next Smallest Step
-- Re-authenticate GitHub CLI, create the `wuyi-with-ai` repository, push the local commit, then verify the README on GitHub.
+- Optional: connect the GitHub repository to Cloudflare Pages and Vercel dashboard Git integrations for automatic redeploys on future pushes.

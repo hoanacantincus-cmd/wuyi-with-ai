@@ -90,13 +90,11 @@ npx vercel --prod --yes
 
 ## GitHub
 
-建议仓库名：
+仓库地址：
 
-```text
-wuyi-with-ai
-```
+[https://github.com/hoanacantincus-cmd/wuyi-with-ai](https://github.com/hoanacantincus-cmd/wuyi-with-ai)
 
-首次推送参考命令：
+首次推送使用的命令：
 
 ```bash
 git init
@@ -126,4 +124,4 @@ gh repo create wuyi-with-ai --public --source=. --remote=origin --push --descrip
 
 - 个人信息位于 `src/App.jsx` 的 `profile` 配置对象。
 - 页面主要视觉效果由 Framer Motion、SVG 和 Canvas 2D 实现。
-- 上线后请用平台返回的真实 URL 更新 README 的在线访问表。
+- 后续如果绑定自定义域名，请同步更新 README 的在线访问表。
