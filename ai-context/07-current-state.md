@@ -1,7 +1,7 @@
 # Current State
 
 ## Date
-2026-05-12
+2026-05-13
 
 ## Branch
 - branch: main
@@ -22,6 +22,8 @@
 - Set global root backgrounds to deep black to prevent white edges during mobile hash navigation or screenshots.
 - Added favicon, Apple touch icon, OG image, robots.txt, sitemap.xml, SEO metadata, Twitter/Open Graph metadata, and Person JSON-LD.
 - Explicitly disabled production sourcemaps in Vite.
+- Pushed the latest mobile/SEO/static asset changes to GitHub.
+- Redeployed the latest build to Vercel and Cloudflare Pages.
 
 ## Changed Files
 - README.md
@@ -59,6 +61,10 @@
 - dist static asset check
 - Browser DOM checks for 375px, 390px, 430px, 768px, and 1280px
 - Playwright screenshots with Microsoft Edge for 375px, 390px, 430px, 768px, and 1280px
+- GitHub push of commit `b38bccb`
+- Vercel production deploy after mobile/SEO optimization
+- Cloudflare Pages deploy after mobile/SEO optimization
+- HTTP smoke tests for production home pages, robots.txt, and sitemap.xml
 
 ## Verified
 - Production build succeeds.
@@ -66,6 +72,9 @@
 - Browser smoke test found key text and no console errors.
 - Vercel production URL returns HTTP 200.
 - Cloudflare Pages production URL returns HTTP 200.
+- Vercel production HTML contains the updated SEO title.
+- Cloudflare Pages production HTML contains the updated SEO title.
+- Cloudflare Pages robots.txt and sitemap.xml return HTTP 200.
 - Build output contains favicon, apple-touch-icon, og-image, robots.txt, and sitemap.xml.
 - Build output contains no `.map` files.
 - Mobile viewports keep the original high-end AI Core and Orbit visual language, with responsive spacing and scaling.
@@ -74,7 +83,7 @@
 - None.
 
 ## Open Risks
-- No open local validation blockers.
+- No open deployment blockers.
 
 ## Important Evidence
 - Vite React build output directory is `dist`.
@@ -86,4 +95,4 @@
 - Canonical sitemap host is https://wuyi-with-ai.pages.dev/.
 
 ## Next Smallest Step
-- Redeploy to Cloudflare Pages and Vercel, then verify production URLs.
+- Optional: run a production mobile visual spot check on https://wuyi-with-ai.pages.dev/ from a real phone.
