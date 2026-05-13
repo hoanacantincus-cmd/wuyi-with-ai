@@ -16,6 +16,12 @@
 - Deployed the Vercel production site.
 - Created and deployed the Cloudflare Pages production site.
 - Created and pushed the GitHub repository.
+- Reverted the lightweight mobile replacement path and restored the original high-end AI Core and Orbit scenes on mobile.
+- Added mobile-only spacing and scaled wrappers so the original scenes remain viewable below `lg`.
+- Added post-render hash scrolling so direct section links such as `/#radar` land on the intended React-rendered section.
+- Set global root backgrounds to deep black to prevent white edges during mobile hash navigation or screenshots.
+- Added favicon, Apple touch icon, OG image, robots.txt, sitemap.xml, SEO metadata, Twitter/Open Graph metadata, and Person JSON-LD.
+- Explicitly disabled production sourcemaps in Vite.
 
 ## Changed Files
 - README.md
@@ -32,6 +38,13 @@
 - tailwind.config.js
 - postcss.config.js
 - vite.config.js
+- public/favicon.svg
+- public/favicon.ico
+- public/apple-touch-icon.png
+- public/og-image.png
+- public/robots.txt
+- public/sitemap.xml
+- src/styles.css
 
 ## Validation Run
 - npm install
@@ -41,6 +54,11 @@
 - HTTP smoke test for https://wuyi-with-ai.vercel.app
 - Cloudflare Pages production deploy
 - HTTP smoke test for https://wuyi-with-ai.pages.dev
+- npm run build after mobile/SEO optimization
+- dist source map check
+- dist static asset check
+- Browser DOM checks for 375px, 390px, 430px, 768px, and 1280px
+- Playwright screenshots with Microsoft Edge for 375px, 390px, 430px, 768px, and 1280px
 
 ## Verified
 - Production build succeeds.
@@ -48,12 +66,15 @@
 - Browser smoke test found key text and no console errors.
 - Vercel production URL returns HTTP 200.
 - Cloudflare Pages production URL returns HTTP 200.
+- Build output contains favicon, apple-touch-icon, og-image, robots.txt, and sitemap.xml.
+- Build output contains no `.map` files.
+- Mobile viewports keep the original high-end AI Core and Orbit visual language, with responsive spacing and scaling.
 
 ## Not Yet Verified
 - None.
 
 ## Open Risks
-- No open deployment blockers.
+- No open local validation blockers.
 
 ## Important Evidence
 - Vite React build output directory is `dist`.
@@ -62,6 +83,7 @@
 - Vercel production alias is https://wuyi-with-ai.vercel.app.
 - Cloudflare Pages production URL is https://wuyi-with-ai.pages.dev.
 - GitHub repository is https://github.com/hoanacantincus-cmd/wuyi-with-ai.
+- Canonical sitemap host is https://wuyi-with-ai.pages.dev/.
 
 ## Next Smallest Step
-- Optional: connect the GitHub repository to Cloudflare Pages and Vercel dashboard Git integrations for automatic redeploys on future pushes.
+- Redeploy to Cloudflare Pages and Vercel, then verify production URLs.

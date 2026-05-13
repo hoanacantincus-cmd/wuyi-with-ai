@@ -4,11 +4,19 @@
 
 html {
   scroll-behavior: smooth;
+  background: #03040a;
 }
 
 body {
   margin: 0;
   min-width: 320px;
+  background: #03040a;
+  overscroll-behavior: none;
+}
+
+#root {
+  min-height: 100vh;
+  background: #03040a;
 }
 
 * {

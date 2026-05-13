@@ -1358,6 +1358,22 @@ export default function App() {
   const heroY = useTransform(scrollY, [0, 600], [0, -40]);
   const coreY = useTransform(scrollY, [0, 600], [0, 38]);
 
+  useEffect(() => {
+    if (!window.location.hash) return undefined;
+    const scrollToHash = () => {
+      const target = document.querySelector(window.location.hash);
+      target?.scrollIntoView({ block: "start" });
+    };
+    const frameId = window.requestAnimationFrame(scrollToHash);
+    const settleId = window.setTimeout(scrollToHash, 180);
+    const lateId = window.setTimeout(scrollToHash, 520);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(settleId);
+      window.clearTimeout(lateId);
+    };
+  }, []);
+
   const scrollToSection = (targetId) => (event) => {
     event.preventDefault();
     const target = document.querySelector(targetId);
@@ -1387,7 +1403,7 @@ export default function App() {
         <nav className="hidden items-center gap-7 text-base text-white/50 md:flex"><a href="#capability" onClick={scrollToSection("#capability")} className="hover:text-white">能力</a><a href="#story" onClick={scrollToSection("#story")} className="hover:text-white">方法</a><a href="#systems" onClick={scrollToSection("#systems")} className="hover:text-white">系统</a><a href="#contact" onClick={scrollToSection("#contact")} className="hover:text-white">联系</a></nav>
       </header>
 
-      <section id="hero" className="relative z-10 mx-auto grid min-h-[calc(100vh-92px)] max-w-[1540px] items-center gap-12 px-6 pb-24 pt-8 md:grid-cols-[0.72fr_1.28fr] md:px-10">
+      <section id="hero" className="relative z-10 mx-auto grid min-h-[calc(100vh-92px)] max-w-[1540px] items-center gap-8 px-5 pb-20 pt-6 sm:px-6 md:gap-12 md:px-10 md:pb-24 md:pt-8 lg:grid-cols-[0.72fr_1.28fr]">
         <motion.div style={{ y: heroY }} className="relative z-10">
           <motion.h1 initial={{ opacity: 0, y: 34, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.08, duration: 1.05 }} className="max-w-3xl">
             <span className="relative block bg-gradient-to-b from-white via-cyan-50/90 to-white/34 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitle}</span>
@@ -1399,7 +1415,7 @@ export default function App() {
           <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42, duration: 0.85 }} className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap"><CTAButton href={profile.github} icon="github" onClick={launchGithub}>查看 GitHub</CTAButton><CTAButton href="#capability" variant="ghost" onClick={scrollToSection("#capability")}>探索我的系统</CTAButton><CTAButton href="#contact" variant="ghost" icon="mail" onClick={scrollToSection("#contact")}>联系我</CTAButton></motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.62, duration: 0.9 }} className="mt-8 flex items-center gap-3 text-[12px] text-white/34" style={fontStyles.mono}><span className="h-px w-10 bg-gradient-to-r from-cyan-100/0 via-cyan-100/35 to-cyan-100/0" />WUYi WITH AI / CODE FLOW / IMAGINATION SYSTEM</motion.div>
         </motion.div>
-        <motion.div style={{ y: coreY }} className="relative"><div className="absolute -inset-10 bg-[radial-gradient(circle_at_50%_48%,rgba(77,163,255,0.16),transparent_56%)] blur-2xl" /><AICoreScene booting={githubBooting} /></motion.div>
+        <motion.div style={{ y: coreY }} className="relative mx-auto w-full max-w-[760px] lg:max-w-none"><div className="absolute -inset-6 bg-[radial-gradient(circle_at_50%_48%,rgba(77,163,255,0.16),transparent_56%)] blur-2xl md:-inset-10" /><AICoreScene booting={githubBooting} /></motion.div>
       </section>
 
       <section id="capability" className="relative z-10 overflow-hidden border-y border-white/[0.06] bg-[#05060c] px-6 py-28 md:px-10 md:py-36">
@@ -1512,8 +1528,10 @@ export default function App() {
             </p>
           </motion.div>
 
-          <div className="relative z-10 mt-16 md:mt-20">
-            <TechnologyRadar />
+          <div className="relative z-10 mx-auto mt-10 h-[330px] max-w-full overflow-hidden sm:h-[390px] md:mt-16 md:h-[560px] lg:mt-20 lg:h-auto lg:overflow-visible">
+            <div className="absolute left-1/2 top-1/2 w-[920px] -translate-x-1/2 -translate-y-1/2 scale-[0.42] sm:scale-[0.5] md:scale-[0.78] lg:static lg:w-full lg:translate-x-0 lg:translate-y-0 lg:scale-100">
+              <TechnologyRadar />
+            </div>
           </div>
         </div>
       </section>
