@@ -1140,7 +1140,8 @@ function OrbitCore({ active }) {
     <motion.div
       animate={{ scale: active ? 1.08 : [1, 1.045, 1], opacity: active ? 1 : [0.92, 1, 0.92] }}
       transition={{ duration: active ? 0.35 : 4.2, repeat: active ? 0 : Infinity, ease: "easeInOut" }}
-      className="absolute left-1/2 top-1/2 z-40 grid h-44 w-44 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-cyan-100/24 bg-[radial-gradient(circle_at_50%_36%,rgba(255,255,255,0.30),rgba(125,249,255,0.14)_32%,rgba(10,18,34,0.92)_72%)] shadow-[inset_0_0_50px_rgba(235,245,255,0.12),0_0_120px_rgba(125,249,255,0.28),0_0_220px_rgba(88,91,255,0.10)] backdrop-blur-2xl md:h-56 md:w-56"
+      style={{ x: "-50%", y: "-50%" }}
+      className="absolute left-1/2 top-1/2 z-40 grid h-44 w-44 place-items-center rounded-full border border-cyan-100/24 bg-[radial-gradient(circle_at_50%_36%,rgba(255,255,255,0.30),rgba(125,249,255,0.14)_32%,rgba(10,18,34,0.92)_72%)] shadow-[inset_0_0_50px_rgba(235,245,255,0.12),0_0_120px_rgba(125,249,255,0.28),0_0_220px_rgba(88,91,255,0.10)] backdrop-blur-2xl md:h-56 md:w-56"
     >
       {[0, 1, 2].map((pulse) => (
         <motion.div
@@ -1528,7 +1529,13 @@ export default function App() {
             </p>
           </motion.div>
 
-          <div className="relative z-10 mx-auto mt-10 h-[330px] max-w-full overflow-hidden sm:h-[390px] md:mt-16 md:h-[560px] lg:mt-20 lg:h-auto lg:overflow-visible">
+          <div
+            className="relative z-10 mx-auto mt-10 h-[330px] max-w-full overflow-hidden sm:h-[390px] md:mt-16 md:h-[560px] lg:mt-20 lg:h-auto lg:overflow-visible"
+            style={{
+              WebkitMaskImage: "linear-gradient(90deg, #000 0%, #000 86%, transparent 100%)",
+              maskImage: "linear-gradient(90deg, #000 0%, #000 86%, transparent 100%)",
+            }}
+          >
             <div className="absolute left-1/2 top-1/2 w-[920px] -translate-x-1/2 -translate-y-1/2 scale-[0.42] sm:scale-[0.5] md:scale-[0.78] lg:static lg:w-full lg:translate-x-0 lg:translate-y-0 lg:scale-100">
               <TechnologyRadar />
             </div>
