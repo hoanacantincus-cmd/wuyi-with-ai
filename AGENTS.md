@@ -2,10 +2,13 @@
 
 ## Project Rules
 
-- Follow the AI Coding Production System workflow for non-trivial changes.
 - Read this file before source files.
 - Keep diffs narrow and deployment-oriented.
 - Do not introduce new dependencies unless needed for the requested behavior.
+- Follow the global ordinary/complex mode split.
+- Treat skills as accelerators, not defaults; use them only when they clearly reduce risk or time.
+- For clear UI/content fixes, act directly and validate with the narrowest meaningful check.
+- For deployment-affecting changes, build locally before pushing or deploying.
 
 ## Read Order
 
