@@ -4,11 +4,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
 const profile = {
   name: "不可言",
   title: "AI 先行者",
-  heroTitle: "AI造物主",
-  heroTitleSecond: "小伍同学",
+  heroTitle: "AI边池派",
+  heroTitleSecond: "",
   heroSubtitle: "Where AI, Code and Imagination Converge",
   logoText: "WuYi with AI — Imagination Becomes Execution.",
-  line: "让代码、模型、自动化流程与视觉想象力汇聚成一个持续进化的 AI 系统。",
+  line: "让代码和想象力汇聚成持续进化的AI系统。",
   github: "https://github.com/hoanacantincus-cmd",
   githubName: "hoanacantincus-cmd",
   email: "VIPwu_9@qq.com",
@@ -307,6 +307,30 @@ function Icon({ name, className = "h-4 w-4" }) {
       <>
         <rect x="3" y="5" width="18" height="14" rx="3" />
         <path d="m4 7 8 6 8-6" />
+      </>
+    ),
+    send: (
+      <>
+        <path d="m22 2-7 20-4-9-9-4Z" />
+        <path d="M22 2 11 13" />
+      </>
+    ),
+    close: (
+      <>
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </>
+    ),
+    spark: (
+      <>
+        <path d="M12 2v5" />
+        <path d="M12 17v5" />
+        <path d="M4.22 4.22 7.76 7.76" />
+        <path d="m16.24 16.24 3.54 3.54" />
+        <path d="M2 12h5" />
+        <path d="M17 12h5" />
+        <path d="m4.22 19.78 3.54-3.54" />
+        <path d="m16.24 7.76 3.54-3.54" />
       </>
     ),
     core: (
@@ -1340,6 +1364,431 @@ function TechnologyRadar() {
   return <OrbitScene />;
 }
 
+const AGENT_API_URL = import.meta.env.VITE_AGENT_API_URL || "/api/agent";
+const AGENT_TIMEOUT_MS = 30000;
+
+const agentModes = {
+  about_wuyi: {
+    label: "认识伍轶",
+    placeholder: "问我：伍轶适合做什么 AI 项目？",
+    starter: "用 3 句话介绍伍轶，以及适合找他合作的项目类型。",
+  },
+  project_diagnosis: {
+    label: "项目诊断",
+    placeholder: "描述你的 AI 项目想法，我来拆成 MVP 路线。",
+    starter: "我想做一个 AI 自动化产品，请帮我诊断适合的 MVP 路线。",
+  },
+};
+
+function AgentDiagnosis({ diagnosis }) {
+  if (!diagnosis) return null;
+
+  const sections = [
+    ["技术路线", diagnosis.techRoute],
+    ["主要风险", diagnosis.risks],
+    ["MVP 步骤", diagnosis.mvpSteps],
+  ];
+
+  return (
+    <div className="mt-3 space-y-3 rounded-2xl border border-cyan-100/10 bg-black/24 p-4">
+      <div>
+        <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.26em] text-cyan-100/38">Diagnosis</p>
+        <p className="mt-1 text-sm font-medium text-white/84">{diagnosis.needType || "AI 项目诊断"}</p>
+      </div>
+      {sections.map(([title, items]) => Array.isArray(items) && items.length ? (
+        <div key={title}>
+          <p className="mb-2 text-xs font-medium text-cyan-50/48">{title}</p>
+          <div className="space-y-1.5">
+            {items.map((item, index) => (
+              <p key={`${title}-${item}`} className="rounded-xl border border-white/[0.06] bg-white/[0.035] px-3 py-2 text-xs leading-5 text-white/62">
+                <span style={fontStyles.mono} className="mr-2 text-cyan-100/42">{String(index + 1).padStart(2, "0")}</span>
+                {item}
+              </p>
+            ))}
+          </div>
+        </div>
+      ) : null)}
+      {diagnosis.collaborationAdvice ? (
+        <p className="rounded-xl border border-violet-100/10 bg-violet-100/[0.045] px-3 py-2 text-xs leading-5 text-white/62">{diagnosis.collaborationAdvice}</p>
+      ) : null}
+    </div>
+  );
+}
+
+function CyberAgentPet({ offset, onPointerDown, onOpen }) {
+  const [gaze, setGaze] = useState({ x: 0, y: 0 });
+
+  const updateGaze = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height * 0.42;
+    const clamp = (value) => Math.max(-1, Math.min(1, value));
+    setGaze({
+      x: clamp((event.clientX - cx) / (rect.width * 0.42)),
+      y: clamp((event.clientY - cy) / (rect.height * 0.34)),
+    });
+  };
+
+  return (
+    <motion.button
+      type="button"
+      onPointerDown={onPointerDown}
+      onPointerMove={updateGaze}
+      onPointerLeave={() => setGaze({ x: 0, y: 0 })}
+      onClick={onOpen}
+      style={{ x: offset.x, y: offset.y }}
+      whileHover={{ scale: 1.035 }}
+      whileTap={{ scale: 0.98 }}
+      className="group fixed bottom-5 right-5 z-40 h-[156px] w-[238px] cursor-grab touch-none select-none active:cursor-grabbing md:bottom-7 md:right-7"
+      aria-label="打开可拖拽 WuYi Agent 智能体宠物"
+    >
+      <span className="pointer-events-none absolute bottom-5 left-1/2 h-5 w-24 -translate-x-1/2 rounded-full bg-cyan-100/18 blur-xl transition group-hover:bg-cyan-100/30" />
+      <motion.svg
+        viewBox="0 0 220 236"
+        aria-hidden="true"
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute left-[28px] top-0 h-[136px] w-[136px] overflow-visible drop-shadow-[0_0_28px_rgba(77,163,255,0.35)]"
+      >
+        <defs>
+          <linearGradient id="catFur" x1="44" y1="24" x2="175" y2="214" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#1f3658" />
+            <stop offset="0.46" stopColor="#111f38" />
+            <stop offset="1" stopColor="#081120" />
+          </linearGradient>
+          <linearGradient id="catEdge" x1="38" y1="40" x2="184" y2="180" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#4df4ff" />
+            <stop offset="1" stopColor="#9b5cff" />
+          </linearGradient>
+          <radialGradient id="catEyeCyan" cx="50%" cy="45%" r="62%">
+            <stop stopColor="#e9ffff" />
+            <stop offset="0.18" stopColor="#8fffff" />
+            <stop offset="0.62" stopColor="#27cfff" />
+            <stop offset="1" stopColor="#07204a" />
+          </radialGradient>
+          <radialGradient id="catEyeViolet" cx="50%" cy="45%" r="62%">
+            <stop stopColor="#fff4ff" />
+            <stop offset="0.18" stopColor="#d9b5ff" />
+            <stop offset="0.62" stopColor="#8c58ff" />
+            <stop offset="1" stopColor="#170b43" />
+          </radialGradient>
+          <filter id="catGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <path d="M35 97C30 55 39 13 55 8c17-6 52 22 73 49 14-3 29-3 43 0 21-27 56-55 73-49 16 5 25 47 20 89 14 15 22 34 22 56 0 57-50 91-111 91H124C63 244 13 210 13 153c0-22 8-41 22-56Z" fill="#050c19" opacity="0.7" transform="scale(.78) translate(17 4)" />
+        <path d="M37 88C31 50 37 12 52 8c15-5 48 21 68 47 13-3 27-3 40 0 20-26 53-52 68-47 15 4 21 42 15 80 17 15 27 36 27 59 0 51-43 83-96 83H96c-53 0-96-32-96-83 0-23 10-44 37-59Z" fill="url(#catFur)" transform="translate(17 0) scale(.82)" />
+
+        <path d="M60 27c12 4 39 27 56 50-18 6-34 18-47 32-8-26-12-58-9-82Z" fill="#071224" opacity="0.98" transform="translate(17 0) scale(.82)" />
+        <path d="M210 27c-12 4-39 27-56 50 18 6 34 18 47 32 8-26 12-58 9-82Z" fill="#071224" opacity="0.98" transform="translate(17 0) scale(.82)" />
+        <path d="M72 42c11 6 27 21 38 36-11 4-21 11-30 20-5-18-9-39-8-56Z" fill="#122144" stroke="#54f3ff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" filter="url(#catGlow)" transform="translate(17 0) scale(.82)" />
+        <path d="M198 42c-11 6-27 21-38 36 11 4 21 11 30 20 5-18 9-39 8-56Z" fill="#231348" stroke="#a15cff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" filter="url(#catGlow)" transform="translate(17 0) scale(.82)" />
+
+        <path d="M47 129c10-20 44-28 88-21 44-7 78 1 88 21 1 7-2 21-12 30-22 18-131 18-153 0-10-9-13-23-11-30Z" fill="#1b3155" stroke="url(#catEdge)" strokeWidth="3" opacity="0.88" transform="translate(17 0) scale(.82)" />
+        <g transform="translate(17 0) scale(.82)">
+          <ellipse cx="89" cy="144" rx="20" ry="23" fill="#06152c" opacity="0.95" />
+          <ellipse cx="181" cy="144" rx="20" ry="23" fill="#06152c" opacity="0.95" />
+          <motion.g animate={{ x: gaze.x * 5, y: gaze.y * 4 }} transition={{ type: "spring", stiffness: 260, damping: 22 }}>
+            <ellipse cx="89" cy="144" rx="13" ry="16" fill="url(#catEyeCyan)" filter="url(#catGlow)" />
+            <circle cx="94" cy="137" r="4.5" fill="white" opacity="0.92" />
+            <ellipse cx="181" cy="144" rx="13" ry="16" fill="url(#catEyeViolet)" filter="url(#catGlow)" />
+            <circle cx="186" cy="137" r="4.5" fill="white" opacity="0.92" />
+          </motion.g>
+          <path d="M70 126c8-7 28-8 38-1M162 125c10-7 29-6 38 1" fill="none" stroke="#6eefff" strokeWidth="4" strokeLinecap="round" opacity="0.62" />
+        </g>
+
+        <path d="M123 166c6-5 18-5 24 0-1 7-6 12-12 12s-11-5-12-12Z" fill="#a35cff" transform="translate(17 0) scale(.82)" />
+        <path d="M135 177v8m0 0c-7 12-24 13-31 1m31-1c7 12 24 13 31 1" fill="none" stroke="#a35cff" strokeWidth="4.5" strokeLinecap="round" transform="translate(17 0) scale(.82)" />
+
+        <path d="M111 62v25m-22-19v16l12 8v18m66-42v16l-12 8v18" fill="none" stroke="#54f3ff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" filter="url(#catGlow)" transform="translate(17 0) scale(.82)" />
+        <circle cx="111" cy="59" r="7" fill="#192646" stroke="#54f3ff" strokeWidth="4" transform="translate(17 0) scale(.82)" />
+        <circle cx="89" cy="66" r="6" fill="#192646" stroke="#54f3ff" strokeWidth="4" transform="translate(17 0) scale(.82)" />
+        <circle cx="167" cy="66" r="6" fill="#192646" stroke="#54f3ff" strokeWidth="4" transform="translate(17 0) scale(.82)" />
+        <circle cx="135" cy="104" r="8" fill="#8b5cff" stroke="#54f3ff" strokeWidth="4" transform="translate(17 0) scale(.82)" />
+
+        <path d="M74 217c8-28 31-43 61-43s53 15 61 43H74Z" fill="#0b1425" stroke="#243858" strokeWidth="3" transform="translate(17 0) scale(.82)" />
+        <path d="M87 197l20 17v28M183 197l-20 17v28M106 184c7 10 51 10 58 0" fill="none" stroke="#54f3ff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" opacity="0.95" transform="translate(17 0) scale(.82)" />
+        <path d="M174 206l-16 15v22" fill="none" stroke="#a15cff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" opacity="0.92" transform="translate(17 0) scale(.82)" />
+      </motion.svg>
+      <span className="pointer-events-none absolute bottom-[8px] left-[96px] -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-100/14 bg-black/46 px-3 py-1 text-[10px] font-semibold leading-none text-cyan-50/66 shadow-[0_10px_28px_rgba(0,0,0,0.30)] backdrop-blur-xl">
+        <span className="tracking-[0.14em]">AI pet</span>
+        <span className="ml-2 tracking-normal text-cyan-50/58">点我一起唠唠嗑。</span>
+      </span>
+    </motion.button>
+  );
+}
+
+function WuYiAgent() {
+  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState("about_wuyi");
+  const [draft, setDraft] = useState("");
+  const [petOffset, setPetOffset] = useState({ x: 0, y: 0 });
+  const petDraggedRef = useRef(false);
+  const petDragStateRef = useRef(null);
+  const [messages, setMessages] = useState([
+    {
+      id: "boot",
+      role: "assistant",
+      content: "我是 WuYi Agent。可以快速介绍伍轶，也可以把你的 AI 项目想法拆成可执行的 MVP 路线。",
+      diagnosis: null,
+    },
+  ]);
+  const [loading, setLoading] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const frameId = window.requestAnimationFrame(() => {
+      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    });
+    return () => window.cancelAnimationFrame(frameId);
+  }, [messages, loading, open]);
+
+  const appendAssistant = (content, diagnosis = null, tone = "normal") => {
+    setMessages((current) => [
+      ...current,
+      {
+        id: `assistant-${Date.now()}-${Math.random()}`,
+        role: "assistant",
+        content,
+        diagnosis,
+        tone,
+      },
+    ]);
+  };
+
+  const sendMessage = async (overrideText) => {
+    const text = String(overrideText || draft).trim();
+    if (!text || loading) return;
+
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      content: text,
+      diagnosis: null,
+    };
+    const nextMessages = [...messages, userMessage];
+    const history = nextMessages
+      .filter((item) => item.role === "user" || item.role === "assistant")
+      .slice(-8)
+      .map((item) => ({ role: item.role, content: item.content }));
+
+    setMessages(nextMessages);
+    setDraft("");
+    setLoading(true);
+
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), AGENT_TIMEOUT_MS);
+
+    try {
+      const response = await fetch(AGENT_API_URL, {
+        method: "POST",
+        signal: controller.signal,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ intent: mode, message: text, history }),
+      });
+
+      window.clearTimeout(timeoutId);
+      const payload = await response.json().catch(() => null);
+
+      if (payload?.reply || payload?.diagnosis) {
+        appendAssistant(
+          payload.reply || "信号已返回，但模型没有给出文字回复。",
+          payload.diagnosis || null,
+          response.ok ? "normal" : "warning",
+        );
+        return;
+      }
+
+      setDraft((current) => current || text);
+      appendAssistant("WuYi Agent 收到了异常响应。输入内容已经保留，可以稍后重试，或直接通过页面底部联系伍轶。", null, "warning");
+    } catch (error) {
+      window.clearTimeout(timeoutId);
+      setDraft((current) => current || text);
+      appendAssistant(
+        error?.name === "AbortError"
+          ? "链路响应超时。输入内容已经保留，可以稍后再试，或直接联系 WuYi。"
+          : "网络链路暂时没有接通。输入内容已经保留，可以稍后重试，或直接通过页面底部联系 WuYi。",
+        null,
+        "warning",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const submitMessage = (event) => {
+    event.preventDefault();
+    sendMessage();
+  };
+
+  const openFromPet = () => {
+    if (petDraggedRef.current) {
+      petDraggedRef.current = false;
+      return;
+    }
+    setOpen(true);
+  };
+
+  const clampPetOffset = (offset) => {
+    const minX = typeof window === "undefined" ? -900 : -(window.innerWidth - 260);
+    const minY = typeof window === "undefined" ? -620 : -(window.innerHeight - 168);
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    return {
+      x: clamp(offset.x, minX, 18),
+      y: clamp(offset.y, minY, 18),
+    };
+  };
+
+  const handlePetPointerDown = (event) => {
+    if (event.button !== 0) return;
+    petDraggedRef.current = false;
+    petDragStateRef.current = {
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: petOffset.x,
+      originY: petOffset.y,
+      moved: false,
+    };
+
+    const movePet = (moveEvent) => {
+      const state = petDragStateRef.current;
+      if (!state) return;
+      const dx = moveEvent.clientX - state.startX;
+      const dy = moveEvent.clientY - state.startY;
+      if (Math.abs(dx) + Math.abs(dy) > 28) {
+        state.moved = true;
+        petDraggedRef.current = true;
+      }
+      setPetOffset(clampPetOffset({ x: state.originX + dx, y: state.originY + dy }));
+    };
+
+    const releasePet = () => {
+      window.removeEventListener("pointermove", movePet);
+      window.removeEventListener("pointerup", releasePet);
+      window.removeEventListener("pointercancel", releasePet);
+      petDragStateRef.current = null;
+      window.setTimeout(() => {
+        petDraggedRef.current = false;
+      }, 90);
+    };
+
+    window.addEventListener("pointermove", movePet);
+    window.addEventListener("pointerup", releasePet);
+    window.addEventListener("pointercancel", releasePet);
+  };
+
+  const activeMode = agentModes[mode];
+
+  return (
+    <>
+      {!open ? (
+        <CyberAgentPet offset={petOffset} onPointerDown={handlePetPointerDown} onOpen={openFromPet} />
+      ) : null}
+
+      {open ? <div className="fixed inset-0 bg-black/44 backdrop-blur-sm md:hidden" onClick={() => setOpen(false)} /> : null}
+
+      {open ? (
+        <div className="fixed inset-x-0 bottom-0 z-40 md:inset-auto md:bottom-6 md:right-6">
+          <motion.aside
+            initial={{ opacity: 0, y: 0, x: 0 }}
+            animate={{ opacity: 1, y: 0, x: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="relative ml-auto flex max-h-[86vh] w-full flex-col overflow-hidden rounded-t-[1.75rem] border border-cyan-100/14 bg-[#030814]/94 shadow-[0_-24px_90px_rgba(77,163,255,0.22)] backdrop-blur-2xl md:mr-0 md:max-h-[calc(100vh-3rem)] md:w-[420px] md:rounded-[1.55rem] md:shadow-[0_28px_120px_rgba(77,163,255,0.22)]"
+            aria-label="WuYi Agent"
+          >
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_22%_0%,rgba(125,249,255,0.16),transparent_34%),radial-gradient(circle_at_92%_18%,rgba(148,118,255,0.16),transparent_35%)]" />
+          <div className="pointer-events-none absolute inset-0 opacity-[0.045] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.18)_1px,transparent_1px)] [background-size:34px_34px]" />
+
+          <div className="relative border-b border-white/[0.07] px-5 py-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex gap-3">
+                <div className="relative mt-1 grid h-12 w-14 shrink-0 place-items-center rounded-2xl border border-cyan-100/18 bg-cyan-100/[0.06] shadow-[0_0_26px_rgba(77,163,255,0.16)]">
+                  <span className="absolute -top-2 left-2 h-4 w-3 rounded-t-full border border-cyan-100/18 bg-black/34" />
+                  <span className="absolute -top-2 right-2 h-4 w-3 rounded-t-full border border-violet-100/18 bg-black/34" />
+                  <span className="flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-100 shadow-[0_0_10px_rgba(125,249,255,0.9)]" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-violet-100 shadow-[0_0_10px_rgba(148,118,255,0.75)]" />
+                  </span>
+                </div>
+                <div>
+                <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.34em] text-cyan-100/42">WuYi Agent</p>
+                <h2 className="mt-1 text-lg font-medium text-white">AI 项目接口已接入</h2>
+                  <p className="mt-1 text-xs leading-5 text-white/38">AI PET 在线，免费模型通道可能限流，异常时会自动降级。</p>
+                </div>
+              </div>
+              <button type="button" onClick={() => setOpen(false)} className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.035] text-white/54 transition hover:border-cyan-100/22 hover:text-white" aria-label="关闭 WuYi Agent">
+                <Icon name="close" className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-2 rounded-full border border-white/[0.07] bg-black/22 p-1">
+              {Object.entries(agentModes).map(([key, item]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setMode(key)}
+                  className={`rounded-full px-3 py-2 text-xs font-medium transition ${mode === key ? "bg-cyan-100/14 text-cyan-50 shadow-[0_0_24px_rgba(125,249,255,0.12)]" : "text-white/42 hover:text-white/72"}`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div ref={scrollRef} className="relative flex-1 space-y-4 overflow-y-auto px-5 py-5">
+            {messages.map((message) => (
+              <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[88%] rounded-2xl border px-4 py-3 text-sm leading-6 ${message.role === "user" ? "border-cyan-100/16 bg-cyan-100/[0.08] text-cyan-50" : message.tone === "warning" ? "border-amber-100/16 bg-amber-100/[0.06] text-white/72" : "border-white/[0.07] bg-white/[0.04] text-white/68"}`}>
+                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  <AgentDiagnosis diagnosis={message.diagnosis} />
+                </div>
+              </div>
+            ))}
+            {loading ? (
+              <div className="flex justify-start">
+                <div className="rounded-2xl border border-cyan-100/10 bg-white/[0.04] px-4 py-3">
+                  <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.24em] text-cyan-100/46">信号传输中</p>
+                  <div className="mt-3 flex gap-1.5">
+                    {[0, 1, 2].map((dot) => (
+                      <motion.span key={dot} animate={{ opacity: [0.25, 1, 0.25], y: [0, -3, 0] }} transition={{ duration: 0.9, repeat: Infinity, delay: dot * 0.12 }} className="h-1.5 w-1.5 rounded-full bg-cyan-100/70" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <form onSubmit={submitMessage} className="relative border-t border-white/[0.07] bg-black/18 px-5 py-4">
+            <button type="button" onClick={() => sendMessage(activeMode.starter)} disabled={loading} className="mb-3 w-full rounded-2xl border border-cyan-100/10 bg-cyan-100/[0.045] px-4 py-2 text-left text-xs leading-5 text-cyan-50/58 transition hover:border-cyan-100/20 hover:text-cyan-50 disabled:cursor-not-allowed disabled:opacity-50">
+              {activeMode.starter}
+            </button>
+            <div className="flex items-end gap-2">
+              <textarea
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
+                placeholder={activeMode.placeholder}
+                rows={2}
+                className="min-h-[48px] flex-1 resize-none rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-white/28 focus:border-cyan-100/24 focus:bg-white/[0.065]"
+              />
+              <button type="submit" disabled={loading || !draft.trim()} className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-cyan-100/18 bg-cyan-100/[0.10] text-cyan-50 transition hover:border-cyan-100/32 hover:bg-cyan-100/[0.16] disabled:cursor-not-allowed disabled:opacity-40" aria-label="发送给 WuYi Agent">
+                <Icon name="send" className="h-4 w-4" />
+              </button>
+            </div>
+          </form>
+          </motion.aside>
+        </div>
+      ) : null}
+    </>
+  );
+}
+
 function GithubLaunchOverlay({ active }) {
   return (
     <motion.div initial={false} animate={{ opacity: active ? 1 : 0 }} transition={{ duration: active ? 0.16 : 0.5 }} className="pointer-events-none fixed inset-0 z-50 grid place-items-center bg-black/72 backdrop-blur-md">
@@ -1396,6 +1845,7 @@ export default function App() {
   return (
     <main style={fontStyles.ui} className="min-h-screen overflow-hidden bg-[#03040a] text-white">
       <GithubLaunchOverlay active={githubBooting} />
+      <WuYiAgent />
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_18%_14%,rgba(74,117,255,0.18),transparent_32%),radial-gradient(circle_at_82%_8%,rgba(137,83,255,0.16),transparent_34%),linear-gradient(180deg,#060711,#020207)]" />
       <div className="fixed inset-0 -z-10 opacity-[0.035] [background-image:linear-gradient(to_right,rgba(255,255,255,.4)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.28)_1px,transparent_1px)] [background-size:56px_56px]" />
 
@@ -1408,7 +1858,7 @@ export default function App() {
         <motion.div style={{ y: heroY }} className="relative z-10">
           <motion.h1 initial={{ opacity: 0, y: 34, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.08, duration: 1.05 }} className="max-w-3xl">
             <span className="relative block bg-gradient-to-b from-white via-cyan-50/90 to-white/34 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitle}</span>
-            <span className="relative mt-2 block bg-gradient-to-b from-white via-cyan-50/86 to-white/32 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitleSecond}</span>
+            {profile.heroTitleSecond ? <span className="relative mt-2 block bg-gradient-to-b from-white via-cyan-50/86 to-white/32 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitleSecond}</span> : null}
             <span className="mt-6 block max-w-2xl text-[1.12rem] font-medium leading-8 tracking-[-0.01em] text-cyan-50/74 md:text-[1.45rem]">{profile.heroSubtitle}</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24, duration: 0.85 }} className="mt-7 max-w-xl text-[0.98rem] leading-8 text-white/50 md:text-[1.05rem]">{profile.line}</motion.p>

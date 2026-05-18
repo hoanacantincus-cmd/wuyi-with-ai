@@ -10,6 +10,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 vite-dev.*.log
+nine-router.*.log
 .DS_Store
 Thumbs.db
 
