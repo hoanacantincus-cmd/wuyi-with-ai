@@ -1364,7 +1364,11 @@ function TechnologyRadar() {
   return <OrbitScene />;
 }
 
-const AGENT_API_URL = import.meta.env.VITE_AGENT_API_URL || "/api/agent";
+const AGENT_API_URL =
+  import.meta.env.VITE_AGENT_API_URL ||
+  (typeof window !== "undefined" && window.location.hostname.endsWith("pages.dev")
+    ? "https://wuyi-with-ai.vercel.app/api/agent"
+    : "/api/agent");
 const AGENT_TIMEOUT_MS = 30000;
 
 const agentModes = {
