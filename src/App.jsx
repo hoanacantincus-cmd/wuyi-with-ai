@@ -1421,105 +1421,140 @@ function AgentDiagnosis({ diagnosis }) {
 
 function CyberAgentPet({ offset, onPointerDown, onOpen }) {
   const [gaze, setGaze] = useState({ x: 0, y: 0 });
+  const petRef = useRef(null);
 
-  const updateGaze = (event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height * 0.42;
+  useEffect(() => {
+    const updateGaze = (event) => {
+      const rect = petRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const cx = rect.left + 96;
+      const cy = rect.top + 84;
+      const distance = Math.max(64, Math.min(window.innerWidth, window.innerHeight) * 0.32);
+      const clamp = (value) => Math.max(-1, Math.min(1, value));
+      setGaze({
+        x: clamp((event.clientX - cx) / distance),
+        y: clamp((event.clientY - cy) / distance),
+      });
+    };
+    const resetGaze = () => setGaze({ x: 0, y: 0 });
+    window.addEventListener("pointermove", updateGaze, { passive: true });
+    window.addEventListener("blur", resetGaze);
+    return () => {
+      window.removeEventListener("pointermove", updateGaze);
+      window.removeEventListener("blur", resetGaze);
+    };
+  }, []);
+
+  const updateLocalGaze = (event) => {
+    const rect = petRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const cx = rect.left + 96;
+    const cy = rect.top + 84;
     const clamp = (value) => Math.max(-1, Math.min(1, value));
     setGaze({
-      x: clamp((event.clientX - cx) / (rect.width * 0.42)),
-      y: clamp((event.clientY - cy) / (rect.height * 0.34)),
+      x: clamp((event.clientX - cx) / 92),
+      y: clamp((event.clientY - cy) / 78),
     });
   };
 
   return (
     <motion.button
+      ref={petRef}
       type="button"
       onPointerDown={onPointerDown}
-      onPointerMove={updateGaze}
-      onPointerLeave={() => setGaze({ x: 0, y: 0 })}
+      onPointerMove={updateLocalGaze}
       onClick={onOpen}
       style={{ x: offset.x, y: offset.y }}
       whileHover={{ scale: 1.035 }}
       whileTap={{ scale: 0.98 }}
-      className="group fixed bottom-5 right-5 z-40 h-[156px] w-[238px] cursor-grab touch-none select-none active:cursor-grabbing md:bottom-7 md:right-7"
+      className="group fixed bottom-5 right-5 z-40 h-[170px] w-[238px] cursor-grab touch-none select-none active:cursor-grabbing md:bottom-7 md:right-7"
       aria-label="打开可拖拽 WuYi Agent 智能体宠物"
     >
-      <span className="pointer-events-none absolute bottom-5 left-1/2 h-5 w-24 -translate-x-1/2 rounded-full bg-cyan-100/18 blur-xl transition group-hover:bg-cyan-100/30" />
+      <span className="pointer-events-none absolute bottom-5 left-[96px] h-5 w-28 -translate-x-1/2 rounded-full bg-cyan-100/18 blur-xl transition group-hover:bg-cyan-100/30" />
       <motion.svg
-        viewBox="0 0 220 236"
+        viewBox="0 0 220 250"
         aria-hidden="true"
         animate={{ y: [0, -4, 0] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute left-[28px] top-0 h-[136px] w-[136px] overflow-visible drop-shadow-[0_0_28px_rgba(77,163,255,0.35)]"
+        className="pointer-events-none absolute left-[21px] top-[-4px] h-[150px] w-[150px] overflow-visible drop-shadow-[0_0_32px_rgba(77,163,255,0.42)]"
       >
         <defs>
-          <linearGradient id="catFur" x1="44" y1="24" x2="175" y2="214" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#1f3658" />
-            <stop offset="0.46" stopColor="#111f38" />
-            <stop offset="1" stopColor="#081120" />
+          <radialGradient id="furSilver" cx="50%" cy="42%" r="72%">
+            <stop stopColor="#f7fbff" />
+            <stop offset="0.34" stopColor="#b9c3d8" />
+            <stop offset="0.7" stopColor="#64708c" />
+            <stop offset="1" stopColor="#252d43" />
+          </radialGradient>
+          <linearGradient id="earPink" x1="52" y1="18" x2="78" y2="118" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#ffd5f0" />
+            <stop offset="1" stopColor="#6c355f" />
           </linearGradient>
-          <linearGradient id="catEdge" x1="38" y1="40" x2="184" y2="180" gradientUnits="userSpaceOnUse">
+          <linearGradient id="neonBlue" x1="34" y1="32" x2="188" y2="214" gradientUnits="userSpaceOnUse">
             <stop stopColor="#4df4ff" />
-            <stop offset="1" stopColor="#9b5cff" />
+            <stop offset="0.58" stopColor="#36a6ff" />
+            <stop offset="1" stopColor="#a15cff" />
           </linearGradient>
-          <radialGradient id="catEyeCyan" cx="50%" cy="45%" r="62%">
-            <stop stopColor="#e9ffff" />
-            <stop offset="0.18" stopColor="#8fffff" />
-            <stop offset="0.62" stopColor="#27cfff" />
-            <stop offset="1" stopColor="#07204a" />
+          <radialGradient id="eyeBlue" cx="43%" cy="38%" r="65%">
+            <stop stopColor="#f6ffff" />
+            <stop offset="0.18" stopColor="#8cf5ff" />
+            <stop offset="0.54" stopColor="#1cbfff" />
+            <stop offset="0.82" stopColor="#075ba8" />
+            <stop offset="1" stopColor="#06132f" />
           </radialGradient>
-          <radialGradient id="catEyeViolet" cx="50%" cy="45%" r="62%">
-            <stop stopColor="#fff4ff" />
-            <stop offset="0.18" stopColor="#d9b5ff" />
-            <stop offset="0.62" stopColor="#8c58ff" />
-            <stop offset="1" stopColor="#170b43" />
-          </radialGradient>
+          <linearGradient id="metalDark" x1="44" y1="50" x2="177" y2="232" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#263046" />
+            <stop offset="0.52" stopColor="#0c1220" />
+            <stop offset="1" stopColor="#050814" />
+          </linearGradient>
           <filter id="catGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="2.5" result="blur" />
+            <feGaussianBlur stdDeviation="3" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <filter id="softFur" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="2" seed="8" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.7" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
         </defs>
 
-        <path d="M35 97C30 55 39 13 55 8c17-6 52 22 73 49 14-3 29-3 43 0 21-27 56-55 73-49 16 5 25 47 20 89 14 15 22 34 22 56 0 57-50 91-111 91H124C63 244 13 210 13 153c0-22 8-41 22-56Z" fill="#050c19" opacity="0.7" transform="scale(.78) translate(17 4)" />
-        <path d="M37 88C31 50 37 12 52 8c15-5 48 21 68 47 13-3 27-3 40 0 20-26 53-52 68-47 15 4 21 42 15 80 17 15 27 36 27 59 0 51-43 83-96 83H96c-53 0-96-32-96-83 0-23 10-44 37-59Z" fill="url(#catFur)" transform="translate(17 0) scale(.82)" />
-
-        <path d="M60 27c12 4 39 27 56 50-18 6-34 18-47 32-8-26-12-58-9-82Z" fill="#071224" opacity="0.98" transform="translate(17 0) scale(.82)" />
-        <path d="M210 27c-12 4-39 27-56 50 18 6 34 18 47 32 8-26 12-58 9-82Z" fill="#071224" opacity="0.98" transform="translate(17 0) scale(.82)" />
-        <path d="M72 42c11 6 27 21 38 36-11 4-21 11-30 20-5-18-9-39-8-56Z" fill="#122144" stroke="#54f3ff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" filter="url(#catGlow)" transform="translate(17 0) scale(.82)" />
-        <path d="M198 42c-11 6-27 21-38 36 11 4 21 11 30 20 5-18 9-39 8-56Z" fill="#231348" stroke="#a15cff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" filter="url(#catGlow)" transform="translate(17 0) scale(.82)" />
-
-        <path d="M47 129c10-20 44-28 88-21 44-7 78 1 88 21 1 7-2 21-12 30-22 18-131 18-153 0-10-9-13-23-11-30Z" fill="#1b3155" stroke="url(#catEdge)" strokeWidth="3" opacity="0.88" transform="translate(17 0) scale(.82)" />
-        <g transform="translate(17 0) scale(.82)">
-          <ellipse cx="89" cy="144" rx="20" ry="23" fill="#06152c" opacity="0.95" />
-          <ellipse cx="181" cy="144" rx="20" ry="23" fill="#06152c" opacity="0.95" />
-          <motion.g animate={{ x: gaze.x * 5, y: gaze.y * 4 }} transition={{ type: "spring", stiffness: 260, damping: 22 }}>
-            <ellipse cx="89" cy="144" rx="13" ry="16" fill="url(#catEyeCyan)" filter="url(#catGlow)" />
-            <circle cx="94" cy="137" r="4.5" fill="white" opacity="0.92" />
-            <ellipse cx="181" cy="144" rx="13" ry="16" fill="url(#catEyeViolet)" filter="url(#catGlow)" />
-            <circle cx="186" cy="137" r="4.5" fill="white" opacity="0.92" />
-          </motion.g>
-          <path d="M70 126c8-7 28-8 38-1M162 125c10-7 29-6 38 1" fill="none" stroke="#6eefff" strokeWidth="4" strokeLinecap="round" opacity="0.62" />
-        </g>
-
-        <path d="M123 166c6-5 18-5 24 0-1 7-6 12-12 12s-11-5-12-12Z" fill="#a35cff" transform="translate(17 0) scale(.82)" />
-        <path d="M135 177v8m0 0c-7 12-24 13-31 1m31-1c7 12 24 13 31 1" fill="none" stroke="#a35cff" strokeWidth="4.5" strokeLinecap="round" transform="translate(17 0) scale(.82)" />
-
-        <path d="M111 62v25m-22-19v16l12 8v18m66-42v16l-12 8v18" fill="none" stroke="#54f3ff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" filter="url(#catGlow)" transform="translate(17 0) scale(.82)" />
-        <circle cx="111" cy="59" r="7" fill="#192646" stroke="#54f3ff" strokeWidth="4" transform="translate(17 0) scale(.82)" />
-        <circle cx="89" cy="66" r="6" fill="#192646" stroke="#54f3ff" strokeWidth="4" transform="translate(17 0) scale(.82)" />
-        <circle cx="167" cy="66" r="6" fill="#192646" stroke="#54f3ff" strokeWidth="4" transform="translate(17 0) scale(.82)" />
-        <circle cx="135" cy="104" r="8" fill="#8b5cff" stroke="#54f3ff" strokeWidth="4" transform="translate(17 0) scale(.82)" />
-
-        <path d="M74 217c8-28 31-43 61-43s53 15 61 43H74Z" fill="#0b1425" stroke="#243858" strokeWidth="3" transform="translate(17 0) scale(.82)" />
-        <path d="M87 197l20 17v28M183 197l-20 17v28M106 184c7 10 51 10 58 0" fill="none" stroke="#54f3ff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" opacity="0.95" transform="translate(17 0) scale(.82)" />
-        <path d="M174 206l-16 15v22" fill="none" stroke="#a15cff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" opacity="0.92" transform="translate(17 0) scale(.82)" />
+        <path d="M50 18c15 6 45 31 65 61-20 6-37 18-50 34-9-30-16-67-15-95Z" fill="url(#earPink)" stroke="#f6b5ef" strokeWidth="3" filter="url(#catGlow)" />
+        <path d="M210 18c-15 6-45 31-65 61 20 6 37 18 50 34 9-30 16-67 15-95Z" fill="url(#earPink)" stroke="#b27cff" strokeWidth="3" filter="url(#catGlow)" />
+        <path d="M65 31c10 8 28 25 41 46-11 4-22 11-31 21-6-20-11-45-10-67Z" fill="#151b2c" stroke="#53eaff" strokeWidth="4" strokeLinecap="round" />
+        <path d="M195 31c-10 8-28 25-41 46 11 4 22 11 31 21 6-20 11-45 10-67Z" fill="#151b2c" stroke="#53eaff" strokeWidth="4" strokeLinecap="round" />
+        <path d="M37 124c4-40 39-70 93-70s89 30 93 70c18 11 28 30 28 52 0 48-41 74-95 74h-52c-54 0-95-26-95-74 0-22 10-41 28-52Z" fill="url(#furSilver)" filter="url(#softFur)" />
+        <path d="M87 66c8 31 19 47 36 62M130 62c-4 31-4 49 0 68M173 66c-8 31-19 47-36 62" fill="none" stroke="#2d354b" strokeWidth="5" strokeLinecap="round" opacity="0.38" />
+        <path d="M78 77c15 11 27 24 36 42M182 77c-15 11-27 24-36 42" fill="none" stroke="#edf6ff" strokeWidth="3" strokeLinecap="round" opacity="0.52" />
+        <path d="M104 63h52l8 31-34 31-34-31 8-31Z" fill="url(#metalDark)" stroke="#bcd6ff" strokeWidth="2" opacity="0.86" />
+        <path d="M118 74h24l6 18-18 16-18-16 6-18Z" fill="#1a2540" stroke="#62efff" strokeWidth="2" filter="url(#catGlow)" />
+        <path d="M126 84l4-4 4 4-4 4-4-4Z" fill="#eaffff" filter="url(#catGlow)" />
+        <path d="M54 67c13 8 28 20 42 36" fill="none" stroke="#101626" strokeWidth="8" strokeLinecap="round" />
+        <path d="M54 67c13 8 28 20 42 36" fill="none" stroke="#58eaff" strokeWidth="3" strokeLinecap="round" filter="url(#catGlow)" />
+        <circle cx="83" cy="95" r="13" fill="#101626" stroke="#5ff2ff" strokeWidth="3" />
+        <circle cx="83" cy="95" r="6" fill="#dfffff" filter="url(#catGlow)" />
+        <path d="M206 67c-13 8-28 20-42 36" fill="none" stroke="#101626" strokeWidth="8" strokeLinecap="round" />
+        <path d="M206 67c-13 8-28 20-42 36" fill="none" stroke="#58eaff" strokeWidth="3" strokeLinecap="round" filter="url(#catGlow)" />
+        <circle cx="177" cy="95" r="13" fill="#101626" stroke="#5ff2ff" strokeWidth="3" />
+        <circle cx="177" cy="95" r="6" fill="#dfffff" filter="url(#catGlow)" />
+        <ellipse cx="88" cy="151" rx="30" ry="32" fill="#101320" opacity="0.88" />
+        <ellipse cx="172" cy="151" rx="30" ry="32" fill="#101320" opacity="0.88" />
+        <motion.g animate={{ x: gaze.x * 8, y: gaze.y * 6 }} transition={{ type: "spring", stiffness: 360, damping: 18, mass: 0.42 }}>
+          <ellipse cx="88" cy="151" rx="22" ry="25" fill="url(#eyeBlue)" filter="url(#catGlow)" />
+          <ellipse cx="172" cy="151" rx="22" ry="25" fill="url(#eyeBlue)" filter="url(#catGlow)" />
+          <ellipse cx="94" cy="154" rx="7" ry="14" fill="#061329" opacity="0.58" />
+          <ellipse cx="178" cy="154" rx="7" ry="14" fill="#061329" opacity="0.58" />
+          <path d="M73 151c8 11 22 14 34 4M157 155c12 10 27 7 34-4" fill="none" stroke="#9efbff" strokeWidth="2.2" strokeLinecap="round" opacity="0.62" />
+          <circle cx="97" cy="141" r="5.5" fill="#fff" opacity="0.96" />
+          <circle cx="181" cy="141" r="5.5" fill="#fff" opacity="0.96" />
+          <circle cx="80" cy="160" r="3.5" fill="#a9fbff" opacity="0.58" />
+          <circle cx="164" cy="160" r="3.5" fill="#a9fbff" opacity="0.58" />
+        </motion.g>
+        <path d="M60 132c9-7 32-10 48-3M152 129c16-7 39-4 48 3" fill="none" stroke="#62eaff" strokeWidth="4" strokeLinecap="round" opacity="0.82" filter="url(#catGlow)" />
+        <path d="M131 173c3-2.2 7-2.2 10 0-1.2 2.4-3 3.5-5 3.5s-3.8-1.1-5-3.5Z" fill="#d79caf" stroke="#5a3442" strokeWidth="1.15" />
+        <path d="M117 189Q136 200 155 189" fill="none" stroke="#f4c5d7" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" opacity="0.98" />
       </motion.svg>
-      <span className="pointer-events-none absolute bottom-[8px] left-[96px] -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-100/14 bg-black/46 px-3 py-1 text-[10px] font-semibold leading-none text-cyan-50/66 shadow-[0_10px_28px_rgba(0,0,0,0.30)] backdrop-blur-xl">
+      <span className="pointer-events-none absolute bottom-[6px] left-[96px] -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-100/14 bg-black/46 px-3 py-1 text-[10px] font-semibold leading-none text-cyan-50/66 shadow-[0_10px_28px_rgba(0,0,0,0.30)] backdrop-blur-xl">
         <span className="tracking-[0.14em]">AI pet</span>
         <span className="ml-2 tracking-normal text-cyan-50/58">点我一起唠唠嗑。</span>
       </span>
@@ -1641,7 +1676,7 @@ function WuYiAgent() {
 
   const clampPetOffset = (offset) => {
     const minX = typeof window === "undefined" ? -900 : -(window.innerWidth - 260);
-    const minY = typeof window === "undefined" ? -620 : -(window.innerHeight - 168);
+    const minY = typeof window === "undefined" ? -620 : -(window.innerHeight - 182);
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     return {
       x: clamp(offset.x, minX, 18),

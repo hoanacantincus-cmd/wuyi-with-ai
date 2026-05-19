@@ -69,6 +69,19 @@ Output rules:
 - Keep replies concise. For diagnosis, use 3-4 items per list and avoid long explanations.
 `;
 
+const NINE_ROUTER_FREE_MODELS = [
+  "oc/deepseek-v4-flash-free",
+  "oc/qwen3.6-plus-free",
+  "kr/claude-sonnet-4.5",
+  "kr/deepseek-3.2",
+  "kr/qwen3-coder-next",
+  "kr/glm-5",
+  "kr/MiniMax-M2.5",
+  "kr/claude-haiku-4.5",
+  "vertex/gemini-3.1-pro-preview",
+  "vertex-partner/deepseek-v3.2-maas",
+];
+
 function getAllowedOrigins() {
   const configured = process.env.AGENT_ALLOWED_ORIGINS;
   if (!configured) return DEFAULT_ALLOWED_ORIGINS;
@@ -142,19 +155,47 @@ function getUpstreamHeaders(apiKey) {
   return headers;
 }
 
+function parseModelList(value, fallback = []) {
+  const models = String(value || "")
+    .split(",")
+    .map((model) => cleanText(model, 160))
+    .filter(Boolean);
+  return models.length ? models : fallback;
+}
+
+function createModelProviders({ name, baseUrl, apiKey, models, timeoutMs = 18000 }) {
+  return models.map((model, index) => ({
+    name: models.length > 1 ? `${name} #${index + 1} ${model}` : name,
+    baseUrl,
+    apiKey,
+    model,
+    timeoutMs,
+  }));
+}
+
 function getModelProviders() {
   const primaryBaseUrl = String(process.env.NINE_ROUTER_BASE_URL || "").replace(/\/+$/, "");
   const primaryApiKey = cleanText(process.env.NINE_ROUTER_API_KEY, 500);
   const primaryModel = cleanText(process.env.NINE_ROUTER_MODEL, 160) || "openai";
+  const primaryModels = parseModelList(process.env.NINE_ROUTER_MODELS, [primaryModel]);
   const providers = [];
 
   if (primaryBaseUrl) {
-    providers.push({
+    providers.push(...createModelProviders({
       name: cleanText(process.env.NINE_ROUTER_PROVIDER_NAME, 80) || "Primary free model",
       baseUrl: primaryBaseUrl,
       apiKey: primaryApiKey,
-      model: primaryModel,
-    });
+      models: primaryModels,
+      timeoutMs: Number(process.env.NINE_ROUTER_TIMEOUT_MS) || 18000,
+    }));
+  } else if (process.env.AGENT_ENABLE_LOCAL_9ROUTER === "true") {
+    providers.push(...createModelProviders({
+      name: "9Router local free pool",
+      baseUrl: "http://127.0.0.1:20128/v1",
+      apiKey: primaryApiKey,
+      models: parseModelList(process.env.NINE_ROUTER_MODELS, NINE_ROUTER_FREE_MODELS),
+      timeoutMs: Number(process.env.NINE_ROUTER_TIMEOUT_MS) || 18000,
+    }));
   }
 
   if (process.env.AGENT_ENABLE_DEFAULT_FREE_PROVIDERS !== "false") {
@@ -163,6 +204,7 @@ function getModelProviders() {
       baseUrl: "https://text.pollinations.ai/openai",
       apiKey: "",
       model: "openai",
+      timeoutMs: 9000,
     });
 
     if (process.env.OPENROUTER_API_KEY) {
@@ -204,6 +246,7 @@ function getModelProviders() {
         baseUrl: String(baseUrl || "").replace(/\/+$/, ""),
         model: model || "openai",
         apiKey: apiKey || "",
+        timeoutMs: 18000,
       };
     })
     .filter((provider) => provider.baseUrl);
@@ -295,6 +338,14 @@ function fallbackDiagnosis(message) {
   };
 }
 
+function fallbackAboutWuYi() {
+  return {
+    reply:
+      "伍轶是全栈 AI 构建者，重点能力是全栈开发、智能体搭建和 AI 全栈落地。他能把前端界面、后端/API、模型接入、自动化流程、数据采集、Agent 工作流、部署和迭代串成可运行的 MVP。如果某个方向没有现成个人项目，他也可以快速参考 GitHub 和成熟开源项目，复现、改造并落到自己的产品场景里。",
+    diagnosis: null,
+  };
+}
+
 function buildResult(content, intent, message) {
   const parsed = extractJsonObject(content);
   const partialReply = parsed ? "" : extractPartialReply(content);
@@ -342,7 +393,7 @@ export default async function handler(req, res) {
 
     for (const provider of providers) {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 24000);
+      const timeoutId = setTimeout(() => controller.abort(), provider.timeoutMs || 18000);
 
       try {
         const upstreamResponse = await fetch(getChatCompletionsUrl(provider.baseUrl), {
@@ -394,6 +445,20 @@ export default async function handler(req, res) {
         failures.push(`${provider.name}: ${error?.name === "AbortError" ? "timeout" : cleanText(error?.message, 180) || "request failed"}`);
       }
     }
+
+    if (intent === "about_wuyi") {
+      return sendJson(res, 200, fallbackAboutWuYi());
+    }
+
+    return sendJson(res, 200, {
+      reply: "这个项目可以先按 MVP 路线推进：先锁定一个核心用户场景，再做可演示界面，接入模型代理和数据流，最后用真实样例验证输出质量。伍轶适合处理这类 AI 项目从想法到落地的全栈实现。",
+      diagnosis: fallbackDiagnosis(message),
+    });
+
+    return sendJson(res, 200, {
+      reply: "模型池暂时都没有接通，WuYi Agent 先用本地规则给你做一版可执行诊断。你可以稍后重试，或继续补充需求细节。",
+      diagnosis: fallbackDiagnosis(message),
+    });
 
     return sendJson(res, 502, {
       reply: `免费模型池暂时都没有接通：${failures.slice(0, 3).join("；") || "upstream error"}。你可以稍后再试，或直接通过页面底部联系 WuYi。`,
