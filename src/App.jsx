@@ -531,10 +531,10 @@ function AICoreCanvas({ pointer, booting }) {
       ctx.arc(cx, cy, radius * 1.85, 0, Math.PI * 2);
       ctx.fill();
 
-      const sphere = ctx.createRadialGradient(cx - radius * 0.4, cy - radius * 0.46, radius * 0.06, cx, cy, radius);
-      sphere.addColorStop(0, "rgba(246,249,255,0.95)");
-      sphere.addColorStop(0.1, "rgba(198,240,255,0.42)");
-      sphere.addColorStop(0.34, "rgba(120,210,255,0.22)");
+      const sphere = ctx.createRadialGradient(cx - radius * 0.28, cy - radius * 0.32, radius * 0.16, cx, cy, radius);
+      sphere.addColorStop(0, "rgba(160,232,255,0.24)");
+      sphere.addColorStop(0.18, "rgba(125,220,255,0.22)");
+      sphere.addColorStop(0.38, "rgba(120,210,255,0.20)");
       sphere.addColorStop(0.6, "rgba(90,170,255,0.14)");
       sphere.addColorStop(0.82, "rgba(148,118,255,0.12)");
       sphere.addColorStop(1, "rgba(8,12,24,0.36)");
@@ -1311,8 +1311,8 @@ function OrbitScene() {
       className="relative mx-auto aspect-[1.42/1] w-full max-w-[1560px] overflow-visible bg-transparent"
       style={{ transformStyle: "preserve-3d" }}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_58%,rgba(125,249,255,0.16),transparent_24%),radial-gradient(circle_at_28%_34%,rgba(77,163,255,0.12),transparent_30%),radial-gradient(circle_at_78%_28%,rgba(148,118,255,0.13),transparent_30%)]" />
-      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(720px circle at 50% 54%, rgba(180,238,255,0.12), transparent 42%)" }} />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_58%,rgba(125,249,255,0.14),transparent_24%),radial-gradient(circle_at_28%_38%,rgba(77,163,255,0.07),transparent_32%),radial-gradient(circle_at_78%_36%,rgba(148,118,255,0.07),transparent_34%)]" />
+      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(720px circle at 50% 56%, rgba(180,238,255,0.09), transparent 44%)" }} />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_22%,rgba(255,255,255,0.48)_0_1px,transparent_1.6px),radial-gradient(circle_at_72%_28%,rgba(190,220,255,0.42)_0_1px,transparent_1.7px),radial-gradient(circle_at_46%_74%,rgba(255,255,255,0.30)_0_1px,transparent_1.6px)] [background-size:73px_73px,113px_113px,151px_151px] opacity-[0.24]" />
       {Array.from({ length: 64 }).map((_, i) => (
         <motion.span
@@ -2025,7 +2025,13 @@ export default function App() {
               maskImage: "linear-gradient(90deg, #000 0%, #000 86%, transparent 100%)",
             }}
           >
-            <div className="absolute left-1/2 top-1/2 w-[920px] -translate-x-1/2 -translate-y-1/2 scale-[0.42] sm:scale-[0.5] md:scale-[0.78] lg:static lg:w-full lg:translate-x-0 lg:translate-y-0 lg:scale-100">
+            <div
+              className="absolute left-1/2 top-1/2 w-[920px] -translate-x-1/2 -translate-y-1/2 scale-[0.42] sm:scale-[0.5] md:scale-[0.78] lg:static lg:w-full lg:translate-x-0 lg:translate-y-0 lg:scale-100"
+              style={{
+                WebkitMaskImage: "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.45) 8%, #000 18%, #000 100%)",
+                maskImage: "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.45) 8%, #000 18%, #000 100%)",
+              }}
+            >
               <TechnologyRadar />
             </div>
           </div>
