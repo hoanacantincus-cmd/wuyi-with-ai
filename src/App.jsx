@@ -1759,7 +1759,7 @@ function WuYiAgent() {
                 <div>
                 <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.34em] text-cyan-100/42">WuYi Agent</p>
                 <h2 className="mt-1 text-lg font-medium text-white">AI 项目接口已接入</h2>
-                  <p className="mt-1 text-xs leading-5 text-white/38">AI PET 在线，免费模型通道可能限流，异常时会自动降级。</p>
+                  <p className="mt-1 text-xs leading-5 text-white/38">wuyi 配置的这个智能体用的是各家免费的 API，额度有限请不要大量询问。</p>
                 </div>
               </div>
               <button type="button" onClick={() => setOpen(false)} className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.035] text-white/54 transition hover:border-cyan-100/22 hover:text-white" aria-label="关闭 WuYi Agent">
