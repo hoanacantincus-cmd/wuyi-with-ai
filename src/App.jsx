@@ -16,6 +16,13 @@ const profile = {
   location: "湖北武汉",
 };
 
+const shareUrl = "https://wuyi-with-ai.pages.dev/";
+
+const sharePayload = {
+  title: "AI边池派——让代码和想象力汇聚成持续进化的AI系统。",
+  text: "伍轶的 AI 系统能力主页：全栈开发、Agent 系统、自动化流程与数据智能。",
+};
+
 const capabilityItems = [
   {
     tag: "01",
@@ -315,6 +322,15 @@ function Icon({ name, className = "h-4 w-4" }) {
         <path d="M22 2 11 13" />
       </>
     ),
+    share: (
+      <>
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <path d="m8.6 10.6 6.8-4.2" />
+        <path d="m8.6 13.4 6.8 4.2" />
+      </>
+    ),
     close: (
       <>
         <path d="M18 6 6 18" />
@@ -345,17 +361,34 @@ function Icon({ name, className = "h-4 w-4" }) {
 }
 
 function CTAButton({ href, children, variant = "primary", icon, onClick }) {
-  const base = "group inline-flex items-center justify-center gap-3 rounded-full px-6 py-3.5 text-sm font-medium transition duration-300";
+  const base = "group inline-flex min-w-0 items-center justify-center gap-2 rounded-full px-3 py-3 text-xs font-medium transition duration-300 sm:gap-3 sm:px-6 sm:py-3.5 sm:text-sm";
   const styles = variant === "primary"
     ? "border border-white/10 bg-white/[0.035] text-white/74 shadow-none hover:border-cyan-100/34 hover:bg-white/[0.105] hover:text-white hover:shadow-[0_18px_54px_rgba(77,163,255,0.14)]"
     : "border border-white/10 bg-white/[0.035] text-white/74 hover:border-white/22 hover:bg-white/[0.065] hover:text-white";
 
   return (
     <motion.a href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noreferrer" : undefined} onClick={onClick} whileHover={{ y: -2, scale: 1.01 }} whileTap={{ scale: 0.985 }} className={`${base} ${styles}`}>
-      {icon ? <Icon name={icon} className="h-4 w-4" /> : null}
-      <span>{children}</span>
+      {icon ? <Icon name={icon} className="h-4 w-4 shrink-0 text-white/82" /> : null}
+      <span className="whitespace-nowrap">{children}</span>
       {variant === "primary" ? <Icon name="arrow" className="h-4 w-4 opacity-55 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /> : null}
     </motion.a>
+  );
+}
+
+function ShareButton({ status, onShare }) {
+  return (
+    <div className="relative min-w-0">
+      <motion.button
+        type="button"
+        onClick={onShare}
+        whileHover={{ y: -2, scale: 1.01 }}
+        whileTap={{ scale: 0.985 }}
+        className="group inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-3 text-xs font-medium text-white/74 transition duration-300 hover:border-cyan-100/34 hover:bg-white/[0.105] hover:text-white sm:gap-3 sm:px-6 sm:py-3.5 sm:text-sm"
+      >
+        <Icon name="share" className="h-4 w-4 shrink-0 text-white/82" />
+        <span className="whitespace-nowrap">{status || "分享主页"}</span>
+      </motion.button>
+    </div>
   );
 }
 
@@ -1467,7 +1500,7 @@ function CyberAgentPet({ offset, onPointerDown, onOpen }) {
       style={{ x: offset.x, y: offset.y }}
       whileHover={{ scale: 1.035 }}
       whileTap={{ scale: 0.98 }}
-      className="group fixed bottom-5 right-5 z-40 h-[170px] w-[238px] cursor-grab touch-none select-none active:cursor-grabbing md:bottom-7 md:right-7"
+      className="group fixed bottom-5 right-5 z-20 h-[170px] w-[238px] cursor-grab touch-none select-none active:cursor-grabbing md:bottom-7 md:right-7"
       aria-label="打开可拖拽 WuYi Agent 智能体宠物"
     >
       <span className="pointer-events-none absolute bottom-5 left-[96px] h-5 w-28 -translate-x-1/2 rounded-full bg-cyan-100/18 blur-xl transition group-hover:bg-cyan-100/30" />
@@ -1843,6 +1876,7 @@ function GithubLaunchOverlay({ active }) {
 
 export default function App() {
   const [githubBooting, setGithubBooting] = useState(false);
+  const [shareStatus, setShareStatus] = useState("");
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 600], [0, -40]);
   const coreY = useTransform(scrollY, [0, 600], [0, 38]);
@@ -1881,6 +1915,29 @@ export default function App() {
     window.setTimeout(() => setGithubBooting(false), 850);
   };
 
+  const shareSite = async () => {
+    const nativeShare = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && navigator.share;
+
+    try {
+      if (nativeShare) {
+        await navigator.share({ ...sharePayload, url: shareUrl });
+        setShareStatus("分享成功");
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareStatus("复制成功");
+      } else {
+        window.prompt("复制分享链接", shareUrl);
+        setShareStatus("复制成功");
+      }
+    } catch (error) {
+      if (error?.name === "AbortError") return;
+      window.prompt("复制分享链接", shareUrl);
+      setShareStatus("复制成功");
+    }
+
+    window.setTimeout(() => setShareStatus(""), 1800);
+  };
+
   return (
     <main style={fontStyles.ui} className="min-h-screen overflow-hidden bg-[#03040a] text-white">
       <GithubLaunchOverlay active={githubBooting} />
@@ -1893,16 +1950,16 @@ export default function App() {
         <nav className="hidden items-center gap-7 text-base text-white/50 md:flex"><a href="#capability" onClick={scrollToSection("#capability")} className="hover:text-white">能力</a><a href="#story" onClick={scrollToSection("#story")} className="hover:text-white">方法</a><a href="#systems" onClick={scrollToSection("#systems")} className="hover:text-white">系统</a><a href="#contact" onClick={scrollToSection("#contact")} className="hover:text-white">联系</a></nav>
       </header>
 
-      <section id="hero" className="relative z-10 mx-auto grid min-h-[calc(100vh-92px)] max-w-[1540px] items-center gap-8 px-5 pb-20 pt-6 sm:px-6 md:gap-12 md:px-10 md:pb-24 md:pt-8 lg:grid-cols-[0.72fr_1.28fr]">
-        <motion.div style={{ y: heroY }} className="relative z-10">
+      <section id="hero" className="relative z-30 mx-auto grid min-h-[calc(100vh-92px)] max-w-[1540px] items-center gap-8 px-5 pb-20 pt-6 sm:px-6 md:gap-12 md:px-10 md:pb-24 md:pt-8 lg:grid-cols-[0.72fr_1.28fr]">
+        <motion.div style={{ y: heroY }} className="relative z-[60]">
           <motion.h1 initial={{ opacity: 0, y: 34, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.08, duration: 1.05 }} className="max-w-3xl">
             <span className="relative block bg-gradient-to-b from-white via-cyan-50/90 to-white/34 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitle}</span>
             {profile.heroTitleSecond ? <span className="relative mt-2 block bg-gradient-to-b from-white via-cyan-50/86 to-white/32 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitleSecond}</span> : null}
             <span className="mt-6 block max-w-2xl text-[1.12rem] font-medium leading-8 tracking-[-0.01em] text-cyan-50/74 md:text-[1.45rem]">{profile.heroSubtitle}</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24, duration: 0.85 }} className="mt-7 max-w-xl text-[0.98rem] leading-8 text-white/50 md:text-[1.05rem]">{profile.line}</motion.p>
-          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.85 }} className="mt-8 grid max-w-lg grid-cols-3 gap-3 border-y border-white/[0.07] py-5">{[["01", "构想"], ["02", "构建"], ["03", "进化"]].map(([no, label]) => <div key={label}><p style={fontStyles.mono} className="text-[11px] tracking-[0.22em] text-cyan-100/36">{no}</p><p className="mt-1 text-sm font-medium text-white/78">{label}</p></div>)}</motion.div>
-          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42, duration: 0.85 }} className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap"><CTAButton href={profile.github} icon="github" onClick={launchGithub}>查看 GitHub</CTAButton><CTAButton href="#capability" variant="ghost" onClick={scrollToSection("#capability")}>探索我的系统</CTAButton><CTAButton href="#contact" variant="ghost" icon="mail" onClick={scrollToSection("#contact")}>联系我</CTAButton></motion.div>
+          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.85 }} className="ml-3 mt-8 grid max-w-xl grid-cols-3 gap-3 border-y border-white/[0.07] py-5">{[["01", "构想"], ["02", "构建"], ["03", "进化"]].map(([no, label]) => <div key={label}><p style={fontStyles.mono} className="text-[11px] tracking-[0.22em] text-cyan-100/36">{no}</p><p className="mt-1 text-sm font-medium text-white/78">{label}</p></div>)}</motion.div>
+          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42, duration: 0.85 }} className="-ml-3 mt-9 grid max-w-xl grid-cols-3 gap-3"><CTAButton href={profile.github} icon="github" onClick={launchGithub}>查看 GitHub</CTAButton><CTAButton href="#contact" variant="ghost" icon="mail" onClick={scrollToSection("#contact")}>联系我</CTAButton><ShareButton status={shareStatus} onShare={shareSite} /></motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.62, duration: 0.9 }} className="mt-8 flex items-center gap-3 text-[12px] text-white/34" style={fontStyles.mono}><span className="h-px w-10 bg-gradient-to-r from-cyan-100/0 via-cyan-100/35 to-cyan-100/0" />WUYi WITH AI / CODE FLOW / IMAGINATION SYSTEM</motion.div>
         </motion.div>
         <motion.div style={{ y: coreY }} className="relative mx-auto w-full max-w-[760px] lg:max-w-none"><div className="absolute -inset-6 bg-[radial-gradient(circle_at_50%_48%,rgba(77,163,255,0.16),transparent_56%)] blur-2xl md:-inset-10" /><AICoreScene booting={githubBooting} /></motion.div>
