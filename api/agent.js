@@ -149,9 +149,9 @@ function getChatCompletionsUrl(baseUrl) {
   return `${baseUrl}/chat/completions`;
 }
 
-function getUpstreamHeaders(apiKey) {
-  const headers = { "Content-Type": "application/json" };
-  if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
+function getUpstreamHeaders(provider) {
+  const headers = { "Content-Type": "application/json", ...(provider.headers || {}) };
+  if (provider.apiKey) headers.Authorization = `Bearer ${provider.apiKey}`;
   return headers;
 }
 
@@ -163,14 +163,32 @@ function parseModelList(value, fallback = []) {
   return models.length ? models : fallback;
 }
 
-function createModelProviders({ name, baseUrl, apiKey, models, timeoutMs = 18000 }) {
+function getFirstEnv(names) {
+  for (const name of names) {
+    const value = cleanText(process.env[name], 500);
+    if (value) return value;
+  }
+  return "";
+}
+
+function createModelProviders({ name, baseUrl, apiKey, models, timeoutMs = 18000, headers = {}, maxTokensField = "max_tokens" }) {
   return models.map((model, index) => ({
     name: models.length > 1 ? `${name} #${index + 1} ${model}` : name,
     baseUrl,
     apiKey,
     model,
     timeoutMs,
+    headers,
+    maxTokensField,
   }));
+}
+
+function createEnvModelProviders({ name, baseUrl, keyNames, modelEnv, modelsEnv, defaultModels, timeoutMs = 18000, headers = {}, maxTokensField = "max_tokens" }) {
+  const apiKey = getFirstEnv(keyNames);
+  if (!apiKey) return [];
+
+  const models = parseModelList(process.env[modelsEnv], parseModelList(process.env[modelEnv], defaultModels));
+  return createModelProviders({ name, baseUrl, apiKey, models, timeoutMs, headers, maxTokensField });
 }
 
 function getModelProviders() {
@@ -199,14 +217,6 @@ function getModelProviders() {
   }
 
   if (process.env.AGENT_ENABLE_DEFAULT_FREE_PROVIDERS !== "false") {
-    providers.push({
-      name: "Pollinations anonymous",
-      baseUrl: "https://text.pollinations.ai/openai",
-      apiKey: "",
-      model: "openai",
-      timeoutMs: 9000,
-    });
-
     if (process.env.OPENROUTER_API_KEY) {
       providers.push({
         name: "OpenRouter free",
@@ -233,6 +243,71 @@ function getModelProviders() {
         model: cleanText(process.env.GEMINI_MODEL || process.env.GOOGLE_AI_MODEL, 160) || "gemini-2.5-flash",
       });
     }
+
+    providers.push(...createEnvModelProviders({
+      name: "Hugging Face router",
+      baseUrl: "https://router.huggingface.co/v1",
+      keyNames: ["HF_TOKEN", "HUGGINGFACE_API_KEY"],
+      modelEnv: "HUGGINGFACE_MODEL",
+      modelsEnv: "HUGGINGFACE_MODELS",
+      defaultModels: ["deepseek-ai/DeepSeek-R1:fastest"],
+      timeoutMs: Number(process.env.HUGGINGFACE_TIMEOUT_MS) || 18000,
+    }));
+
+    providers.push(...createEnvModelProviders({
+      name: "GitHub Models",
+      baseUrl: "https://models.github.ai/inference",
+      keyNames: ["GITHUB_MODELS_TOKEN", "GITHUB_TOKEN"],
+      modelEnv: "GITHUB_MODELS_MODEL",
+      modelsEnv: "GITHUB_MODELS_MODELS",
+      defaultModels: ["openai/gpt-4o-mini"],
+      timeoutMs: Number(process.env.GITHUB_MODELS_TIMEOUT_MS) || 18000,
+      headers: {
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2026-03-10",
+      },
+    }));
+
+    providers.push(...createEnvModelProviders({
+      name: "SiliconFlow free tier",
+      baseUrl: "https://api.siliconflow.cn/v1",
+      keyNames: ["SILICONFLOW_API_KEY"],
+      modelEnv: "SILICONFLOW_MODEL",
+      modelsEnv: "SILICONFLOW_MODELS",
+      defaultModels: ["Qwen/Qwen3-8B"],
+      timeoutMs: Number(process.env.SILICONFLOW_TIMEOUT_MS) || 18000,
+    }));
+
+    providers.push(...createEnvModelProviders({
+      name: "Cerebras free tier",
+      baseUrl: "https://api.cerebras.ai/v1",
+      keyNames: ["CEREBRAS_API_KEY"],
+      modelEnv: "CEREBRAS_MODEL",
+      modelsEnv: "CEREBRAS_MODELS",
+      defaultModels: ["gpt-oss-120b", "llama3.1-8b"],
+      timeoutMs: Number(process.env.CEREBRAS_TIMEOUT_MS) || 18000,
+      maxTokensField: "max_completion_tokens",
+    }));
+
+    providers.push(...createEnvModelProviders({
+      name: "SambaNova free tier",
+      baseUrl: "https://api.sambanova.ai/v1",
+      keyNames: ["SAMBANOVA_API_KEY"],
+      modelEnv: "SAMBANOVA_MODEL",
+      modelsEnv: "SAMBANOVA_MODELS",
+      defaultModels: ["DeepSeek-V3.2", "gpt-oss-120b"],
+      timeoutMs: Number(process.env.SAMBANOVA_TIMEOUT_MS) || 18000,
+    }));
+
+    providers.push({
+      name: "Pollinations anonymous",
+      baseUrl: "https://text.pollinations.ai/openai",
+      apiKey: "",
+      model: "openai",
+      timeoutMs: 9000,
+      headers: {},
+      maxTokensField: "max_tokens",
+    });
   }
 
   const customProviders = String(process.env.AGENT_MODEL_PROVIDERS || "")
@@ -261,6 +336,25 @@ function getModelProviders() {
     seen.add(key);
     return true;
   });
+}
+
+function buildUpstreamBody(provider, intent, message, history) {
+  const body = {
+    model: provider.model,
+    stream: false,
+    temperature: 0.72,
+    messages: [
+      { role: "system", content: WUYI_SYSTEM_PROMPT },
+      ...history,
+      {
+        role: "user",
+        content: `intent=${intent}\nvisitor_message=${message}`,
+      },
+    ],
+  };
+
+  body[provider.maxTokensField || "max_tokens"] = 1400;
+  return body;
 }
 
 function getUpstreamDetail(provider, response, bodyText, bodyJson) {
@@ -399,21 +493,8 @@ export default async function handler(req, res) {
         const upstreamResponse = await fetch(getChatCompletionsUrl(provider.baseUrl), {
           method: "POST",
           signal: controller.signal,
-          headers: getUpstreamHeaders(provider.apiKey),
-          body: JSON.stringify({
-            model: provider.model,
-            stream: false,
-            temperature: 0.72,
-            max_tokens: 1400,
-            messages: [
-              { role: "system", content: WUYI_SYSTEM_PROMPT },
-              ...history,
-              {
-                role: "user",
-                content: `intent=${intent}\nvisitor_message=${message}`,
-              },
-            ],
-          }),
+          headers: getUpstreamHeaders(provider),
+          body: JSON.stringify(buildUpstreamBody(provider, intent, message, history)),
         });
 
         clearTimeout(timeoutId);
