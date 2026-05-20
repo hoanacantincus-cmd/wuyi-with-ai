@@ -8,9 +8,10 @@
 - Local code now expands `api/agent.js` fallback routing to include optional Hugging Face Router, GitHub Models, SiliconFlow, Cerebras, and SambaNova providers in addition to the existing OpenRouter, Groq, Gemini, Pollinations, 9Router, and custom provider paths.
 - Vercel Production environment already has encrypted `OPENROUTER_API_KEY`, `GROQ_API_KEY`, and `GEMINI_API_KEY` plus their model variables.
 - Added encrypted Vercel Production `GITHUB_MODELS_TOKEN`, `GITHUB_MODELS_MODEL`, and `GITHUB_MODELS_MODELS`; a direct GitHub Models smoke test with `openai/gpt-4.1-nano` returned `OK`.
-- Live `POST https://wuyi-with-ai.vercel.app/api/agent` still returned HTTP 404 after probing, so the current production issue is not only missing model keys; the Vercel production deployment currently does not expose the API function.
-- `npx vercel --prod --yes` and `npx vercel deploy --prod --yes --force` both created `UNKNOWN` production deployments and timed out locally.
-- `npx vercel build --prod` fails locally with `spawn cmd.exe ENOENT`, while plain `npm run build` succeeds. Treat this as a local Vercel CLI/Windows build-runner issue until proven otherwise.
+- Live `POST https://wuyi-with-ai.vercel.app/api/agent` initially returned HTTP 404 because the Vercel production deployment did not expose the API function.
+- `npx vercel --prod --yes` and `npx vercel deploy --prod --yes --force` from the Chinese-path workspace both created `UNKNOWN` production deployments and timed out locally.
+- `npx vercel build --prod` in the Chinese-path workspace failed locally with `spawn cmd.exe ENOENT`, while plain `npm run build` succeeded. Deploying from an ASCII-path temporary worktree avoided this issue.
+- Deployed commit `07cecc1` from `C:\Users\Administrator\Desktop\wuyi-deploy-temp`; Vercel deployment `dpl_ECrq58KC4e7tCq48WxVycrcS6Ddn` is READY and aliased to `https://wuyi-with-ai.vercel.app`.
 
 ## Latest Deployment Update
 - Commit `1284062` (`Refine AI visual backgrounds`) was pushed to `origin/main`.
@@ -74,6 +75,10 @@
 - npx vercel pull --yes
 - npx vercel build --prod
 - npx vercel deploy --prod --yes --force
+- npx vercel deploy --prod --yes from ASCII temp worktree
+- HTTP POST smoke test for https://wuyi-with-ai.vercel.app/api/agent after deploy
+- CORS OPTIONS smoke test from Origin https://wuyi-with-ai.pages.dev
+- npx vercel inspect https://wuyi-with-ai.vercel.app
 - npm install
 - npm run build
 - Browser smoke test at http://127.0.0.1:5173/
@@ -96,8 +101,9 @@
 - Local Vite production build succeeds.
 - Vercel Production has encrypted OpenRouter, Groq, and Gemini provider keys configured.
 - Vercel Production has encrypted GitHub Models token/model variables configured.
-- Live production `/api/agent` currently returns HTTP 404.
-- Vercel CLI deployment attempts from this Windows session produced `UNKNOWN` deployments rather than a ready production alias.
+- Live production `/api/agent` now returns JSON with a Chinese reply.
+- CORS preflight from `https://wuyi-with-ai.pages.dev` returns HTTP 204 with the expected allow-origin header.
+- Vercel inspect shows `λ api/agent` deployed on the production alias.
 - Production build succeeds.
 - Local dev server renders the page.
 - Browser smoke test found key text and no console errors.
@@ -111,17 +117,15 @@
 - Mobile viewports keep the original high-end AI Core and Orbit visual language, with responsive spacing and scaling.
 
 ## Not Yet Verified
-- Updated Agent API code is not yet verified on the live production alias.
-- Newly added optional providers are not configured with real keys unless added in Vercel.
+- Newly added optional providers other than GitHub Models are not configured with real keys unless added in Vercel.
 
 ## Open Risks
-- Vercel Production API route is currently not reachable at `/api/agent`, so the Cloudflare-hosted frontend cannot use the Vercel Agent backend.
-- Local Vercel CLI deploy/build is unreliable in this Windows session because deploys time out and local Vercel build fails with `spawn cmd.exe ENOENT`.
+- Local Vercel CLI deploy/build is unreliable from the Chinese-path workspace; use an ASCII-path worktree for direct CLI deployment if this repeats.
 
 ## Important Evidence
 - Cloudflare frontend code routes pages.dev Agent calls to `https://wuyi-with-ai.vercel.app/api/agent`.
 - `npx vercel env ls production` shows encrypted `OPENROUTER_API_KEY`, `GROQ_API_KEY`, and `GEMINI_API_KEY`.
-- `POST https://wuyi-with-ai.vercel.app/api/agent` returned HTTP 404 on 2026-05-20.
+- `POST https://wuyi-with-ai.vercel.app/api/agent` returned JSON successfully on 2026-05-20 after deploying from the ASCII temp worktree.
 - Vite React build output directory is `dist`.
 - Cloudflare Pages React Vite preset uses `npm run build` and `dist`.
 - Vercel Vite deployment uses the Vite framework preset, `npm run build`, and `dist`.
@@ -131,4 +135,4 @@
 - Canonical sitemap host is https://wuyi-with-ai.pages.dev/.
 
 ## Next Smallest Step
-- Deploy the current branch through GitHub/Vercel Dashboard or fix the local Vercel CLI runner, then verify `POST https://wuyi-with-ai.vercel.app/api/agent` returns JSON instead of 404.
+- Optional: add SiliconFlow/Cerebras/SambaNova keys if more fallback capacity is needed.
