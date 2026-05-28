@@ -19,6 +19,30 @@ body {
   background: #03040a;
 }
 
+.evolution-video {
+  animation: evolution-video-drift 16s ease-in-out infinite alternate;
+  transform: scale(1.04) translate3d(-1.2%, -0.8%, 0);
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes evolution-video-drift {
+  from {
+    transform: scale(1.04) translate3d(-1.2%, -0.8%, 0);
+  }
+
+  to {
+    transform: scale(1.12) translate3d(1.2%, 0.8%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .evolution-video {
+    animation: none;
+    transform: scale(1.04);
+  }
+}
+
 * {
   box-sizing: border-box;
 }

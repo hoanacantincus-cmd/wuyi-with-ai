@@ -23,6 +23,92 @@ const sharePayload = {
   text: "伍轶的 AI 系统能力主页：全栈开发、Agent 系统、自动化流程与数据智能。",
 };
 
+const evolutionBackgrounds = {
+  hero: {
+    poster: "/evolution-bg/01-origin-cells.jpg",
+    webm: "/evolution-bg/01-origin-cells.webm",
+    mp4: "/evolution-bg/01-origin-cells.mp4",
+    label: "细胞起源",
+    tint: "radial-gradient(circle at 20% 22%, rgba(43, 226, 255, 0.18), transparent 30%), radial-gradient(circle at 78% 18%, rgba(165, 96, 255, 0.20), transparent 34%), linear-gradient(90deg, rgba(2, 4, 12, 0.86), rgba(2, 4, 12, 0.34) 48%, rgba(2, 4, 12, 0.76))",
+  },
+  capability: {
+    poster: "/evolution-bg/02-ocean-life.jpg",
+    webm: "/evolution-bg/02-ocean-life.webm",
+    mp4: "/evolution-bg/02-ocean-life.mp4",
+    label: "海洋生命",
+    tint: "radial-gradient(circle at 18% 18%, rgba(32, 210, 190, 0.18), transparent 32%), radial-gradient(circle at 82% 30%, rgba(63, 128, 255, 0.18), transparent 36%), linear-gradient(180deg, rgba(1, 7, 14, 0.76), rgba(2, 8, 18, 0.54) 45%, rgba(2, 4, 12, 0.84))",
+  },
+  story: {
+    poster: "/evolution-bg/03-land-plants.jpg",
+    webm: "/evolution-bg/03-land-plants.webm",
+    mp4: "/evolution-bg/03-land-plants.mp4",
+    label: "陆地植物",
+    tint: "radial-gradient(circle at 22% 24%, rgba(134, 255, 168, 0.16), transparent 30%), radial-gradient(circle at 82% 18%, rgba(255, 211, 118, 0.15), transparent 34%), linear-gradient(180deg, rgba(2, 5, 12, 0.78), rgba(4, 13, 10, 0.52) 48%, rgba(2, 4, 10, 0.86))",
+  },
+  systems: {
+    poster: "/evolution-bg/04-animal-life.jpg",
+    webm: "/evolution-bg/04-animal-life.webm",
+    mp4: "/evolution-bg/04-animal-life.mp4",
+    label: "动物生态",
+    tint: "radial-gradient(circle at 18% 24%, rgba(154, 255, 194, 0.12), transparent 34%), radial-gradient(circle at 86% 18%, rgba(255, 196, 120, 0.16), transparent 34%), linear-gradient(180deg, rgba(2, 5, 10, 0.82), rgba(5, 10, 10, 0.58) 42%, rgba(3, 4, 10, 0.88))",
+  },
+  radar: {
+    poster: "/evolution-bg/05-natural-network.jpg",
+    webm: "/evolution-bg/05-natural-network.webm",
+    mp4: "/evolution-bg/05-natural-network.mp4",
+    label: "银河网络",
+    tint: "radial-gradient(circle at 18% 22%, rgba(125, 249, 255, 0.15), transparent 30%), radial-gradient(circle at 76% 20%, rgba(178, 126, 255, 0.22), transparent 38%), linear-gradient(180deg, rgba(1, 2, 9, 0.80), rgba(6, 8, 22, 0.48) 44%, rgba(4, 2, 12, 0.88))",
+  },
+  contact: {
+    poster: "/evolution-bg/06-ecosystem-future.jpg",
+    webm: "/evolution-bg/06-ecosystem-future.webm",
+    mp4: "/evolution-bg/06-ecosystem-future.mp4",
+    label: "太空地球",
+    tint: "radial-gradient(circle at 46% 0%, rgba(96, 190, 255, 0.18), transparent 34%), radial-gradient(circle at 82% 32%, rgba(148, 118, 255, 0.20), transparent 42%), linear-gradient(180deg, rgba(1, 2, 9, 0.84), rgba(4, 8, 20, 0.50) 45%, rgba(1, 1, 7, 0.91))",
+  },
+};
+
+function EvolutionVideoBackground({ background }) {
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return undefined;
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncMotionPreference = () => setReducedMotion(query.matches);
+    syncMotionPreference();
+    query.addEventListener?.("change", syncMotionPreference);
+    return () => query.removeEventListener?.("change", syncMotionPreference);
+  }, []);
+
+  if (!background) return null;
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#03040a]" aria-hidden="true">
+      <div className="absolute inset-0 bg-cover bg-center opacity-70" style={{ backgroundImage: `url(${background.poster})` }} />
+      {!reducedMotion ? (
+        <video
+          className="evolution-video absolute inset-0 h-full w-full object-cover opacity-[0.88]"
+          style={{ filter: "saturate(1.02) contrast(1.08) brightness(0.94)" }}
+          poster={background.poster}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label={background.label}
+        >
+          <source src={background.webm} type="video/webm" />
+          <source src={background.mp4} type="video/mp4" />
+        </video>
+      ) : null}
+      <div className="absolute inset-0" style={{ background: background.tint }} />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(1,3,10,0.66),rgba(1,3,10,0.22)_44%,rgba(1,3,10,0.64))]" />
+      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#03040a] via-[#03040a]/68 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#03040a] via-[#03040a]/68 to-transparent" />
+    </div>
+  );
+}
+
 const capabilityItems = [
   {
     tag: "01",
@@ -751,7 +837,7 @@ function AICoreScene({ booting = false }) {
   };
 
   return (
-    <motion.div onMouseMove={handleMouseMove} onMouseLeave={() => setPointer({ x: 0, y: 0, px: 50, py: 50, active: false })} className="relative mx-auto aspect-[1.16/1] w-full max-w-[1080px] overflow-hidden rounded-[2.7rem] border border-cyan-100/18 bg-[#01030a] shadow-[inset_0_0_44px_rgba(120,180,255,0.075),0_0_90px_rgba(20,80,255,0.13),0_100px_260px_rgba(0,0,0,0.72)] backdrop-blur-2xl md:rounded-[4rem]">
+    <motion.div onMouseMove={handleMouseMove} onMouseLeave={() => setPointer({ x: 0, y: 0, px: 50, py: 50, active: false })} className="relative mx-auto aspect-[1.16/1] w-full max-w-[1080px] overflow-clip rounded-[2.7rem] border border-cyan-100/18 bg-[#01030a] shadow-[inset_0_0_44px_rgba(120,180,255,0.075),0_0_90px_rgba(20,80,255,0.13),0_100px_260px_rgba(0,0,0,0.72)] backdrop-blur-2xl md:rounded-[4rem]">
       <div className="absolute inset-[2%] rounded-[2.35rem] border border-white/[0.12] md:rounded-[3.45rem]" />
       <div className="absolute inset-[2.8%] rounded-[2.15rem] border border-white/[0.04] md:rounded-[3.2rem]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(77,163,255,0.14),transparent_28%),radial-gradient(circle_at_77%_19%,rgba(118,88,220,0.12),transparent_24%),radial-gradient(circle_at_18%_74%,rgba(170,230,255,0.06),transparent_22%)]" />
@@ -816,7 +902,7 @@ function CapabilityHoverVisual({ type }) {
 function CapabilityChip({ item, index }) {
   const accentMap = ["from-cyan-200/22 via-blue-300/10 to-transparent", "from-sky-200/20 via-cyan-300/10 to-transparent", "from-violet-200/20 via-blue-300/10 to-transparent", "from-fuchsia-200/16 via-cyan-200/10 to-transparent", "from-blue-100/18 via-slate-100/8 to-transparent", "from-white/16 via-cyan-100/8 to-transparent"];
   return (
-    <motion.article initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }} className="group relative min-h-[250px] overflow-hidden rounded-[2rem] border border-white/[0.095] bg-[linear-gradient(145deg,rgba(255,255,255,0.078),rgba(255,255,255,0.03))] p-6 shadow-[0_34px_110px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:border-cyan-100/24 hover:bg-white/[0.072]">
+    <motion.article initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }} className="group relative min-h-[250px] overflow-clip rounded-[2rem] border border-white/[0.095] bg-[linear-gradient(145deg,rgba(255,255,255,0.078),rgba(255,255,255,0.03))] p-6 shadow-[0_34px_110px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:border-cyan-100/24 hover:bg-white/[0.072]">
       <div className={`absolute inset-0 bg-gradient-to-br ${accentMap[index % accentMap.length]} opacity-60 transition duration-500 group-hover:opacity-100`} />
       <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-cyan-100/26 to-transparent opacity-70" />
       <motion.div animate={{ rotate: 360 }} transition={{ duration: 18 + index * 2, repeat: Infinity, ease: "linear" }} className="absolute -right-16 -top-16 h-40 w-40 rounded-full border border-cyan-100/[0.055] transition duration-500 group-hover:border-cyan-100/[0.12]" />
@@ -980,7 +1066,7 @@ function StoryFrame({ frame, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative min-h-[360px] overflow-hidden rounded-[2rem] border border-cyan-100/[0.12] bg-[linear-gradient(145deg,rgba(255,255,255,0.078),rgba(255,255,255,0.025))] p-5 shadow-[0_40px_120px_rgba(0,0,0,0.34)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:border-cyan-100/26 hover:bg-white/[0.07] lg:min-h-[390px]"
+      className="group relative min-h-[360px] overflow-clip rounded-[2rem] border border-cyan-100/[0.12] bg-[linear-gradient(145deg,rgba(255,255,255,0.078),rgba(255,255,255,0.025))] p-5 shadow-[0_40px_120px_rgba(0,0,0,0.34)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:border-cyan-100/26 hover:bg-white/[0.07] lg:min-h-[390px]"
     >
       <div className="absolute inset-0 opacity-[0.045] [background-image:radial-gradient(rgba(255,255,255,.8)_1px,transparent_1px)] [background-size:9px_9px]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(125,249,255,0.13),transparent_42%),radial-gradient(circle_at_80%_20%,rgba(148,118,255,0.12),transparent_36%)] opacity-75" />
@@ -1026,7 +1112,7 @@ function SystemVisual({ type, index }) {
   if (type === "automation") {
     const nodes = ["Input", "Process", "Verify", "Output"];
     return (
-      <div className="relative h-44 overflow-hidden rounded-[1.6rem] border border-white/[0.07] bg-black/22 p-5 shadow-[inset_0_0_36px_rgba(125,249,255,0.035)]">
+      <div className="relative h-44 overflow-clip rounded-[1.6rem] border border-white/[0.07] bg-black/22 p-5 shadow-[inset_0_0_36px_rgba(125,249,255,0.035)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,rgba(125,249,255,0.10),transparent_30%),radial-gradient(circle_at_80%_70%,rgba(148,118,255,0.10),transparent_32%)]" />
         <div className="relative z-10 flex h-full items-center justify-between gap-3">
           {nodes.map((node, nodeIndex) => (
@@ -1056,7 +1142,7 @@ function SystemVisual({ type, index }) {
 
   if (type === "interface") {
     return (
-      <div className="relative h-44 overflow-hidden rounded-[1.6rem] border border-white/[0.07] bg-black/22 p-4 shadow-[inset_0_0_36px_rgba(125,249,255,0.035)]">
+      <div className="relative h-44 overflow-clip rounded-[1.6rem] border border-white/[0.07] bg-black/22 p-4 shadow-[inset_0_0_36px_rgba(125,249,255,0.035)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.07),transparent_34%)]" />
         <div className="relative z-10 h-full rounded-[1.2rem] border border-white/[0.08] bg-white/[0.035] p-3">
           <div className="mb-3 flex items-center justify-between border-b border-white/[0.06] pb-2">
@@ -1078,7 +1164,7 @@ function SystemVisual({ type, index }) {
                 />
               ))}
             </div>
-            <div className="relative overflow-hidden rounded-xl border border-cyan-100/10 bg-black/22 p-3">
+            <div className="relative overflow-clip rounded-xl border border-cyan-100/10 bg-black/22 p-3">
               <motion.div
                 className="absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-cyan-100/16 to-transparent"
                 animate={{ x: [-80, 230] }}
@@ -1095,7 +1181,7 @@ function SystemVisual({ type, index }) {
   }
 
   return (
-    <div className="relative h-44 overflow-hidden rounded-[1.6rem] border border-white/[0.07] bg-black/22 p-5 shadow-[inset_0_0_36px_rgba(125,249,255,0.035)]">
+    <div className="relative h-44 overflow-clip rounded-[1.6rem] border border-white/[0.07] bg-black/22 p-5 shadow-[inset_0_0_36px_rgba(125,249,255,0.035)]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(125,249,255,0.12),transparent_34%),radial-gradient(circle_at_80%_22%,rgba(148,118,255,0.09),transparent_28%)]" />
       <svg viewBox="0 0 360 160" className="relative z-10 h-full w-full">
         <defs>
@@ -1152,7 +1238,7 @@ function SystemCard({ item, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.76, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative overflow-hidden rounded-[2.45rem] border border-white/[0.10] bg-[linear-gradient(145deg,rgba(255,255,255,0.082),rgba(255,255,255,0.028))] p-6 shadow-[0_42px_130px_rgba(0,0,0,0.42)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:border-cyan-100/24 hover:bg-white/[0.072]"
+      className="group relative overflow-clip rounded-[2.45rem] border border-white/[0.10] bg-[linear-gradient(145deg,rgba(255,255,255,0.082),rgba(255,255,255,0.028))] p-6 shadow-[0_42px_130px_rgba(0,0,0,0.42)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:border-cyan-100/24 hover:bg-white/[0.072]"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(160,232,255,0.12),transparent_34%),radial-gradient(circle_at_90%_12%,rgba(148,118,255,0.12),transparent_30%)] opacity-80 transition duration-500 group-hover:opacity-100" />
       <div className="absolute inset-x-7 top-0 h-px bg-gradient-to-r from-transparent via-cyan-100/30 to-transparent" />
@@ -1402,7 +1488,8 @@ const AGENT_API_URL =
   (typeof window !== "undefined" && window.location.hostname.endsWith("pages.dev")
     ? "https://wuyi-with-ai.vercel.app/api/agent"
     : "/api/agent");
-const AGENT_TIMEOUT_MS = 30000;
+const AGENT_TEXT_TIMEOUT_MS = 75000;
+const AGENT_IMAGE_TIMEOUT_MS = 140000;
 
 const agentModes = {
   about_wuyi: {
@@ -1415,7 +1502,33 @@ const agentModes = {
     placeholder: "描述你的 AI 项目想法，我来拆成 MVP 路线。",
     starter: "我想做一个 AI 自动化产品，请帮我诊断适合的 MVP 路线。",
   },
+  image_generation: {
+    label: "AI 生图",
+    placeholder: "描述你想生成的图片：主体、风格、构图、颜色、用途。",
+    starter: "生成一张赛博蓝色的 AI 个人网站头像，未来感，干净构图，适合放在作品集首页。",
+  },
 };
+
+function AgentImages({ images }) {
+  if (!Array.isArray(images) || !images.length) return null;
+
+  return (
+    <div className="mt-3 grid gap-3">
+      {images.map((image, index) => {
+        const src = image.url || (image.b64Json ? `data:image/png;base64,${image.b64Json}` : "");
+        if (!src) return null;
+        return (
+          <a key={`${src}-${index}`} href={src} target="_blank" rel="noreferrer" className="group block overflow-clip rounded-2xl border border-cyan-100/12 bg-black/26">
+            <img src={src} alt={image.revisedPrompt || "AI generated image"} className="aspect-square w-full object-cover transition duration-500 group-hover:scale-[1.015]" loading="lazy" />
+            {image.revisedPrompt ? (
+              <p className="border-t border-white/[0.06] px-3 py-2 text-[11px] leading-5 text-white/46">{image.revisedPrompt}</p>
+            ) : null}
+          </a>
+        );
+      })}
+    </div>
+  );
+}
 
 function AgentDiagnosis({ diagnosis }) {
   if (!diagnosis) return null;
@@ -1500,7 +1613,7 @@ function CyberAgentPet({ offset, onPointerDown, onOpen }) {
       style={{ x: offset.x, y: offset.y }}
       whileHover={{ scale: 1.035 }}
       whileTap={{ scale: 0.98 }}
-      className="group fixed bottom-5 right-5 z-20 h-[170px] w-[238px] cursor-grab touch-none select-none active:cursor-grabbing md:bottom-7 md:right-7"
+      className="group fixed bottom-5 right-5 z-20 h-[170px] w-[238px] cursor-grab touch-none select-none active:cursor-grabbing md:bottom-7 md:right-[max(1.75rem,calc((100vw-1500px)/2+1.75rem))]"
       aria-label="打开可拖拽 WuYi Agent 智能体宠物"
     >
       <span className="pointer-events-none absolute bottom-5 left-[96px] h-5 w-28 -translate-x-1/2 rounded-full bg-cyan-100/18 blur-xl transition group-hover:bg-cyan-100/30" />
@@ -1621,7 +1734,7 @@ function WuYiAgent() {
     return () => window.cancelAnimationFrame(frameId);
   }, [messages, loading, open]);
 
-  const appendAssistant = (content, diagnosis = null, tone = "normal") => {
+  const appendAssistant = (content, diagnosis = null, tone = "normal", images = []) => {
     setMessages((current) => [
       ...current,
       {
@@ -1630,6 +1743,7 @@ function WuYiAgent() {
         content,
         diagnosis,
         tone,
+        images,
       },
     ]);
   };
@@ -1655,7 +1769,8 @@ function WuYiAgent() {
     setLoading(true);
 
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), AGENT_TIMEOUT_MS);
+    const timeoutMs = mode === "image_generation" ? AGENT_IMAGE_TIMEOUT_MS : AGENT_TEXT_TIMEOUT_MS;
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
 
     try {
       const response = await fetch(AGENT_API_URL, {
@@ -1673,6 +1788,7 @@ function WuYiAgent() {
           payload.reply || "信号已返回，但模型没有给出文字回复。",
           payload.diagnosis || null,
           response.ok ? "normal" : "warning",
+          payload.images || [],
         );
         return;
       }
@@ -1800,7 +1916,7 @@ function WuYiAgent() {
               </button>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-2 rounded-full border border-white/[0.07] bg-black/22 p-1">
+            <div className="mt-4 grid grid-cols-3 gap-2 rounded-2xl border border-white/[0.07] bg-black/22 p-1">
               {Object.entries(agentModes).map(([key, item]) => (
                 <button
                   key={key}
@@ -1819,6 +1935,7 @@ function WuYiAgent() {
               <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[88%] rounded-2xl border px-4 py-3 text-sm leading-6 ${message.role === "user" ? "border-cyan-100/16 bg-cyan-100/[0.08] text-cyan-50" : message.tone === "warning" ? "border-amber-100/16 bg-amber-100/[0.06] text-white/72" : "border-white/[0.07] bg-white/[0.04] text-white/68"}`}>
                   <p className="whitespace-pre-wrap">{message.content}</p>
+                  <AgentImages images={message.images} />
                   <AgentDiagnosis diagnosis={message.diagnosis} />
                 </div>
               </div>
@@ -1897,6 +2014,46 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const canScrollInside = (target, deltaY) => {
+      if (!(target instanceof Element)) return false;
+      if (target.closest("textarea,input,select,[contenteditable='true']")) return true;
+
+      for (let node = target; node && node !== document.body && node !== document.documentElement; node = node.parentElement) {
+        const { overflowY } = window.getComputedStyle(node);
+        const scrollable = /auto|scroll|overlay/.test(overflowY) && node.scrollHeight > node.clientHeight + 1;
+        if (!scrollable) continue;
+        if (deltaY > 0 && node.scrollTop + node.clientHeight < node.scrollHeight - 1) return true;
+        if (deltaY < 0 && node.scrollTop > 1) return true;
+      }
+
+      return false;
+    };
+
+    const handleWheel = (event) => {
+      if (event.defaultPrevented || event.ctrlKey || event.metaKey) return;
+
+      const wheelFallbackSpeed = 4;
+      const unit = event.deltaMode === 1 ? 40 : event.deltaMode === 2 ? window.innerHeight : 1;
+      const deltaY = event.deltaY * unit;
+      if (!deltaY || canScrollInside(event.target, deltaY)) return;
+
+      const fallbackDeltaY = deltaY * wheelFallbackSpeed;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const before = window.scrollY;
+      if ((fallbackDeltaY > 0 && before >= maxScroll - 1) || (fallbackDeltaY < 0 && before <= 1)) return;
+
+      window.requestAnimationFrame(() => {
+        if (Math.abs(window.scrollY - before) < 1) {
+          window.scrollBy({ top: fallbackDeltaY, behavior: "auto" });
+        }
+      });
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: true });
+    return () => window.removeEventListener("wheel", handleWheel);
+  }, []);
+
   const scrollToSection = (targetId) => (event) => {
     event.preventDefault();
     const target = document.querySelector(targetId);
@@ -1939,7 +2096,7 @@ export default function App() {
   };
 
   return (
-    <main style={fontStyles.ui} className="min-h-screen overflow-hidden bg-[#03040a] text-white">
+    <main style={fontStyles.ui} className="min-h-screen [overflow-x:clip] bg-[#03040a] text-white">
       <GithubLaunchOverlay active={githubBooting} />
       <WuYiAgent />
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_18%_14%,rgba(74,117,255,0.18),transparent_32%),radial-gradient(circle_at_82%_8%,rgba(137,83,255,0.16),transparent_34%),linear-gradient(180deg,#060711,#020207)]" />
@@ -1950,25 +2107,29 @@ export default function App() {
         <nav className="hidden items-center gap-7 text-base text-white/50 md:flex"><a href="#capability" onClick={scrollToSection("#capability")} className="hover:text-white">能力</a><a href="#story" onClick={scrollToSection("#story")} className="hover:text-white">方法</a><a href="#systems" onClick={scrollToSection("#systems")} className="hover:text-white">系统</a><a href="#contact" onClick={scrollToSection("#contact")} className="hover:text-white">联系</a></nav>
       </header>
 
-      <section id="hero" className="relative z-30 mx-auto grid min-h-[calc(100vh-92px)] max-w-[1540px] items-center gap-8 px-5 pb-20 pt-6 sm:px-6 md:gap-12 md:px-10 md:pb-24 md:pt-8 lg:grid-cols-[0.72fr_1.28fr]">
-        <motion.div style={{ y: heroY }} className="relative z-[60]">
-          <motion.h1 initial={{ opacity: 0, y: 34, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.08, duration: 1.05 }} className="max-w-3xl">
-            <span className="relative block bg-gradient-to-b from-white via-cyan-50/90 to-white/34 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitle}</span>
-            {profile.heroTitleSecond ? <span className="relative mt-2 block bg-gradient-to-b from-white via-cyan-50/86 to-white/32 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitleSecond}</span> : null}
-            <span className="mt-6 block max-w-2xl text-[1.12rem] font-medium leading-8 tracking-[-0.01em] text-cyan-50/74 md:text-[1.45rem]">{profile.heroSubtitle}</span>
-          </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24, duration: 0.85 }} className="mt-7 max-w-xl text-[0.98rem] leading-8 text-white/50 md:text-[1.05rem]">{profile.line}</motion.p>
-          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.85 }} className="ml-3 mt-8 grid max-w-xl grid-cols-3 gap-3 border-y border-white/[0.07] py-5">{[["01", "构想"], ["02", "构建"], ["03", "进化"]].map(([no, label]) => <div key={label}><p style={fontStyles.mono} className="text-[11px] tracking-[0.22em] text-cyan-100/36">{no}</p><p className="mt-1 text-sm font-medium text-white/78">{label}</p></div>)}</motion.div>
-          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42, duration: 0.85 }} className="-ml-3 mt-9 grid max-w-xl grid-cols-3 gap-3"><CTAButton href={profile.github} icon="github" onClick={launchGithub}>查看 GitHub</CTAButton><CTAButton href="#contact" variant="ghost" icon="mail" onClick={scrollToSection("#contact")}>联系我</CTAButton><ShareButton status={shareStatus} onShare={shareSite} /></motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.62, duration: 0.9 }} className="mt-8 flex items-center gap-3 text-[12px] text-white/34" style={fontStyles.mono}><span className="h-px w-10 bg-gradient-to-r from-cyan-100/0 via-cyan-100/35 to-cyan-100/0" />WUYi WITH AI / CODE FLOW / IMAGINATION SYSTEM</motion.div>
-        </motion.div>
-        <motion.div style={{ y: coreY }} className="relative mx-auto w-full max-w-[760px] lg:max-w-none"><div className="absolute -inset-6 bg-[radial-gradient(circle_at_50%_48%,rgba(77,163,255,0.16),transparent_56%)] blur-2xl md:-inset-10" /><AICoreScene booting={githubBooting} /></motion.div>
+      <section id="hero" className="relative z-30 [overflow-x:clip] px-5 pb-20 pt-6 sm:px-6 md:px-10 md:pb-24 md:pt-8">
+        <EvolutionVideoBackground background={evolutionBackgrounds.hero} />
+        <div className="relative z-10 mx-auto grid min-h-[calc(100vh-92px)] max-w-[1540px] items-center gap-8 md:gap-12 lg:grid-cols-[0.72fr_1.28fr]">
+          <motion.div style={{ y: heroY }} className="relative z-[60]">
+            <motion.h1 initial={{ opacity: 0, y: 34, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.08, duration: 1.05 }} className="max-w-3xl">
+              <span className="relative block bg-gradient-to-b from-white via-cyan-50/90 to-white/34 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitle}</span>
+              {profile.heroTitleSecond ? <span className="relative mt-2 block bg-gradient-to-b from-white via-cyan-50/86 to-white/32 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitleSecond}</span> : null}
+              <span className="mt-6 block max-w-2xl text-[1.12rem] font-medium leading-8 tracking-[-0.01em] text-cyan-50/74 md:text-[1.45rem]">{profile.heroSubtitle}</span>
+            </motion.h1>
+            <motion.p initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24, duration: 0.85 }} className="mt-7 max-w-xl text-[0.98rem] leading-8 text-white/50 md:text-[1.05rem]">{profile.line}</motion.p>
+            <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.85 }} className="ml-3 mt-8 grid max-w-xl grid-cols-3 gap-3 border-y border-white/[0.07] py-5">{[["01", "构想"], ["02", "构建"], ["03", "进化"]].map(([no, label]) => <div key={label}><p style={fontStyles.mono} className="text-[11px] tracking-[0.22em] text-cyan-100/36">{no}</p><p className="mt-1 text-sm font-medium text-white/78">{label}</p></div>)}</motion.div>
+            <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42, duration: 0.85 }} className="-ml-3 mt-9 grid max-w-xl grid-cols-3 gap-3"><CTAButton href={profile.github} icon="github" onClick={launchGithub}>查看 GitHub</CTAButton><CTAButton href="#contact" variant="ghost" icon="mail" onClick={scrollToSection("#contact")}>联系我</CTAButton><ShareButton status={shareStatus} onShare={shareSite} /></motion.div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.62, duration: 0.9 }} className="mt-8 flex items-center gap-3 text-[12px] text-white/34" style={fontStyles.mono}><span className="h-px w-10 bg-gradient-to-r from-cyan-100/0 via-cyan-100/35 to-cyan-100/0" />WUYi WITH AI / CODE FLOW / IMAGINATION SYSTEM</motion.div>
+          </motion.div>
+          <motion.div style={{ y: coreY }} className="relative mx-auto w-full max-w-[760px] lg:max-w-none"><div className="absolute -inset-6 bg-[radial-gradient(circle_at_50%_48%,rgba(77,163,255,0.16),transparent_56%)] blur-2xl md:-inset-10" /><AICoreScene booting={githubBooting} /></motion.div>
+        </div>
       </section>
 
-      <section id="capability" className="relative z-10 overflow-hidden border-y border-white/[0.06] bg-[#05060c] px-6 py-28 md:px-10 md:py-36">
+      <section id="capability" className="relative z-10 [overflow-x:clip] border-y border-white/[0.06] bg-[#05060c] px-6 py-28 md:px-10 md:py-36">
+        <EvolutionVideoBackground background={evolutionBackgrounds.capability} />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(125,249,255,0.075),transparent_28%),radial-gradient(circle_at_82%_12%,rgba(148,118,255,0.12),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_28%,rgba(255,255,255,0.015))]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.18)_1px,transparent_1px)] [background-size:56px_56px]" />
-        <div className="mx-auto max-w-7xl">
+        <div className="relative z-10 mx-auto max-w-7xl">
           <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.75 }} className="relative mx-auto mb-14 max-w-4xl text-center">
             <h2 className="mx-auto bg-gradient-to-b from-white via-slate-100/90 to-white/42 bg-clip-text text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.055em] text-transparent md:text-[4.2rem]">Capability Matrix</h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-cyan-50/42 md:text-base">我的 AI 系统能力栈</p>
@@ -1978,11 +2139,12 @@ export default function App() {
         </div>
       </section>
 
-      <section id="story" className="relative z-10 overflow-hidden border-y border-white/[0.06] bg-[#03040a] px-6 py-28 text-white md:px-10 md:py-36">
+      <section id="story" className="relative z-10 [overflow-x:clip] border-y border-white/[0.06] bg-[#03040a] px-6 py-28 text-white md:px-10 md:py-36">
+        <EvolutionVideoBackground background={evolutionBackgrounds.story} />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(125,249,255,0.08),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(148,118,255,0.13),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_32%,rgba(255,255,255,0.012))]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.16)_1px,transparent_1px)] [background-size:58px_58px]" />
         <div className="pointer-events-none absolute left-1/2 top-[54%] hidden h-px w-[76vw] -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan-100/22 to-transparent lg:block" />
-        <div className="mx-auto max-w-7xl">
+        <div className="relative z-10 mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -2014,7 +2176,8 @@ export default function App() {
         </div>
       </section>
 
-      <section id="systems" className="relative z-10 overflow-hidden border-y border-white/[0.06] bg-[#03040a] px-6 py-28 text-white md:px-10 md:py-36">
+      <section id="systems" className="relative z-10 [overflow-x:clip] border-y border-white/[0.06] bg-[#03040a] px-6 py-28 text-white md:px-10 md:py-36">
+        <EvolutionVideoBackground background={evolutionBackgrounds.systems} />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_8%,rgba(160,232,255,0.09),transparent_30%),radial-gradient(circle_at_18%_22%,rgba(74,117,255,0.12),transparent_34%),radial-gradient(circle_at_86%_18%,rgba(148,118,255,0.14),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.035),transparent_30%,rgba(255,255,255,0.012))]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.16)_1px,transparent_1px)] [background-size:58px_58px]" />
         <div className="pointer-events-none absolute left-1/2 top-[58%] hidden h-px w-[72vw] -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan-100/22 to-transparent lg:block" />
@@ -2023,7 +2186,7 @@ export default function App() {
           animate={{ x: ["-36vw", "36vw", "-36vw"], opacity: [0, 1, 0] }}
           transition={{ duration: 5.4, repeat: Infinity, ease: "easeInOut" }}
         />
-        <div className="mx-auto max-w-7xl">
+        <div className="relative z-10 mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -2047,7 +2210,8 @@ export default function App() {
         </div>
       </section>
 
-      <section id="radar" className="relative z-10 overflow-hidden bg-[#02030A] px-6 py-28 text-white md:px-10 md:py-36">
+      <section id="radar" className="relative z-10 [overflow-x:clip] bg-[#02030A] px-6 py-28 text-white md:px-10 md:py-36">
+        <EvolutionVideoBackground background={evolutionBackgrounds.radar} />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#03040a] via-[#040713]/85 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#03040a] via-[#070818]/80 to-transparent" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(125,249,255,0.08),transparent_26%),radial-gradient(circle_at_18%_20%,rgba(77,163,255,0.10),transparent_30%),radial-gradient(circle_at_84%_18%,rgba(148,118,255,0.14),transparent_30%),linear-gradient(180deg,#02030A_0%,#040712_48%,#0A0616_100%)]" />
@@ -2056,7 +2220,7 @@ export default function App() {
         <div className="pointer-events-none absolute -left-[20%] top-[24%] h-72 w-[72%] -rotate-12 rounded-full bg-[radial-gradient(ellipse,rgba(125,249,255,0.07),transparent_72%)] blur-3xl" />
         <div className="pointer-events-none absolute right-[-18%] bottom-[18%] h-72 w-[72%] rotate-12 rounded-full bg-[radial-gradient(ellipse,rgba(148,118,255,0.10),transparent_72%)] blur-3xl" />
 
-        <div className="relative mx-auto max-w-[1500px]">
+        <div className="relative z-10 mx-auto max-w-[1500px]">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -2076,7 +2240,7 @@ export default function App() {
           </motion.div>
 
           <div
-            className="relative z-10 mx-auto mt-10 h-[330px] max-w-full overflow-hidden sm:h-[390px] md:mt-16 md:h-[560px] lg:mt-20 lg:h-auto lg:overflow-visible"
+            className="relative z-10 mx-auto mt-10 h-[330px] max-w-full overflow-clip sm:h-[390px] md:mt-16 md:h-[560px] lg:mt-20 lg:h-auto lg:overflow-visible"
             style={{
               WebkitMaskImage: "linear-gradient(90deg, #000 0%, #000 86%, transparent 100%)",
               maskImage: "linear-gradient(90deg, #000 0%, #000 86%, transparent 100%)",
@@ -2095,7 +2259,8 @@ export default function App() {
         </div>
       </section>
 
-      <footer id="contact" className="relative z-10 overflow-hidden px-6 py-32 text-white md:px-10 md:py-44">
+      <footer id="contact" className="relative z-10 [overflow-x:clip] px-6 py-32 text-white md:px-10 md:py-44">
+        <EvolutionVideoBackground background={evolutionBackgrounds.contact} />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(125,249,255,0.11),transparent_34%),radial-gradient(circle_at_82%_30%,rgba(148,118,255,0.13),transparent_38%),radial-gradient(circle_at_18%_68%,rgba(77,163,255,0.08),transparent_34%),linear-gradient(180deg,#02030A_0%,#040713_44%,#020207_100%)]" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[#02030A] via-[#071022]/70 to-transparent" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.022] [background-image:linear-gradient(to_right,rgba(255,255,255,.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.12)_1px,transparent_1px)] [background-size:72px_72px]" />
@@ -2118,7 +2283,7 @@ export default function App() {
           <div className="mx-auto mt-12 h-px max-w-xl bg-gradient-to-r from-transparent via-cyan-100/26 to-transparent" />
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4">
-            <p style={fontStyles.serif} className="text-[2.7rem] font-light tracking-[0.18em] text-white/92 md:text-[4.2rem]">伍轶</p>
+            <p style={fontStyles.serif} className="text-[2.7rem] font-light tracking-[0.18em] text-white/92 md:text-[4.2rem]">AI边池派</p>
             <p className="text-sm font-medium tracking-[0.42em] text-cyan-50/38">{profile.location}</p>
           </div>
 

@@ -82,6 +82,27 @@ const NINE_ROUTER_FREE_MODELS = [
   "vertex-partner/deepseek-v3.2-maas",
 ];
 
+const VOLCENGINE_ARK_DEFAULT_BASE_URL = "https://ark.cn-beijing.volces.com/api/v3";
+const VOLCENGINE_ARK_DEFAULT_MODELS = [
+  "deepseek-v3-2-251201",
+  "glm-4-7-251222",
+  "doubao-seed-2-0-pro-260215",
+  "doubao-1-5-vision-pro-32k-250115",
+  "kimi-k2-250905",
+  "kimi-k2-thinking-251104",
+];
+const VOLCENGINE_ARK_DEFAULT_IMAGE_MODELS = [
+  "doubao-seedream-5-0-260128",
+  "doubao-seedream-4-0-250828",
+  "doubao-seedream-4-5-251128",
+];
+const RATE_LIMIT_WINDOWS = [
+  { name: "1 minute", windowMs: 60 * 1000, limit: 5 },
+  { name: "15 minutes", windowMs: 15 * 60 * 1000, limit: 15 },
+];
+const rateLimitStore = globalThis.__wuyiAgentRateLimitStore || new Map();
+globalThis.__wuyiAgentRateLimitStore = rateLimitStore;
+
 function getAllowedOrigins() {
   const configured = process.env.AGENT_ALLOWED_ORIGINS;
   if (!configured) return DEFAULT_ALLOWED_ORIGINS;
@@ -128,6 +149,34 @@ function cleanText(value, maxLength = 1200) {
     .slice(0, maxLength);
 }
 
+function getClientIp(req) {
+  const forwardedFor = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
+  return forwardedFor || req.headers["x-real-ip"] || req.socket?.remoteAddress || "unknown";
+}
+
+function checkRateLimit(req) {
+  const now = Date.now();
+  const ip = String(getClientIp(req));
+  const maxWindowMs = Math.max(...RATE_LIMIT_WINDOWS.map((item) => item.windowMs));
+  const recent = (rateLimitStore.get(ip) || []).filter((time) => now - time < maxWindowMs);
+
+  for (const windowConfig of RATE_LIMIT_WINDOWS) {
+    const count = recent.filter((time) => now - time < windowConfig.windowMs).length;
+    if (count >= windowConfig.limit) {
+      const oldestInWindow = recent.find((time) => now - time < windowConfig.windowMs) || now;
+      return {
+        allowed: false,
+        retryAfter: Math.max(1, Math.ceil((windowConfig.windowMs - (now - oldestInWindow)) / 1000)),
+        message: `请求太密集了。单个 IP 限制为 ${windowConfig.name} 内最多 ${windowConfig.limit} 次对话，请稍后再试。`,
+      };
+    }
+  }
+
+  recent.push(now);
+  rateLimitStore.set(ip, recent);
+  return { allowed: true };
+}
+
 function normalizeWuYiName(value) {
   return String(value || "").replace(/吴仪|吴轶|武毅/g, "伍轶");
 }
@@ -147,6 +196,11 @@ function cleanHistory(history) {
 function getChatCompletionsUrl(baseUrl) {
   if (baseUrl.endsWith("/chat/completions") || baseUrl.endsWith("/openai")) return baseUrl;
   return `${baseUrl}/chat/completions`;
+}
+
+function getImageGenerationsUrl(baseUrl) {
+  if (baseUrl.endsWith("/images/generations")) return baseUrl;
+  return `${baseUrl}/images/generations`;
 }
 
 function getUpstreamHeaders(provider) {
@@ -187,8 +241,49 @@ function createEnvModelProviders({ name, baseUrl, keyNames, modelEnv, modelsEnv,
   const apiKey = getFirstEnv(keyNames);
   if (!apiKey) return [];
 
-  const models = parseModelList(process.env[modelsEnv], parseModelList(process.env[modelEnv], defaultModels));
-  return createModelProviders({ name, baseUrl, apiKey, models, timeoutMs, headers, maxTokensField });
+  const modelEnvs = Array.isArray(modelEnv) ? modelEnv : [modelEnv];
+  const modelsEnvs = Array.isArray(modelsEnv) ? modelsEnv : [modelsEnv];
+  const models = parseModelList(getFirstEnv(modelsEnvs), parseModelList(getFirstEnv(modelEnvs), defaultModels));
+  return createModelProviders({
+    name,
+    baseUrl: String(baseUrl || "").replace(/\/+$/, ""),
+    apiKey,
+    models,
+    timeoutMs,
+    headers,
+    maxTokensField,
+  });
+}
+
+function getVolcengineArkBaseUrl() {
+  return String(
+    process.env.VOLCENGINE_ARK_BASE_URL ||
+      process.env.ARK_BASE_URL ||
+      VOLCENGINE_ARK_DEFAULT_BASE_URL
+  ).replace(/\/+$/, "");
+}
+
+function getVolcengineArkImageProviders() {
+  const apiKey = getFirstEnv(["VOLCENGINE_ARK_API_KEY", "ARK_API_KEY", "VOLCENGINE_API_KEY"]);
+  if (!apiKey) return [];
+
+  const baseUrl = String(
+    process.env.VOLCENGINE_ARK_IMAGE_BASE_URL ||
+      process.env.ARK_IMAGE_BASE_URL ||
+      getVolcengineArkBaseUrl()
+  ).replace(/\/+$/, "");
+  const models = parseModelList(
+    getFirstEnv(["VOLCENGINE_ARK_IMAGE_MODELS", "ARK_IMAGE_MODELS"]),
+    parseModelList(getFirstEnv(["VOLCENGINE_ARK_IMAGE_MODEL", "ARK_IMAGE_MODEL"]), VOLCENGINE_ARK_DEFAULT_IMAGE_MODELS),
+  );
+
+  return createModelProviders({
+    name: "Volcengine Ark image generation",
+    baseUrl,
+    apiKey,
+    models,
+    timeoutMs: Number(process.env.VOLCENGINE_ARK_IMAGE_TIMEOUT_MS || process.env.ARK_IMAGE_TIMEOUT_MS) || 120000,
+  });
 }
 
 function getModelProviders() {
@@ -197,6 +292,19 @@ function getModelProviders() {
   const primaryModel = cleanText(process.env.NINE_ROUTER_MODEL, 160) || "openai";
   const primaryModels = parseModelList(process.env.NINE_ROUTER_MODELS, [primaryModel]);
   const providers = [];
+  const volcengineArkBaseUrl = getVolcengineArkBaseUrl();
+
+  providers.push(...createEnvModelProviders({
+    name: volcengineArkBaseUrl.includes("/api/coding")
+      ? "Volcengine Ark Coding Plan"
+      : "Volcengine Ark",
+    baseUrl: volcengineArkBaseUrl,
+    keyNames: ["VOLCENGINE_ARK_API_KEY", "ARK_API_KEY", "VOLCENGINE_API_KEY"],
+    modelEnv: ["VOLCENGINE_ARK_MODEL", "ARK_MODEL"],
+    modelsEnv: ["VOLCENGINE_ARK_MODELS", "ARK_MODELS"],
+    defaultModels: VOLCENGINE_ARK_DEFAULT_MODELS,
+    timeoutMs: Number(process.env.VOLCENGINE_ARK_TIMEOUT_MS || process.env.ARK_TIMEOUT_MS) || 18000,
+  }));
 
   if (primaryBaseUrl) {
     providers.push(...createModelProviders({
@@ -357,9 +465,105 @@ function buildUpstreamBody(provider, intent, message, history) {
   return body;
 }
 
+function buildImageBody(provider, prompt) {
+  return {
+    model: provider.model,
+    prompt,
+    response_format: "url",
+    size: cleanText(process.env.VOLCENGINE_ARK_IMAGE_SIZE || process.env.ARK_IMAGE_SIZE, 40) || "2K",
+    stream: false,
+    watermark: process.env.VOLCENGINE_ARK_IMAGE_WATERMARK !== "false" && process.env.ARK_IMAGE_WATERMARK !== "false",
+  };
+}
+
 function getUpstreamDetail(provider, response, bodyText, bodyJson) {
   const detail = cleanText(bodyJson?.error?.message || bodyJson?.message || bodyText || `${response.status} ${response.statusText}`, 260);
   return `${provider.name}: ${detail || "upstream error"}`;
+}
+
+function extractGeneratedImages(bodyJson) {
+  const data = Array.isArray(bodyJson?.data) ? bodyJson.data : [];
+  return data
+    .map((item) => ({
+      url: cleanText(item?.url || item?.image_url, 1600),
+      b64Json: cleanText(item?.b64_json, 120000),
+      revisedPrompt: cleanText(item?.revised_prompt || item?.prompt, 1000),
+    }))
+    .filter((item) => item.url || item.b64Json)
+    .slice(0, 4);
+}
+
+async function generateImage(prompt) {
+  const providers = getVolcengineArkImageProviders();
+  if (!providers.length) {
+    return {
+      statusCode: 503,
+      body: {
+        reply: "生图通道还没有配置火山方舟 API Key。请先配置 ARK_API_KEY 和 ARK_IMAGE_MODEL。",
+        diagnosis: null,
+        images: [],
+      },
+    };
+  }
+
+  const failures = [];
+
+  for (const provider of providers) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), provider.timeoutMs || 120000);
+
+    try {
+      const upstreamResponse = await fetch(getImageGenerationsUrl(provider.baseUrl), {
+        method: "POST",
+        signal: controller.signal,
+        headers: getUpstreamHeaders(provider),
+        body: JSON.stringify(buildImageBody(provider, prompt)),
+      });
+      clearTimeout(timeoutId);
+
+      const upstreamText = await upstreamResponse.text().catch(() => "");
+      let upstreamJson = null;
+      if (upstreamText) {
+        try {
+          upstreamJson = JSON.parse(upstreamText);
+        } catch {
+          upstreamJson = null;
+        }
+      }
+
+      if (!upstreamResponse.ok) {
+        failures.push(getUpstreamDetail(provider, upstreamResponse, upstreamText, upstreamJson));
+        continue;
+      }
+
+      const images = extractGeneratedImages(upstreamJson);
+      if (!images.length) {
+        failures.push(`${provider.name}: empty image response`);
+        continue;
+      }
+
+      return {
+        statusCode: 200,
+        body: {
+          reply: "图片已生成。链接通常有有效期，请及时打开或保存。",
+          diagnosis: null,
+          images,
+        },
+      };
+    } catch (error) {
+      clearTimeout(timeoutId);
+      failures.push(`${provider.name}: ${error?.name === "AbortError" ? "timeout" : cleanText(error?.message, 180) || "request failed"}`);
+    }
+  }
+
+  return {
+    statusCode: 502,
+    body: {
+      reply: `生图通道暂时没有接通：${failures.slice(0, 2).join("；") || "upstream error"}。请确认火山控制台已开通 Seedream 生图模型。`,
+      diagnosis: null,
+      images: [],
+    },
+  };
 }
 
 function normalizeDiagnosis(diagnosis) {
@@ -466,12 +670,27 @@ export default async function handler(req, res) {
 
   try {
     const body = await readJson(req);
-    const intent = body.intent === "project_diagnosis" ? "project_diagnosis" : "about_wuyi";
+    const intent = body.intent === "project_diagnosis" || body.intent === "image_generation" ? body.intent : "about_wuyi";
     const message = cleanText(body.message);
     const history = cleanHistory(body.history);
 
     if (!message) {
       return sendJson(res, 400, { reply: "请先输入一个问题或项目想法。", diagnosis: null });
+    }
+
+    const rateLimit = checkRateLimit(req);
+    if (!rateLimit.allowed) {
+      res.setHeader("Retry-After", String(rateLimit.retryAfter));
+      return sendJson(res, 429, {
+        reply: rateLimit.message,
+        diagnosis: null,
+        images: [],
+      });
+    }
+
+    if (intent === "image_generation") {
+      const result = await generateImage(message);
+      return sendJson(res, result.statusCode, result.body);
     }
 
     const providers = getModelProviders();
