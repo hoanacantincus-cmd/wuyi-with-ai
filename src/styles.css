@@ -19,27 +19,56 @@ body {
   background: #03040a;
 }
 
-.evolution-video {
-  animation: evolution-video-drift 16s ease-in-out infinite alternate;
-  transform: scale(1.04) translate3d(-1.2%, -0.8%, 0);
+.evolution-light-drift {
+  animation: evolution-light-drift 38s ease-in-out infinite alternate;
+  opacity: 0.9;
+  transform: translate3d(-1.2%, -0.8%, 0) scale(1.03);
   transform-origin: center;
-  will-change: transform;
 }
 
-@keyframes evolution-video-drift {
+.evolution-light-pulse {
+  animation: evolution-light-pulse 44s ease-in-out infinite alternate;
+  opacity: 0.72;
+  transform: translate3d(1%, 0.8%, 0) scale(1);
+  transform-origin: center;
+}
+
+.evolution-light-grain {
+  background:
+    radial-gradient(circle at 18% 26%, rgba(255, 255, 255, 0.34) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 72% 32%, rgba(125, 249, 255, 0.28) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 46% 76%, rgba(148, 118, 255, 0.24) 0 1px, transparent 1.8px);
+  background-size: 180px 180px, 260px 260px, 320px 320px;
+  opacity: 0.24;
+}
+
+@keyframes evolution-light-drift {
   from {
-    transform: scale(1.04) translate3d(-1.2%, -0.8%, 0);
+    transform: translate3d(-2%, -1.4%, 0) scale(1.04);
   }
 
   to {
-    transform: scale(1.12) translate3d(1.2%, 0.8%, 0);
+    transform: translate3d(1.2%, 0.8%, 0) scale(1.07);
+  }
+}
+
+@keyframes evolution-light-pulse {
+  from {
+    opacity: 0.48;
+    transform: translate3d(1%, 0.8%, 0) scale(1);
+  }
+
+  to {
+    opacity: 0.8;
+    transform: translate3d(-1%, -0.8%, 0) scale(1.05);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .evolution-video {
+  .evolution-light-drift,
+  .evolution-light-pulse {
     animation: none;
-    transform: scale(1.04);
+    transform: none;
   }
 }
 

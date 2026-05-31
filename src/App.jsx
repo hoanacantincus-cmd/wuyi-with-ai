@@ -25,84 +25,47 @@ const sharePayload = {
 
 const evolutionBackgrounds = {
   hero: {
-    poster: "/evolution-bg/01-origin-cells.jpg",
-    webm: "/evolution-bg/01-origin-cells.webm",
-    mp4: "/evolution-bg/01-origin-cells.mp4",
     label: "细胞起源",
-    tint: "radial-gradient(circle at 20% 22%, rgba(43, 226, 255, 0.18), transparent 30%), radial-gradient(circle at 78% 18%, rgba(165, 96, 255, 0.20), transparent 34%), linear-gradient(90deg, rgba(2, 4, 12, 0.86), rgba(2, 4, 12, 0.34) 48%, rgba(2, 4, 12, 0.76))",
+    tint: "radial-gradient(circle at 20% 22%, rgba(43, 226, 255, 0.22), transparent 30%), radial-gradient(circle at 78% 18%, rgba(165, 96, 255, 0.22), transparent 34%), linear-gradient(90deg, rgba(2, 4, 12, 0.92), rgba(2, 4, 12, 0.50) 48%, rgba(2, 4, 12, 0.88))",
+    aura: "radial-gradient(ellipse at 48% 42%, rgba(80, 170, 255, 0.12), transparent 58%)",
   },
   capability: {
-    poster: "/evolution-bg/02-ocean-life.jpg",
-    webm: "/evolution-bg/02-ocean-life.webm",
-    mp4: "/evolution-bg/02-ocean-life.mp4",
     label: "海洋生命",
     tint: "radial-gradient(circle at 18% 18%, rgba(32, 210, 190, 0.18), transparent 32%), radial-gradient(circle at 82% 30%, rgba(63, 128, 255, 0.18), transparent 36%), linear-gradient(180deg, rgba(1, 7, 14, 0.76), rgba(2, 8, 18, 0.54) 45%, rgba(2, 4, 12, 0.84))",
+    aura: "radial-gradient(ellipse at 52% 48%, rgba(38, 218, 201, 0.11), transparent 60%)",
   },
   story: {
-    poster: "/evolution-bg/03-land-plants.jpg",
-    webm: "/evolution-bg/03-land-plants.webm",
-    mp4: "/evolution-bg/03-land-plants.mp4",
     label: "陆地植物",
     tint: "radial-gradient(circle at 22% 24%, rgba(134, 255, 168, 0.16), transparent 30%), radial-gradient(circle at 82% 18%, rgba(255, 211, 118, 0.15), transparent 34%), linear-gradient(180deg, rgba(2, 5, 12, 0.78), rgba(4, 13, 10, 0.52) 48%, rgba(2, 4, 10, 0.86))",
+    aura: "radial-gradient(ellipse at 46% 44%, rgba(144, 255, 176, 0.10), transparent 58%)",
   },
   systems: {
-    poster: "/evolution-bg/04-animal-life.jpg",
-    webm: "/evolution-bg/04-animal-life.webm",
-    mp4: "/evolution-bg/04-animal-life.mp4",
     label: "动物生态",
     tint: "radial-gradient(circle at 18% 24%, rgba(154, 255, 194, 0.12), transparent 34%), radial-gradient(circle at 86% 18%, rgba(255, 196, 120, 0.16), transparent 34%), linear-gradient(180deg, rgba(2, 5, 10, 0.82), rgba(5, 10, 10, 0.58) 42%, rgba(3, 4, 10, 0.88))",
+    aura: "radial-gradient(ellipse at 52% 50%, rgba(255, 202, 126, 0.10), transparent 62%)",
   },
   radar: {
-    poster: "/evolution-bg/05-natural-network.jpg",
-    webm: "/evolution-bg/05-natural-network.webm",
-    mp4: "/evolution-bg/05-natural-network.mp4",
     label: "银河网络",
     tint: "radial-gradient(circle at 18% 22%, rgba(125, 249, 255, 0.15), transparent 30%), radial-gradient(circle at 76% 20%, rgba(178, 126, 255, 0.22), transparent 38%), linear-gradient(180deg, rgba(1, 2, 9, 0.80), rgba(6, 8, 22, 0.48) 44%, rgba(4, 2, 12, 0.88))",
+    aura: "radial-gradient(ellipse at 56% 42%, rgba(165, 120, 255, 0.14), transparent 62%)",
   },
   contact: {
-    poster: "/evolution-bg/06-ecosystem-future.jpg",
-    webm: "/evolution-bg/06-ecosystem-future.webm",
-    mp4: "/evolution-bg/06-ecosystem-future.mp4",
     label: "太空地球",
     tint: "radial-gradient(circle at 46% 0%, rgba(96, 190, 255, 0.18), transparent 34%), radial-gradient(circle at 82% 32%, rgba(148, 118, 255, 0.20), transparent 42%), linear-gradient(180deg, rgba(1, 2, 9, 0.84), rgba(4, 8, 20, 0.50) 45%, rgba(1, 1, 7, 0.91))",
+    aura: "radial-gradient(ellipse at 50% 38%, rgba(96, 190, 255, 0.12), transparent 60%)",
   },
 };
 
-function EvolutionVideoBackground({ background }) {
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return undefined;
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const syncMotionPreference = () => setReducedMotion(query.matches);
-    syncMotionPreference();
-    query.addEventListener?.("change", syncMotionPreference);
-    return () => query.removeEventListener?.("change", syncMotionPreference);
-  }, []);
-
+function EvolutionLightBackground({ background }) {
   if (!background) return null;
 
   return (
     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#03040a]" aria-hidden="true">
-      <div className="absolute inset-0 bg-cover bg-center opacity-70" style={{ backgroundImage: `url(${background.poster})` }} />
-      {!reducedMotion ? (
-        <video
-          className="evolution-video absolute inset-0 h-full w-full object-cover opacity-[0.88]"
-          style={{ filter: "saturate(1.02) contrast(1.08) brightness(0.94)" }}
-          poster={background.poster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-label={background.label}
-        >
-          <source src={background.webm} type="video/webm" />
-          <source src={background.mp4} type="video/mp4" />
-        </video>
-      ) : null}
-      <div className="absolute inset-0" style={{ background: background.tint }} />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(1,3,10,0.66),rgba(1,3,10,0.22)_44%,rgba(1,3,10,0.64))]" />
+      <div className="evolution-light-drift absolute -inset-[18%]" style={{ background: background.tint }} />
+      <div className="evolution-light-pulse absolute -inset-[12%]" style={{ background: background.aura }} />
+      <div className="evolution-light-grain absolute inset-0" />
+      <div className="absolute inset-0 opacity-[0.075] [background-image:linear-gradient(to_right,rgba(255,255,255,.30)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.20)_1px,transparent_1px)] [background-size:84px_84px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(1,3,10,0.62),rgba(1,3,10,0.24)_44%,rgba(1,3,10,0.64))]" />
       <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#03040a] via-[#03040a]/68 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#03040a] via-[#03040a]/68 to-transparent" />
     </div>
@@ -447,7 +410,7 @@ function Icon({ name, className = "h-4 w-4" }) {
 }
 
 function CTAButton({ href, children, variant = "primary", icon, onClick }) {
-  const base = "group inline-flex min-w-0 items-center justify-center gap-2 rounded-full px-3 py-3 text-xs font-medium transition duration-300 sm:gap-3 sm:px-6 sm:py-3.5 sm:text-sm";
+  const base = "group inline-flex min-w-0 items-center justify-center gap-2 rounded-full px-3 py-3 text-sm font-medium transition duration-300 sm:gap-3 sm:px-6 sm:py-3.5 sm:text-base";
   const styles = variant === "primary"
     ? "border border-white/10 bg-white/[0.035] text-white/74 shadow-none hover:border-cyan-100/34 hover:bg-white/[0.105] hover:text-white hover:shadow-[0_18px_54px_rgba(77,163,255,0.14)]"
     : "border border-white/10 bg-white/[0.035] text-white/74 hover:border-white/22 hover:bg-white/[0.065] hover:text-white";
@@ -469,7 +432,7 @@ function ShareButton({ status, onShare }) {
         onClick={onShare}
         whileHover={{ y: -2, scale: 1.01 }}
         whileTap={{ scale: 0.985 }}
-        className="group inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-3 text-xs font-medium text-white/74 transition duration-300 hover:border-cyan-100/34 hover:bg-white/[0.105] hover:text-white sm:gap-3 sm:px-6 sm:py-3.5 sm:text-sm"
+        className="group inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-3 text-sm font-medium text-white/78 transition duration-300 hover:border-cyan-100/34 hover:bg-white/[0.105] hover:text-white sm:gap-3 sm:px-6 sm:py-3.5 sm:text-base"
       >
         <Icon name="share" className="h-4 w-4 shrink-0 text-white/82" />
         <span className="whitespace-nowrap">{status || "分享主页"}</span>
@@ -502,6 +465,8 @@ function AICoreCanvas({ pointer, booting }) {
     let width = 0;
     let height = 0;
     let dpr = 1;
+    let lastRenderTime = 0;
+    const frameInterval = 1000 / 30;
     const mono = '"SF Mono", "JetBrains Mono", Consolas, monospace';
     const ui = 'Inter, "SF Pro Display", system-ui, sans-serif';
     const lerp = (a, b, t) => a + (b - a) * t;
@@ -531,7 +496,7 @@ function AICoreCanvas({ pointer, booting }) {
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       width = rect.width;
       height = rect.height;
       canvas.width = Math.floor(width * dpr);
@@ -558,9 +523,12 @@ function AICoreCanvas({ pointer, booting }) {
       ctx.restore();
     };
 
-    const render = () => {
+    const render = (time = 0) => {
+      rafId = requestAnimationFrame(render);
+      if (time - lastRenderTime < frameInterval) return;
+      lastRenderTime = time;
       frame += 1;
-      const t = frame / 60;
+      const t = frame / 30;
       const p = pointerRef.current || { x: 0, y: 0, active: false };
       const boost = bootRef.current ? 1.42 : 1;
       clear();
@@ -747,8 +715,6 @@ function AICoreCanvas({ pointer, booting }) {
         ctx.fill();
         ctx.restore();
       }
-
-      rafId = requestAnimationFrame(render);
     };
 
     resize();
@@ -766,7 +732,7 @@ function AICoreCanvas({ pointer, booting }) {
 function AILabel({ title, subtitle, className = "", align = "left", tier = "secondary", pointer, children }) {
   const styles = {
     primary: { move: 0.045, opacity: [0.84, 1, 0.84], wrapper: "max-w-[270px]", title: "text-[13px] font-semibold tracking-[0.13em] text-cyan-50/95", subtitle: "text-[12px] leading-5 text-cyan-50/78", dot: "bg-cyan-100/90 shadow-[0_0_20px_rgba(180,240,255,0.9)]", line: "via-cyan-100/42", visual: "opacity-95" },
-    secondary: { move: 0.032, opacity: [0.58, 0.82, 0.58], wrapper: "max-w-[235px]", title: "text-[12px] font-medium tracking-[0.12em] text-cyan-50/74", subtitle: "text-[11px] leading-5 text-cyan-50/56", dot: "bg-cyan-200/64 shadow-[0_0_14px_rgba(125,249,255,0.45)]", line: "via-cyan-100/22", visual: "opacity-70" },
+    secondary: { move: 0.032, opacity: [0.62, 0.82, 0.62], wrapper: "max-w-[235px]", title: "text-[13px] font-medium tracking-[0.1em] text-cyan-50/82", subtitle: "text-[12px] leading-5 text-cyan-50/66", dot: "bg-cyan-200/64 shadow-[0_0_14px_rgba(125,249,255,0.45)]", line: "via-cyan-100/22", visual: "opacity-70" },
   };
   const tone = styles[tier] || styles.secondary;
 
@@ -837,7 +803,7 @@ function AICoreScene({ booting = false }) {
   };
 
   return (
-    <motion.div onMouseMove={handleMouseMove} onMouseLeave={() => setPointer({ x: 0, y: 0, px: 50, py: 50, active: false })} className="relative mx-auto aspect-[1.16/1] w-full max-w-[1080px] overflow-clip rounded-[2.7rem] border border-cyan-100/18 bg-[#01030a] shadow-[inset_0_0_44px_rgba(120,180,255,0.075),0_0_90px_rgba(20,80,255,0.13),0_100px_260px_rgba(0,0,0,0.72)] backdrop-blur-2xl md:rounded-[4rem]">
+    <motion.div onMouseMove={handleMouseMove} onMouseLeave={() => setPointer({ x: 0, y: 0, px: 50, py: 50, active: false })} className="relative mx-auto aspect-[1.16/1] w-full max-w-[1080px] overflow-clip rounded-[2.7rem] border border-cyan-100/18 bg-[#01030a] shadow-[inset_0_0_34px_rgba(120,180,255,0.07),0_0_64px_rgba(20,80,255,0.11),0_72px_180px_rgba(0,0,0,0.62)] backdrop-blur-md md:rounded-[4rem]">
       <div className="absolute inset-[2%] rounded-[2.35rem] border border-white/[0.12] md:rounded-[3.45rem]" />
       <div className="absolute inset-[2.8%] rounded-[2.15rem] border border-white/[0.04] md:rounded-[3.2rem]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(77,163,255,0.14),transparent_28%),radial-gradient(circle_at_77%_19%,rgba(118,88,220,0.12),transparent_24%),radial-gradient(circle_at_18%_74%,rgba(170,230,255,0.06),transparent_22%)]" />
@@ -902,7 +868,7 @@ function CapabilityHoverVisual({ type }) {
 function CapabilityChip({ item, index }) {
   const accentMap = ["from-cyan-200/22 via-blue-300/10 to-transparent", "from-sky-200/20 via-cyan-300/10 to-transparent", "from-violet-200/20 via-blue-300/10 to-transparent", "from-fuchsia-200/16 via-cyan-200/10 to-transparent", "from-blue-100/18 via-slate-100/8 to-transparent", "from-white/16 via-cyan-100/8 to-transparent"];
   return (
-    <motion.article initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }} className="group relative min-h-[250px] overflow-clip rounded-[2rem] border border-white/[0.095] bg-[linear-gradient(145deg,rgba(255,255,255,0.078),rgba(255,255,255,0.03))] p-6 shadow-[0_34px_110px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:border-cyan-100/24 hover:bg-white/[0.072]">
+    <motion.article initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }} className="group relative min-h-[250px] overflow-clip rounded-[2rem] border border-white/[0.095] bg-[linear-gradient(145deg,rgba(255,255,255,0.078),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_76px_rgba(0,0,0,0.24)] backdrop-blur-md transition duration-500 hover:-translate-y-1 hover:border-cyan-100/24 hover:bg-white/[0.072]">
       <div className={`absolute inset-0 bg-gradient-to-br ${accentMap[index % accentMap.length]} opacity-60 transition duration-500 group-hover:opacity-100`} />
       <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-cyan-100/26 to-transparent opacity-70" />
       <motion.div animate={{ rotate: 360 }} transition={{ duration: 18 + index * 2, repeat: Infinity, ease: "linear" }} className="absolute -right-16 -top-16 h-40 w-40 rounded-full border border-cyan-100/[0.055] transition duration-500 group-hover:border-cyan-100/[0.12]" />
@@ -913,13 +879,13 @@ function CapabilityChip({ item, index }) {
             <motion.div whileHover={{ scale: 1.08, rotate: index % 2 ? -3 : 3 }} transition={{ type: "spring", stiffness: 260, damping: 18 }} className="relative grid h-12 w-12 place-items-center rounded-2xl border border-cyan-100/14 bg-black/26 text-cyan-50/82 shadow-[inset_0_0_18px_rgba(160,232,255,0.045)] transition duration-500 group-hover:border-cyan-100/28 group-hover:text-white group-hover:shadow-[inset_0_0_22px_rgba(160,232,255,0.08),0_0_28px_rgba(125,249,255,0.12)]">
               <CapabilityGlyph type={item.icon} className="h-5 w-5" />
             </motion.div>
-            <div><p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.24em] text-cyan-50/34 transition duration-500 group-hover:text-cyan-50/58">{item.label}</p><p style={fontStyles.mono} className="mt-1 text-[10px] text-white/24 transition duration-500 group-hover:text-white/36">MODULE {item.tag}</p></div>
+            <div><p style={fontStyles.mono} className="text-[12px] uppercase tracking-[0.18em] text-cyan-50/48 transition duration-500 group-hover:text-cyan-50/68">{item.label}</p><p style={fontStyles.mono} className="mt-1 text-[12px] text-white/40 transition duration-500 group-hover:text-white/52">MODULE {item.tag}</p></div>
           </div>
-          <span style={fontStyles.mono} className="text-[11px] text-white/24 transition duration-500 group-hover:text-white/42">{item.tag}</span>
+          <span style={fontStyles.mono} className="text-[12px] text-white/36 transition duration-500 group-hover:text-white/52">{item.tag}</span>
         </div>
-        <h3 className="text-[1.18rem] font-semibold tracking-[-0.035em] text-white/94 transition duration-500 group-hover:text-white">{item.title}</h3>
-        <p className="mt-4 max-w-[92%] text-[0.94rem] leading-7 text-white/50 transition duration-500 group-hover:text-white/62">{item.desc}</p>
-        <div className="mt-auto pt-6"><div className="flex items-center justify-between border-t border-white/[0.07] pt-4 transition duration-500 group-hover:border-cyan-100/12"><p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.18em] text-cyan-50/34 transition duration-500 group-hover:text-cyan-50/48">{item.meta}</p><span className="h-1.5 w-10 rounded-full bg-gradient-to-r from-transparent via-cyan-100/42 to-transparent transition duration-500 group-hover:w-16 group-hover:via-cyan-100/70" /></div></div>
+        <h3 className="text-[1.28rem] font-semibold tracking-[-0.025em] text-white/96 transition duration-500 group-hover:text-white">{item.title}</h3>
+        <p className="mt-4 max-w-[92%] text-base leading-7 text-white/62 transition duration-500 group-hover:text-white/72">{item.desc}</p>
+        <div className="mt-auto pt-6"><div className="flex items-center justify-between border-t border-white/[0.07] pt-4 transition duration-500 group-hover:border-cyan-100/12"><p style={fontStyles.mono} className="text-[12px] uppercase tracking-[0.1em] text-cyan-50/50 transition duration-500 group-hover:text-cyan-50/62">{item.meta}</p><span className="h-1.5 w-10 rounded-full bg-gradient-to-r from-transparent via-cyan-100/42 to-transparent transition duration-500 group-hover:w-16 group-hover:via-cyan-100/70" /></div></div>
       </div>
     </motion.article>
   );
@@ -1066,7 +1032,7 @@ function StoryFrame({ frame, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative min-h-[360px] overflow-clip rounded-[2rem] border border-cyan-100/[0.12] bg-[linear-gradient(145deg,rgba(255,255,255,0.078),rgba(255,255,255,0.025))] p-5 shadow-[0_40px_120px_rgba(0,0,0,0.34)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:border-cyan-100/26 hover:bg-white/[0.07] lg:min-h-[390px]"
+      className="group relative min-h-[360px] overflow-clip rounded-[2rem] border border-cyan-100/[0.12] bg-[linear-gradient(145deg,rgba(255,255,255,0.078),rgba(255,255,255,0.025))] p-5 shadow-[0_26px_82px_rgba(0,0,0,0.30)] backdrop-blur-md transition duration-500 hover:-translate-y-1 hover:border-cyan-100/26 hover:bg-white/[0.07] lg:min-h-[390px]"
     >
       <div className="absolute inset-0 opacity-[0.045] [background-image:radial-gradient(rgba(255,255,255,.8)_1px,transparent_1px)] [background-size:9px_9px]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(125,249,255,0.13),transparent_42%),radial-gradient(circle_at_80%_20%,rgba(148,118,255,0.12),transparent_36%)] opacity-75" />
@@ -1078,24 +1044,24 @@ function StoryFrame({ frame, index }) {
       <div className="relative z-10 flex h-full flex-col">
         <div className="mb-5 flex items-start justify-between">
           <div>
-            <p style={fontStyles.mono} className="text-[11px] font-medium uppercase tracking-[0.26em] text-cyan-50/44">FRAME {frame.no}</p>
-            <p style={fontStyles.mono} className="mt-2 text-[10px] uppercase tracking-[0.2em] text-white/24">{frame.signal}</p>
+            <p style={fontStyles.mono} className="text-[12px] font-medium uppercase tracking-[0.18em] text-cyan-50/56">FRAME {frame.no}</p>
+            <p style={fontStyles.mono} className="mt-2 text-[12px] uppercase tracking-[0.1em] text-white/46">{frame.signal}</p>
           </div>
-          <span className="grid h-9 w-9 place-items-center rounded-full border border-cyan-100/14 bg-black/24 text-[11px] text-cyan-50/62 shadow-[inset_0_0_18px_rgba(160,232,255,0.035)]" style={fontStyles.mono}>{frame.no}</span>
+          <span className="grid h-9 w-9 place-items-center rounded-full border border-cyan-100/14 bg-black/24 text-[12px] text-cyan-50/72 shadow-[inset_0_0_18px_rgba(160,232,255,0.035)]" style={fontStyles.mono}>{frame.no}</span>
         </div>
 
         <div className="relative mb-4 rounded-[1.35rem] border border-white/[0.07] bg-black/18 p-2 shadow-[inset_0_0_28px_rgba(125,249,255,0.035)]">
           <StoryVisual type={frame.visual} index={index} />
-          <div className="absolute right-3 top-3 rounded-full border border-cyan-100/14 bg-black/40 px-2.5 py-1 text-[9px] uppercase tracking-[0.2em] text-cyan-50/42" style={fontStyles.mono}>HUD</div>
+          <div className="absolute right-3 top-3 rounded-full border border-cyan-100/14 bg-black/40 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-cyan-50/56" style={fontStyles.mono}>HUD</div>
         </div>
 
-        <h3 className="text-[1.25rem] font-semibold tracking-[-0.04em] text-white/94">{frame.title}</h3>
-        <p className="mt-2 text-[0.82rem] uppercase tracking-[0.12em] text-cyan-50/56" style={fontStyles.mono}>{frame.english}</p>
-        <p className="mt-4 text-[0.92rem] leading-7 text-white/50">{frame.desc}</p>
+        <h3 className="text-[1.34rem] font-semibold tracking-[-0.025em] text-white/96">{frame.title}</h3>
+        <p className="mt-2 text-[0.9rem] uppercase tracking-[0.1em] text-cyan-50/66" style={fontStyles.mono}>{frame.english}</p>
+        <p className="mt-4 text-base leading-7 text-white/62">{frame.desc}</p>
 
         <div className="mt-auto pt-5">
           <div className="flex items-center justify-between border-t border-white/[0.07] pt-4">
-            <p style={fontStyles.mono} className="text-[9.5px] uppercase tracking-[0.16em] text-cyan-50/34">{frame.meta}</p>
+            <p style={fontStyles.mono} className="text-[12px] uppercase tracking-[0.08em] text-cyan-50/52">{frame.meta}</p>
             <motion.span
               className="h-1.5 w-10 rounded-full bg-gradient-to-r from-transparent via-cyan-100/52 to-transparent"
               animate={{ opacity: [0.28, 0.88, 0.28] }}
@@ -1127,7 +1093,7 @@ function SystemVisual({ type, index }) {
               >
                 <span className="h-2.5 w-2.5 rounded-full bg-cyan-100/78 shadow-[0_0_18px_rgba(160,232,255,0.72)]" />
               </motion.div>
-              <p style={fontStyles.mono} className="mt-4 text-[9px] uppercase tracking-[0.16em] text-cyan-50/42">{node}</p>
+              <p style={fontStyles.mono} className="mt-4 text-[11px] uppercase tracking-[0.12em] text-cyan-50/54">{node}</p>
             </div>
           ))}
         </div>
@@ -1151,7 +1117,7 @@ function SystemVisual({ type, index }) {
               <span className="h-2 w-2 rounded-full bg-cyan-100/46" />
               <span className="h-2 w-2 rounded-full bg-violet-200/36" />
             </div>
-            <p style={fontStyles.mono} className="text-[8px] uppercase tracking-[0.2em] text-cyan-50/34">AI UX Console</p>
+            <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.14em] text-cyan-50/48">AI UX Console</p>
           </div>
           <div className="grid h-[108px] grid-cols-[0.32fr_0.68fr] gap-3">
             <div className="space-y-2">
@@ -1238,7 +1204,7 @@ function SystemCard({ item, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.76, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative overflow-clip rounded-[2.45rem] border border-white/[0.10] bg-[linear-gradient(145deg,rgba(255,255,255,0.082),rgba(255,255,255,0.028))] p-6 shadow-[0_42px_130px_rgba(0,0,0,0.42)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:border-cyan-100/24 hover:bg-white/[0.072]"
+      className="group relative overflow-clip rounded-[2.45rem] border border-white/[0.10] bg-[linear-gradient(145deg,rgba(255,255,255,0.082),rgba(255,255,255,0.028))] p-6 shadow-[0_28px_86px_rgba(0,0,0,0.34)] backdrop-blur-md transition duration-500 hover:-translate-y-1 hover:border-cyan-100/24 hover:bg-white/[0.072]"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(160,232,255,0.12),transparent_34%),radial-gradient(circle_at_90%_12%,rgba(148,118,255,0.12),transparent_30%)] opacity-80 transition duration-500 group-hover:opacity-100" />
       <div className="absolute inset-x-7 top-0 h-px bg-gradient-to-r from-transparent via-cyan-100/30 to-transparent" />
@@ -1251,24 +1217,24 @@ function SystemCard({ item, index }) {
       <div className="relative z-10">
         <div className="mb-7 flex items-start justify-between gap-4">
           <div>
-            <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.28em] text-cyan-50/42">SYSTEM {item.no}</p>
+            <p style={fontStyles.mono} className="text-[12px] uppercase tracking-[0.18em] text-cyan-50/56">SYSTEM {item.no}</p>
             <h3 className="mt-4 text-[1.85rem] font-semibold leading-none tracking-[-0.055em] text-white md:text-[2.1rem]">{item.title}</h3>
             <p className="mt-2 text-[0.95rem] font-medium text-cyan-50/58">{item.cnTitle}</p>
           </div>
-          <div className="rounded-full border border-cyan-100/14 bg-black/24 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-cyan-50/54" style={fontStyles.mono}>
+          <div className="rounded-full border border-cyan-100/14 bg-black/24 px-3 py-1.5 text-[11px] uppercase tracking-[0.12em] text-cyan-50/66" style={fontStyles.mono}>
             Status: {item.status}
           </div>
         </div>
 
         <SystemVisual type={item.visual} index={index} />
 
-        <p className="mt-7 min-h-[58px] text-[0.96rem] leading-7 text-white/54 transition duration-500 group-hover:text-white/66">{item.desc}</p>
+        <p className="mt-7 min-h-[58px] text-base leading-7 text-white/64 transition duration-500 group-hover:text-white/74">{item.desc}</p>
         <div className="mt-6 rounded-2xl border border-white/[0.07] bg-black/16 px-4 py-3">
-          <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.18em] text-cyan-50/44">{item.flow}</p>
+          <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.12em] text-cyan-50/56">{item.flow}</p>
         </div>
         <div className="mt-5 flex flex-wrap gap-2">
           {item.stack.map((chip) => (
-            <span key={chip} className="rounded-full border border-white/[0.08] bg-white/[0.035] px-3 py-1.5 text-[11px] text-white/44 transition duration-300 group-hover:border-cyan-100/14 group-hover:text-cyan-50/60">
+            <span key={chip} className="rounded-full border border-white/[0.08] bg-white/[0.035] px-3 py-1.5 text-[12px] text-white/56 transition duration-300 group-hover:border-cyan-100/14 group-hover:text-cyan-50/68">
               {chip}
             </span>
           ))}
@@ -1284,7 +1250,7 @@ function OrbitCore({ active }) {
       animate={{ scale: active ? 1.08 : [1, 1.045, 1], opacity: active ? 1 : [0.92, 1, 0.92] }}
       transition={{ duration: active ? 0.35 : 4.2, repeat: active ? 0 : Infinity, ease: "easeInOut" }}
       style={{ x: "-50%", y: "-50%" }}
-      className="absolute left-1/2 top-1/2 z-40 grid h-44 w-44 place-items-center rounded-full border border-cyan-100/24 bg-[radial-gradient(circle_at_50%_36%,rgba(255,255,255,0.30),rgba(125,249,255,0.14)_32%,rgba(10,18,34,0.92)_72%)] shadow-[inset_0_0_50px_rgba(235,245,255,0.12),0_0_120px_rgba(125,249,255,0.28),0_0_220px_rgba(88,91,255,0.10)] backdrop-blur-2xl md:h-56 md:w-56"
+      className="absolute left-1/2 top-1/2 z-40 grid h-44 w-44 place-items-center rounded-full border border-cyan-100/24 bg-[radial-gradient(circle_at_50%_36%,rgba(255,255,255,0.30),rgba(125,249,255,0.14)_32%,rgba(10,18,34,0.92)_72%)] shadow-[inset_0_0_42px_rgba(235,245,255,0.11),0_0_84px_rgba(125,249,255,0.22),0_0_150px_rgba(88,91,255,0.08)] backdrop-blur-md md:h-56 md:w-56"
     >
       {[0, 1, 2].map((pulse) => (
         <motion.div
@@ -1320,7 +1286,7 @@ function OrbitCore({ active }) {
       <div className="relative text-center">
         <Icon name="core" className="mx-auto mb-4 h-9 w-9 text-cyan-50/78 md:h-10 md:w-10" />
         <p style={fontStyles.mono} className="text-[12px] font-semibold uppercase tracking-[0.34em] text-white/92 md:text-[14px]">AI CORE</p>
-        <p style={fontStyles.mono} className="mt-3 text-[9px] uppercase tracking-[0.22em] text-cyan-50/48 md:text-[10px]">WuYi System Stack</p>
+        <p style={fontStyles.mono} className="mt-3 text-[11px] uppercase tracking-[0.14em] text-cyan-50/58 md:text-[12px]">WuYi System Stack</p>
       </div>
     </motion.div>
   );
@@ -1330,6 +1296,7 @@ function OrbitRing({ ring, index }) {
   const rotation = ring.direction === "cw" ? 360 : -360;
   const counterRotation = ring.direction === "cw" ? -360 : 360;
   const orbitHeight = ring.radius * ring.ellipse;
+  const orbitItems = ring.priority?.length ? ring.priority : ring.items.slice(0, 3);
 
   return (
     <motion.div
@@ -1368,19 +1335,19 @@ function OrbitRing({ ring, index }) {
           animate={{ rotate: [-ring.tilt, -ring.tilt + counterRotation] }}
           transition={{ duration: ring.duration, repeat: Infinity, ease: "linear" }}
           style={fontStyles.mono}
-          className="rounded-full border border-white/[0.035] bg-black/14 px-2.5 py-1 text-[8px] uppercase tracking-[0.18em] backdrop-blur-xl md:text-[9px]"
+          className="rounded-full border border-white/[0.045] bg-black/20 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] backdrop-blur md:text-[11px]"
         >
-          <span className="text-white/14">{ring.label}</span>
+          <span className="text-white/28">{ring.label}</span>
         </motion.div>
       </div>
 
-      {ring.items.map((item, itemIndex) => {
-        const angle = (itemIndex / ring.items.length) * Math.PI * 2 + index * 0.42;
+      {orbitItems.map((item, itemIndex) => {
+        const angle = (itemIndex / orbitItems.length) * Math.PI * 2 + index * 0.42;
         const radiusTweak = 52 + ((itemIndex % 3) - 1) * 2.6;
         const x = 50 + Math.cos(angle) * radiusTweak;
         const y = 50 + Math.sin(angle) * radiusTweak;
         const isPriority = ring.priority?.includes(item);
-        const sizeClass = isPriority ? "px-2.5 py-1.5 text-[9.5px] md:text-[10.5px]" : "px-2 py-1.5 text-[8.5px] md:text-[9.5px]";
+        const sizeClass = isPriority ? "px-3 py-1.5 text-[11px] md:text-[12px]" : "px-2.5 py-1.5 text-[10px] md:text-[11px]";
         return (
           <div key={item} className="absolute" style={{ left: `${x}%`, top: `${y}%`, transform: "translate(-50%, -50%)" }}>
             <motion.div
@@ -1388,7 +1355,7 @@ function OrbitRing({ ring, index }) {
               transition={{ duration: ring.duration, repeat: Infinity, ease: "linear" }}
             >
               <div
-                className={`inline-flex max-w-[112px] items-center gap-1.5 rounded-full border bg-black/34 shadow-[0_18px_42px_rgba(0,0,0,0.22)] backdrop-blur-xl md:max-w-[128px] ${sizeClass}`}
+                className={`inline-flex max-w-[128px] items-center gap-1.5 rounded-full border bg-black/42 shadow-[0_14px_32px_rgba(0,0,0,0.20)] backdrop-blur md:max-w-[148px] ${sizeClass}`}
                 style={{
                   borderColor: "rgba(255,255,255,0.065)",
                   opacity: isPriority ? 0.92 : 0.58,
@@ -1408,13 +1375,13 @@ function OrbitRing({ ring, index }) {
 
 function OrbitLegend() {
   return (
-    <div className="pointer-events-none absolute bottom-5 left-5 z-50 hidden max-w-[330px] rounded-[1.5rem] border border-white/[0.035] bg-black/8 p-4 text-white/24 backdrop-blur-xl lg:block">
-      <p style={fontStyles.mono} className="mb-3 text-[9px] uppercase tracking-[0.28em] text-cyan-50/24">Orbit Legend</p>
+    <div className="pointer-events-none absolute bottom-5 left-5 z-50 hidden max-w-[330px] rounded-[1.5rem] border border-white/[0.045] bg-black/16 p-4 text-white/34 backdrop-blur-md lg:block">
+      <p style={fontStyles.mono} className="mb-3 text-[11px] uppercase tracking-[0.18em] text-cyan-50/42">Orbit Legend</p>
       <div className="grid grid-cols-2 gap-x-4 gap-y-2">
         {orbitGroups.map((ring) => (
           <div key={ring.id} className="flex items-center gap-2 text-left">
             <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: ring.accent, boxShadow: `0 0 12px ${ring.accent}` }} />
-            <span style={fontStyles.mono} className="text-[8.5px] uppercase tracking-[0.12em] text-white/20">{ring.label}</span>
+            <span style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.08em] text-white/34">{ring.label}</span>
           </div>
         ))}
       </div>
@@ -1433,21 +1400,17 @@ function OrbitScene() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_58%,rgba(125,249,255,0.14),transparent_24%),radial-gradient(circle_at_28%_38%,rgba(77,163,255,0.07),transparent_32%),radial-gradient(circle_at_78%_36%,rgba(148,118,255,0.07),transparent_34%)]" />
       <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(720px circle at 50% 56%, rgba(180,238,255,0.09), transparent 44%)" }} />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_22%,rgba(255,255,255,0.48)_0_1px,transparent_1.6px),radial-gradient(circle_at_72%_28%,rgba(190,220,255,0.42)_0_1px,transparent_1.7px),radial-gradient(circle_at_46%_74%,rgba(255,255,255,0.30)_0_1px,transparent_1.6px)] [background-size:73px_73px,113px_113px,151px_151px] opacity-[0.24]" />
-      {Array.from({ length: 64 }).map((_, i) => (
-        <motion.span
+      {Array.from({ length: 28 }).map((_, i) => (
+        <span
           key={`star-${i}`}
           className="pointer-events-none absolute h-px w-px rounded-full bg-white"
           style={{ left: `${(i * 37) % 100}%`, top: `${(i * 53) % 100}%`, opacity: 0.12 + (i % 5) * 0.045 }}
-          animate={{ opacity: [0.06, 0.34 + (i % 3) * 0.07, 0.06], scale: [0.8, 1.25, 0.8] }}
-          transition={{ duration: 4 + (i % 7) * 0.42, repeat: Infinity, ease: "easeInOut", delay: i * 0.037 }}
         />
       ))}
 
       {[0, 1, 2, 3].map((i) => (
-        <motion.div
+        <div
           key={`deep-ring-${i}`}
-          animate={{ rotate: i % 2 ? -360 : 360 }}
-          transition={{ duration: 120 + i * 26, repeat: Infinity, ease: "linear" }}
           className="pointer-events-none absolute left-1/2 top-1/2 rounded-full border border-white/[0.018]"
           style={{ width: `${112 + i * 20}%`, height: `${60 + i * 8}%`, marginLeft: `-${56 + i * 10}%`, marginTop: `-${30 + i * 4}%`, transform: `rotate(${i * 11}deg)` }}
         />
@@ -1471,9 +1434,9 @@ function OrbitScene() {
       <OrbitCore active={false} />
       <OrbitLegend />
 
-      <div className="pointer-events-none absolute right-5 top-5 z-50 hidden rounded-[1.5rem] border border-white/[0.03] bg-black/8 px-4 py-3 text-right backdrop-blur-xl lg:block">
-        <p style={fontStyles.mono} className="text-[9px] uppercase tracking-[0.28em] text-white/18">Live Stack Map</p>
-        <p style={fontStyles.mono} className="mt-1 text-[10px] text-cyan-50/38">{orbitGroups.length} Orbits · {totalNodes} Nodes</p>
+      <div className="pointer-events-none absolute right-5 top-5 z-50 hidden rounded-[1.5rem] border border-white/[0.04] bg-black/16 px-4 py-3 text-right backdrop-blur-md lg:block">
+        <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.16em] text-white/34">Live Stack Map</p>
+        <p style={fontStyles.mono} className="mt-1 text-[11px] text-cyan-50/50">{orbitGroups.length} Orbits · {totalNodes} Nodes</p>
       </div>
     </div>
   );
@@ -1542,15 +1505,15 @@ function AgentDiagnosis({ diagnosis }) {
   return (
     <div className="mt-3 space-y-3 rounded-2xl border border-cyan-100/10 bg-black/24 p-4">
       <div>
-        <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.26em] text-cyan-100/38">Diagnosis</p>
+        <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.16em] text-cyan-100/52">Diagnosis</p>
         <p className="mt-1 text-sm font-medium text-white/84">{diagnosis.needType || "AI 项目诊断"}</p>
       </div>
       {sections.map(([title, items]) => Array.isArray(items) && items.length ? (
         <div key={title}>
-          <p className="mb-2 text-xs font-medium text-cyan-50/48">{title}</p>
+          <p className="mb-2 text-sm font-medium text-cyan-50/60">{title}</p>
           <div className="space-y-1.5">
             {items.map((item, index) => (
-              <p key={`${title}-${item}`} className="rounded-xl border border-white/[0.06] bg-white/[0.035] px-3 py-2 text-xs leading-5 text-white/62">
+              <p key={`${title}-${item}`} className="rounded-xl border border-white/[0.06] bg-white/[0.035] px-3 py-2 text-sm leading-6 text-white/70">
                 <span style={fontStyles.mono} className="mr-2 text-cyan-100/42">{String(index + 1).padStart(2, "0")}</span>
                 {item}
               </p>
@@ -1559,7 +1522,7 @@ function AgentDiagnosis({ diagnosis }) {
         </div>
       ) : null)}
       {diagnosis.collaborationAdvice ? (
-        <p className="rounded-xl border border-violet-100/10 bg-violet-100/[0.045] px-3 py-2 text-xs leading-5 text-white/62">{diagnosis.collaborationAdvice}</p>
+        <p className="rounded-xl border border-violet-100/10 bg-violet-100/[0.045] px-3 py-2 text-sm leading-6 text-white/70">{diagnosis.collaborationAdvice}</p>
       ) : null}
     </div>
   );
@@ -1700,7 +1663,7 @@ function CyberAgentPet({ offset, onPointerDown, onOpen }) {
         <path d="M131 173c3-2.2 7-2.2 10 0-1.2 2.4-3 3.5-5 3.5s-3.8-1.1-5-3.5Z" fill="#d79caf" stroke="#5a3442" strokeWidth="1.15" />
         <path d="M117 189Q136 200 155 189" fill="none" stroke="#f4c5d7" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" opacity="0.98" />
       </motion.svg>
-      <span className="pointer-events-none absolute bottom-[6px] left-[96px] -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-100/14 bg-black/46 px-3 py-1 text-[10px] font-semibold leading-none text-cyan-50/66 shadow-[0_10px_28px_rgba(0,0,0,0.30)] backdrop-blur-xl">
+      <span className="pointer-events-none absolute bottom-[6px] left-[96px] -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-100/14 bg-black/46 px-3 py-1 text-[12px] font-semibold leading-none text-cyan-50/82 shadow-[0_10px_28px_rgba(0,0,0,0.30)] backdrop-blur-md">
         <span className="tracking-[0.14em]">AI pet</span>
         <span className="ml-2 tracking-normal text-cyan-50/58">点我一起唠唠嗑。</span>
       </span>
@@ -1888,7 +1851,7 @@ function WuYiAgent() {
             animate={{ opacity: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="relative ml-auto flex max-h-[86vh] w-full flex-col overflow-hidden rounded-t-[1.75rem] border border-cyan-100/14 bg-[#030814]/94 shadow-[0_-24px_90px_rgba(77,163,255,0.22)] backdrop-blur-2xl md:mr-0 md:max-h-[calc(100vh-3rem)] md:w-[420px] md:rounded-[1.55rem] md:shadow-[0_28px_120px_rgba(77,163,255,0.22)]"
+            className="relative ml-auto flex max-h-[86vh] w-full flex-col overflow-hidden rounded-t-[1.75rem] border border-cyan-100/14 bg-[#030814]/94 shadow-[0_-18px_68px_rgba(77,163,255,0.18)] backdrop-blur-md md:mr-0 md:max-h-[calc(100vh-3rem)] md:w-[420px] md:rounded-[1.55rem] md:shadow-[0_22px_84px_rgba(77,163,255,0.18)]"
             aria-label="WuYi Agent"
           >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_22%_0%,rgba(125,249,255,0.16),transparent_34%),radial-gradient(circle_at_92%_18%,rgba(148,118,255,0.16),transparent_35%)]" />
@@ -1906,9 +1869,9 @@ function WuYiAgent() {
                   </span>
                 </div>
                 <div>
-                <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.34em] text-cyan-100/42">WuYi Agent</p>
+                <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.18em] text-cyan-100/58">WuYi Agent</p>
                 <h2 className="mt-1 text-lg font-medium text-white">AI 项目接口已接入</h2>
-                  <p className="mt-1 text-xs leading-5 text-white/38">wuyi 配置的这个智能体用的是各家免费的 API，额度有限请不要大量询问。</p>
+                  <p className="mt-1 text-sm leading-6 text-white/52">wuyi 配置的这个智能体用的是各家免费的 API，额度有限请不要大量询问。</p>
                 </div>
               </div>
               <button type="button" onClick={() => setOpen(false)} className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.035] text-white/54 transition hover:border-cyan-100/22 hover:text-white" aria-label="关闭 WuYi Agent">
@@ -1922,7 +1885,7 @@ function WuYiAgent() {
                   key={key}
                   type="button"
                   onClick={() => setMode(key)}
-                  className={`rounded-full px-3 py-2 text-xs font-medium transition ${mode === key ? "bg-cyan-100/14 text-cyan-50 shadow-[0_0_24px_rgba(125,249,255,0.12)]" : "text-white/42 hover:text-white/72"}`}
+                  className={`rounded-full px-3 py-2 text-sm font-medium transition ${mode === key ? "bg-cyan-100/14 text-cyan-50 shadow-[0_0_24px_rgba(125,249,255,0.12)]" : "text-white/52 hover:text-white/78"}`}
                 >
                   {item.label}
                 </button>
@@ -1955,7 +1918,7 @@ function WuYiAgent() {
           </div>
 
           <form onSubmit={submitMessage} className="relative border-t border-white/[0.07] bg-black/18 px-5 py-4">
-            <button type="button" onClick={() => sendMessage(activeMode.starter)} disabled={loading} className="mb-3 w-full rounded-2xl border border-cyan-100/10 bg-cyan-100/[0.045] px-4 py-2 text-left text-xs leading-5 text-cyan-50/58 transition hover:border-cyan-100/20 hover:text-cyan-50 disabled:cursor-not-allowed disabled:opacity-50">
+            <button type="button" onClick={() => sendMessage(activeMode.starter)} disabled={loading} className="mb-3 w-full rounded-2xl border border-cyan-100/10 bg-cyan-100/[0.045] px-4 py-2 text-left text-sm leading-6 text-cyan-50/66 transition hover:border-cyan-100/20 hover:text-cyan-50 disabled:cursor-not-allowed disabled:opacity-50">
               {activeMode.starter}
             </button>
             <div className="flex items-end gap-2">
@@ -1981,8 +1944,8 @@ function WuYiAgent() {
 function GithubLaunchOverlay({ active }) {
   return (
     <motion.div initial={false} animate={{ opacity: active ? 1 : 0 }} transition={{ duration: active ? 0.16 : 0.5 }} className="pointer-events-none fixed inset-0 z-50 grid place-items-center bg-black/72 backdrop-blur-md">
-      <motion.div initial={false} animate={active ? { scale: [0.92, 1, 1.02], opacity: [0, 1, 1] } : { scale: 0.98, opacity: 0 }} transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }} className="relative w-[min(92vw,520px)] overflow-hidden rounded-[2.2rem] border border-cyan-100/16 bg-[#050b18]/80 px-9 py-8 text-center shadow-[0_0_140px_rgba(77,163,255,0.30)] backdrop-blur-2xl">
-        <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.34em] text-cyan-100/52">AI System Launch</p>
+      <motion.div initial={false} animate={active ? { scale: [0.92, 1, 1.02], opacity: [0, 1, 1] } : { scale: 0.98, opacity: 0 }} transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }} className="relative w-[min(92vw,520px)] overflow-hidden rounded-[2.2rem] border border-cyan-100/16 bg-[#050b18]/80 px-9 py-8 text-center shadow-[0_0_90px_rgba(77,163,255,0.24)] backdrop-blur-md">
+        <p style={fontStyles.mono} className="text-[12px] uppercase tracking-[0.18em] text-cyan-100/60">AI System Launch</p>
         <p className="mt-3 text-xl font-medium text-white">Opening GitHub Repository</p>
         <p className="mt-2 text-sm text-white/42">Connecting to hoanacantincus-cmd</p>
         <div className="mt-6 h-1.5 overflow-hidden rounded-full bg-white/10"><motion.div animate={active ? { width: ["0%", "100%"] } : { width: "0%" }} transition={{ duration: 0.72, ease: "easeInOut" }} className="h-full rounded-full bg-gradient-to-r from-cyan-200 via-white to-violet-200" /></div>
@@ -2108,7 +2071,7 @@ export default function App() {
       </header>
 
       <section id="hero" className="relative z-30 [overflow-x:clip] px-5 pb-20 pt-6 sm:px-6 md:px-10 md:pb-24 md:pt-8">
-        <EvolutionVideoBackground background={evolutionBackgrounds.hero} />
+        <EvolutionLightBackground background={evolutionBackgrounds.hero} />
         <div className="relative z-10 mx-auto grid min-h-[calc(100vh-92px)] max-w-[1540px] items-center gap-8 md:gap-12 lg:grid-cols-[0.72fr_1.28fr]">
           <motion.div style={{ y: heroY }} className="relative z-[60]">
             <motion.h1 initial={{ opacity: 0, y: 34, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.08, duration: 1.05 }} className="max-w-3xl">
@@ -2117,7 +2080,7 @@ export default function App() {
               <span className="mt-6 block max-w-2xl text-[1.12rem] font-medium leading-8 tracking-[-0.01em] text-cyan-50/74 md:text-[1.45rem]">{profile.heroSubtitle}</span>
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24, duration: 0.85 }} className="mt-7 max-w-xl text-[0.98rem] leading-8 text-white/50 md:text-[1.05rem]">{profile.line}</motion.p>
-            <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.85 }} className="ml-3 mt-8 grid max-w-xl grid-cols-3 gap-3 border-y border-white/[0.07] py-5">{[["01", "构想"], ["02", "构建"], ["03", "进化"]].map(([no, label]) => <div key={label}><p style={fontStyles.mono} className="text-[11px] tracking-[0.22em] text-cyan-100/36">{no}</p><p className="mt-1 text-sm font-medium text-white/78">{label}</p></div>)}</motion.div>
+            <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.85 }} className="ml-3 mt-8 grid max-w-xl grid-cols-3 gap-3 border-y border-white/[0.07] py-5">{[["01", "构想"], ["02", "构建"], ["03", "进化"]].map(([no, label]) => <div key={label}><p style={fontStyles.mono} className="text-[12px] tracking-[0.14em] text-cyan-100/52">{no}</p><p className="mt-1 text-base font-medium text-white/84">{label}</p></div>)}</motion.div>
             <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42, duration: 0.85 }} className="-ml-3 mt-9 grid max-w-xl grid-cols-3 gap-3"><CTAButton href={profile.github} icon="github" onClick={launchGithub}>查看 GitHub</CTAButton><CTAButton href="#contact" variant="ghost" icon="mail" onClick={scrollToSection("#contact")}>联系我</CTAButton><ShareButton status={shareStatus} onShare={shareSite} /></motion.div>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.62, duration: 0.9 }} className="mt-8 flex items-center gap-3 text-[12px] text-white/34" style={fontStyles.mono}><span className="h-px w-10 bg-gradient-to-r from-cyan-100/0 via-cyan-100/35 to-cyan-100/0" />WUYi WITH AI / CODE FLOW / IMAGINATION SYSTEM</motion.div>
           </motion.div>
@@ -2126,21 +2089,21 @@ export default function App() {
       </section>
 
       <section id="capability" className="relative z-10 [overflow-x:clip] border-y border-white/[0.06] bg-[#05060c] px-6 py-28 md:px-10 md:py-36">
-        <EvolutionVideoBackground background={evolutionBackgrounds.capability} />
+        <EvolutionLightBackground background={evolutionBackgrounds.capability} />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(125,249,255,0.075),transparent_28%),radial-gradient(circle_at_82%_12%,rgba(148,118,255,0.12),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_28%,rgba(255,255,255,0.015))]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.18)_1px,transparent_1px)] [background-size:56px_56px]" />
         <div className="relative z-10 mx-auto max-w-7xl">
           <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.75 }} className="relative mx-auto mb-14 max-w-4xl text-center">
             <h2 className="mx-auto bg-gradient-to-b from-white via-slate-100/90 to-white/42 bg-clip-text text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.055em] text-transparent md:text-[4.2rem]">Capability Matrix</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-cyan-50/42 md:text-base">我的 AI 系统能力栈</p>
-            <p className="mx-auto mt-2 max-w-3xl text-sm leading-7 text-white/34 md:text-base">把开发、自动化、Agent、设计、数据与产品化能力组合成可运行的系统矩阵。</p>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-cyan-50/58 md:text-lg">我的 AI 系统能力栈</p>
+            <p className="mx-auto mt-2 max-w-3xl text-base leading-8 text-white/48 md:text-lg">把开发、自动化、Agent、设计、数据与产品化能力组合成可运行的系统矩阵。</p>
           </motion.div>
           <div className="relative grid gap-5 md:grid-cols-2 lg:grid-cols-3">{capabilityItems.map((item, index) => <CapabilityChip key={item.title} item={item} index={index} />)}</div>
         </div>
       </section>
 
       <section id="story" className="relative z-10 [overflow-x:clip] border-y border-white/[0.06] bg-[#03040a] px-6 py-28 text-white md:px-10 md:py-36">
-        <EvolutionVideoBackground background={evolutionBackgrounds.story} />
+        <EvolutionLightBackground background={evolutionBackgrounds.story} />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(125,249,255,0.08),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(148,118,255,0.13),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_32%,rgba(255,255,255,0.012))]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.16)_1px,transparent_1px)] [background-size:58px_58px]" />
         <div className="pointer-events-none absolute left-1/2 top-[54%] hidden h-px w-[76vw] -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan-100/22 to-transparent lg:block" />
@@ -2155,10 +2118,10 @@ export default function App() {
             <h2 className="mx-auto bg-gradient-to-b from-white via-slate-100/90 to-white/42 bg-clip-text text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.055em] text-transparent md:text-[4.2rem]">
               How I Build With AI
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-cyan-50/42 md:text-base">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-cyan-50/58 md:text-lg">
               从混乱问题，到可执行系统。
             </p>
-            <p className="mx-auto mt-2 max-w-3xl text-sm leading-7 text-white/34 md:text-base">
+            <p className="mx-auto mt-2 max-w-3xl text-base leading-8 text-white/48 md:text-lg">
               把问题拆成结构，把结构接入智能，再把智能落成可运行的产品流程。
             </p>
           </motion.div>
@@ -2177,7 +2140,7 @@ export default function App() {
       </section>
 
       <section id="systems" className="relative z-10 [overflow-x:clip] border-y border-white/[0.06] bg-[#03040a] px-6 py-28 text-white md:px-10 md:py-36">
-        <EvolutionVideoBackground background={evolutionBackgrounds.systems} />
+        <EvolutionLightBackground background={evolutionBackgrounds.systems} />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_8%,rgba(160,232,255,0.09),transparent_30%),radial-gradient(circle_at_18%_22%,rgba(74,117,255,0.12),transparent_34%),radial-gradient(circle_at_86%_18%,rgba(148,118,255,0.14),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.035),transparent_30%,rgba(255,255,255,0.012))]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.16)_1px,transparent_1px)] [background-size:58px_58px]" />
         <div className="pointer-events-none absolute left-1/2 top-[58%] hidden h-px w-[72vw] -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan-100/22 to-transparent lg:block" />
@@ -2197,10 +2160,10 @@ export default function App() {
             <h2 className="mx-auto bg-gradient-to-b from-white via-slate-100/90 to-white/42 bg-clip-text text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.055em] text-transparent md:text-[4.2rem]">
               Selected Systems
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-cyan-50/42 md:text-base">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-cyan-50/58 md:text-lg">
               正在形成的 AI 系统模块
             </p>
-            <p className="mx-auto mt-2 max-w-3xl text-sm leading-7 text-white/34 md:text-base">
+            <p className="mx-auto mt-2 max-w-3xl text-base leading-8 text-white/48 md:text-lg">
               自动化、产品界面与数据智能，是我把 AI 变成真实系统的三个核心落点。
             </p>
           </motion.div>
@@ -2211,7 +2174,7 @@ export default function App() {
       </section>
 
       <section id="radar" className="relative z-10 [overflow-x:clip] bg-[#02030A] px-6 py-28 text-white md:px-10 md:py-36">
-        <EvolutionVideoBackground background={evolutionBackgrounds.radar} />
+        <EvolutionLightBackground background={evolutionBackgrounds.radar} />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#03040a] via-[#040713]/85 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#03040a] via-[#070818]/80 to-transparent" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(125,249,255,0.08),transparent_26%),radial-gradient(circle_at_18%_20%,rgba(77,163,255,0.10),transparent_30%),radial-gradient(circle_at_84%_18%,rgba(148,118,255,0.14),transparent_30%),linear-gradient(180deg,#02030A_0%,#040712_48%,#0A0616_100%)]" />
@@ -2231,10 +2194,10 @@ export default function App() {
             <h2 className="mx-auto bg-gradient-to-b from-white via-slate-100/90 to-white/42 bg-clip-text text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.055em] text-transparent md:text-[4.2rem]">
               AI Orbit Radar
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-cyan-50/42 md:text-base">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-cyan-50/58 md:text-lg">
               围绕 AI Core 运行的技术星图。
             </p>
-            <p className="mx-auto mt-2 max-w-3xl text-sm leading-7 text-white/34 md:text-base">
+            <p className="mx-auto mt-2 max-w-3xl text-base leading-8 text-white/48 md:text-lg">
               从基础模型、智能体、RAG、训练优化、强化学习到应用工程，每一条轨道都服务于真实 AI 产品的构建。
             </p>
           </motion.div>
@@ -2260,7 +2223,7 @@ export default function App() {
       </section>
 
       <footer id="contact" className="relative z-10 [overflow-x:clip] px-6 py-32 text-white md:px-10 md:py-44">
-        <EvolutionVideoBackground background={evolutionBackgrounds.contact} />
+        <EvolutionLightBackground background={evolutionBackgrounds.contact} />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(125,249,255,0.11),transparent_34%),radial-gradient(circle_at_82%_30%,rgba(148,118,255,0.13),transparent_38%),radial-gradient(circle_at_18%_68%,rgba(77,163,255,0.08),transparent_34%),linear-gradient(180deg,#02030A_0%,#040713_44%,#020207_100%)]" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[#02030A] via-[#071022]/70 to-transparent" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.022] [background-image:linear-gradient(to_right,rgba(255,255,255,.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.12)_1px,transparent_1px)] [background-size:72px_72px]" />
@@ -2275,7 +2238,7 @@ export default function App() {
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           className="relative mx-auto max-w-6xl text-center"
         >
-          <p style={fontStyles.mono} className="mb-7 text-[11px] uppercase tracking-[0.42em] text-cyan-50/36">WuYi with AI</p>
+          <p style={fontStyles.mono} className="mb-7 text-[12px] uppercase tracking-[0.22em] text-cyan-50/56">WuYi with AI</p>
           <h2 className="mx-auto max-w-none whitespace-nowrap bg-gradient-to-b from-white via-slate-100/88 to-white/38 bg-clip-text text-[clamp(1.55rem,4.7vw,4.8rem)] font-semibold leading-[1.04] tracking-[-0.065em] text-transparent">
             当想象力接入智能，现实开始重构。
           </h2>
@@ -2284,10 +2247,10 @@ export default function App() {
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4">
             <p style={fontStyles.serif} className="text-[2.7rem] font-light tracking-[0.18em] text-white/92 md:text-[4.2rem]">AI边池派</p>
-            <p className="text-sm font-medium tracking-[0.42em] text-cyan-50/38">{profile.location}</p>
+            <p className="text-base font-medium tracking-[0.22em] text-cyan-50/56">{profile.location}</p>
           </div>
 
-          <div className="mx-auto mt-14 grid max-w-3xl gap-3 text-sm text-white/58 md:grid-cols-3">
+          <div className="mx-auto mt-14 grid max-w-3xl gap-3 text-base text-white/68 md:grid-cols-3">
             <a href={profile.github} target="_blank" rel="noreferrer" className="rounded-full border border-cyan-100/10 bg-white/[0.035] px-5 py-3 backdrop-blur-xl transition hover:border-cyan-100/24 hover:bg-white/[0.075] hover:text-white">
               GitHub：{profile.githubName}
             </a>
