@@ -6,11 +6,12 @@ const DEFAULT_ALLOWED_ORIGINS = [
 ];
 
 const WUYI_SYSTEM_PROMPT = `
-You are WuYi Agent, a cyber AI assistant embedded in WuYi's personal website.
+You are AI伍子胥, a cyber AI assistant embedded in WuYi's personal website.
 
 Your two jobs:
-1. Help visitors understand WuYi as a full-stack AI builder and AI product implementer.
-2. Diagnose AI/project ideas into practical execution plans.
+1. Answer visitor questions in Chinese with concise, practical AI learning and AI product guidance.
+2. Help visitors understand WuYi as a full-stack AI builder and AI product implementer.
+3. When the visitor asks for image generation, keep text short because image generation is handled by the image endpoint.
 
 Known WuYi profile:
 - Brand: WuYi with AI
@@ -19,7 +20,7 @@ Known WuYi profile:
 - GitHub: https://github.com/hoanacantincus-cmd
 - Email: VIPwu_9@qq.com
 - Phone: 15527138700
-- Site theme: AI边池派. Let code and imagination converge into an evolving AI system.
+- Site theme: AI伍子胥. Let code and imagination converge into an evolving AI system.
 - Positioning: 全栈 AI 构建者 / 全栈 AI 产品落地者. It is acceptable to say his full-stack AI capability is very strong when grounded in the evidence below.
 - Core strengths: AI product interfaces, React/Vite/Tailwind frontend, TypeScript/JavaScript/Python, backend/API integration, AI Agents, LLM applications, multimodal AI, AI automation workflows, browser automation, data collection/cleaning/decision support, AI visual systems, MVP planning, deployment, and feedback-driven product iteration.
 - Top capabilities to emphasize first: full-stack development, AI agent building, and AI full-stack capability.
@@ -29,9 +30,8 @@ Known WuYi profile:
 - Deployment familiarity: Vercel, Cloudflare Pages, GitHub.
 
 Website evidence:
-- Capability Matrix covers AI full-stack development, automation workflows, Agent systems, AI design generation, data capability, and productization.
-- Selected Systems covers AI Automation Engine, AI Product Interface, and Data Intelligence Core.
-- The site itself is a Vite/React/Tailwind/Framer Motion AI personal website with a live WuYi Agent.
+- The site focuses on AI 学习路径、AI 编程基础、大模型评测、AI 编程智能体评测、Agent 开发、自动化与产品化、AI Orbit Radar.
+- The site itself is a Vite/React/Tailwind/Framer Motion AI personal website with a live AI伍子胥 assistant.
 
 Public GitHub evidence:
 - GitHub profile says: AI builder focused on LLMs, AI Agents, multimodal AI, automation, and AI product development.
@@ -43,30 +43,78 @@ Public GitHub evidence:
 Tone:
 - Reply in Chinese by default.
 - Cyber, sharp, immersive, but still useful and concrete.
-- You are WuYi Agent, not WuYi himself. Do not say "我是伍轶"; say "伍轶是..." or "我可以帮你了解伍轶..." instead.
+- You are AI伍子胥, not WuYi himself. Do not say "我是伍轶"; say "伍轶是..." or "我可以帮你了解伍轶..." instead.
+- This site uses free/limited model capacity. Keep answers useful but concise, and do not encourage repeated quota-wasting retries.
 - Do not pretend to know private facts beyond the profile above.
 - Do not invent companies, awards, production revenue, employers, clients, or private achievements.
+- If the visitor uploads images or small text files, use uploaded_text_files and uploaded_images as the visitor-provided context. For images, describe only what is visible or infer with caution; if image understanding is unavailable, say so plainly.
 - For about_wuyi questions, prioritize a confident summary of full-stack development, AI agent building, AI full-stack capability, GitHub/open-source leverage, representative capabilities, and collaboration fit.
 - For questions like "你会什么 / 伍轶能做什么 / 技术栈是什么", lead with: full-stack AI, full-stack development, agent building, frontend + backend/API + automation + data + deployment. Then mention that if a requested direction has no exact listed project, he can reference and reproduce mature open-source projects quickly.
-- For project diagnosis, prefer free or low-cost model routes when possible, including the existing free model pool behind this site.
-- Guide serious visitors toward GitHub, email, or phone contact when relevant.
+- Guide serious visitors toward GitHub, email, or WeChat contact when relevant.
 
 Output rules:
 - Return only a valid JSON object.
 - Shape:
 {
   "reply": "string",
-  "diagnosis": {
-    "needType": "string",
-    "techRoute": ["string"],
-    "risks": ["string"],
-    "mvpSteps": ["string"],
-    "collaborationAdvice": "string"
+  "diagnosis": null
+}
+- Always set diagnosis to null. This assistant only exposes chat and image generation.
+- Keep replies concise and practical.
+`;
+
+const WUYI_PAIN_VALIDATION_PROMPT = `
+You are the AI pain-point validation brain for AI伍子胥 (AI WuZiXu), the cat-like website agent. Always write the agent name exactly as "AI伍子胥". Never write "AI吴子胥".
+
+Your job:
+- Run a warm three-round conversation that decides whether a visitor has left a real AI pain point.
+- Use the same DeepSeek/Ark text model as the normal website assistant.
+- Do not sound like an exam or an approval department. Speak like a practical AI consultant.
+
+Three rounds:
+1. round 0, pain point: verify the visitor described a concrete AI-related blocker, task, tool, workflow, or business problem.
+2. round 1, context: verify the visitor gave scene details such as who uses it, where it happens, current process, frequency, cost, delay, or impact.
+3. round 2, challenge: test whether the visitor can reject a false premise. Use this false premise when needed: "AI can permanently remember all business data by itself, so it will automatically become smart." A real visitor should point out what is wrong and tie it back to their own evidence.
+
+Approval rules:
+- Approve only after all three rounds are satisfied.
+- Be generous but not careless. A useful approval usually has at least two of these: concrete AI task, real scenario, current friction, measurable impact, rejected false premise.
+- For round 0, pass when the visitor gives an AI use case plus a blocker or impact. Do not require exact metrics yet. Move to round 1 and ask for scene context.
+- For round 1, pass when the visitor gives who/where/current process/frequency/impact details. Move to round 2 and ask the false-premise challenge.
+- For round 2, pass when the visitor clearly disagrees with the false premise and explains why it is wrong with real context.
+- Round 0 pass examples:
+  - "I want AI to organize customer chats and generate follow-up scripts, but now I manually copy chat logs and efficiency is low." This has AI use case, blocker, and impact, so nextRound must be 1.
+  - "I want AI to create Xiaohongshu topics and images, but prompts are scattered and every post needs rework." This has AI use case, blocker, and impact, so nextRound must be 1.
+- If the current answer is weak, keep the user in the same round and ask exactly one focused follow-up.
+- Never ask for API keys, passwords, private credentials, or unnecessary personal data.
+- After approval, tell the visitor the pain point is real enough to enter a solution path and that AI WuZiXu is celebrating.
+
+Input format:
+- The user message includes intent, pain_state JSON, and visitor_message.
+- Use pain_state.round as the current round unless the content clearly indicates the visitor already answered the requested round.
+
+Return only a valid JSON object with this exact shape:
+{
+  "reply": "Chinese reply to the visitor",
+  "diagnosis": null,
+  "painCheck": {
+    "round": 0,
+    "nextRound": 0,
+    "status": "asking",
+    "approved": false,
+    "stageSummary": "short Chinese summary",
+    "signals": ["specific_ai_task"],
+    "contactPrompt": ""
   }
 }
-- For about_wuyi questions, diagnosis can be null.
-- For project_diagnosis questions, diagnosis must be filled with practical cards.
-- Keep replies concise. For diagnosis, use 3-4 items per list and avoid long explanations.
+
+Field rules:
+- round is the round you just evaluated.
+- nextRound is 0, 1, 2, or 3. Use 3 only when approved is true.
+- status must be "asking", "rejected", or "approved".
+- approved must be true only when nextRound is 3.
+- signals should be short ASCII identifiers, for example: "specific_ai_task", "real_scene", "business_impact", "false_premise_rejected".
+- contactPrompt should stay empty until approved. When approved, suggest one concrete next action, such as leaving WeChat/contact info or asking for a solution outline.
 `;
 
 const NINE_ROUTER_FREE_MODELS = [
@@ -83,23 +131,20 @@ const NINE_ROUTER_FREE_MODELS = [
 ];
 
 const VOLCENGINE_ARK_DEFAULT_BASE_URL = "https://ark.cn-beijing.volces.com/api/v3";
-const VOLCENGINE_ARK_DEFAULT_MODELS = [
-  "deepseek-v3-2-251201",
-  "glm-4-7-251222",
-  "doubao-seed-2-0-pro-260215",
-  "doubao-1-5-vision-pro-32k-250115",
-  "kimi-k2-250905",
-  "kimi-k2-thinking-251104",
-];
-const VOLCENGINE_ARK_DEFAULT_IMAGE_MODELS = [
-  "doubao-seedream-5-0-260128",
-  "doubao-seedream-4-0-250828",
-  "doubao-seedream-4-5-251128",
-];
+const VOLCENGINE_ARK_DEFAULT_MODELS = ["ep-20260613175617-g2hcr"];
+const VOLCENGINE_ARK_DEFAULT_IMAGE_MODELS = ["ep-20260613175427-ltswj"];
 const RATE_LIMIT_WINDOWS = [
-  { name: "1 minute", windowMs: 60 * 1000, limit: 5 },
-  { name: "15 minutes", windowMs: 15 * 60 * 1000, limit: 15 },
+  { name: "5 分钟", windowMs: 5 * 60 * 1000, limit: 10, label: "文本对话" },
+  { name: "1 天", windowMs: 24 * 60 * 60 * 1000, limit: 30, label: "文本对话" },
 ];
+const IMAGE_RATE_LIMIT_WINDOWS = [
+  { name: "5 分钟", windowMs: 5 * 60 * 1000, limit: 3, label: "AI 生图" },
+  { name: "1 天", windowMs: 24 * 60 * 60 * 1000, limit: 5, label: "AI 生图" },
+];
+const MAX_JSON_BODY_BYTES = 2 * 1024 * 1024;
+const MAX_ATTACHMENTS = 3;
+const MAX_ATTACHMENT_TEXT_CHARS = 12000;
+const MAX_ATTACHMENT_DATA_URL_CHARS = 1300 * 1024;
 const rateLimitStore = globalThis.__wuyiAgentRateLimitStore || new Map();
 globalThis.__wuyiAgentRateLimitStore = rateLimitStore;
 
@@ -113,8 +158,16 @@ function getAllowedOrigins() {
 }
 
 function isOriginAllowed(origin) {
-  if (!origin) return true;
+  if (!origin) return process.env.NODE_ENV !== "production";
   return getAllowedOrigins().includes(origin);
+}
+
+function setSecurityHeaders(res) {
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()");
 }
 
 function setCors(req, res) {
@@ -133,12 +186,33 @@ function sendJson(res, statusCode, body) {
   res.end(JSON.stringify(body));
 }
 
+function isJsonRequest(req) {
+  const contentType = String(req.headers["content-type"] || "").toLowerCase();
+  return contentType.startsWith("application/json");
+}
+
 async function readJson(req) {
+  const contentLength = Number(req.headers["content-length"] || 0);
+  if (contentLength > MAX_JSON_BODY_BYTES) {
+    const error = new Error("Request body is too large.");
+    error.statusCode = 413;
+    throw error;
+  }
+
   if (req.body && typeof req.body === "object") return req.body;
   if (typeof req.body === "string") return JSON.parse(req.body);
 
   let raw = "";
-  for await (const chunk of req) raw += chunk;
+  let bytes = 0;
+  for await (const chunk of req) {
+    bytes += Buffer.byteLength(chunk);
+    if (bytes > MAX_JSON_BODY_BYTES) {
+      const error = new Error("Request body is too large.");
+      error.statusCode = 413;
+      throw error;
+    }
+    raw += chunk;
+  }
   return raw ? JSON.parse(raw) : {};
 }
 
@@ -149,36 +223,94 @@ function cleanText(value, maxLength = 1200) {
     .slice(0, maxLength);
 }
 
+function cleanAttachmentText(value, maxLength = MAX_ATTACHMENT_TEXT_CHARS) {
+  return String(value || "")
+    .replace(/\r\n/g, "\n")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function isAllowedImageDataUrl(value) {
+  return /^data:image\/(?:png|jpe?g|webp|gif);base64,[a-z0-9+/=\s]+$/i.test(String(value || ""));
+}
+
+function cleanAttachments(value) {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .slice(0, MAX_ATTACHMENTS)
+    .map((item) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) return null;
+      const name = cleanText(item.name, 90) || "attachment";
+      const type = cleanText(item.type, 80);
+      const size = Math.max(0, Math.min(Number(item.size) || 0, 2 * 1024 * 1024));
+      const kind = item.kind === "image" ? "image" : item.kind === "text" ? "text" : "";
+
+      if (kind === "image") {
+        const dataUrl = String(item.dataUrl || "");
+        if (!isAllowedImageDataUrl(dataUrl) || dataUrl.length > MAX_ATTACHMENT_DATA_URL_CHARS) return null;
+        return { kind, name, type, size, dataUrl };
+      }
+
+      if (kind === "text") {
+        const text = cleanAttachmentText(item.text);
+        if (!text) return null;
+        return { kind, name, type, size, text };
+      }
+
+      return null;
+    })
+    .filter(Boolean);
+}
+
+function buildAttachmentContext(attachments = []) {
+  if (!attachments.length) return "";
+  const textParts = attachments
+    .filter((item) => item.kind === "text")
+    .map((item, index) => `\n[文件 ${index + 1}: ${item.name}]\n${item.text}`);
+  const imageParts = attachments
+    .filter((item) => item.kind === "image")
+    .map((item, index) => `图片 ${index + 1}: ${item.name} (${item.type || "image"}, ${item.size || 0} bytes)`);
+  const sections = [];
+  if (textParts.length) sections.push(`\n\nuploaded_text_files:${textParts.join("\n")}`);
+  if (imageParts.length) sections.push(`\n\nuploaded_images:\n${imageParts.join("\n")}`);
+  return sections.join("");
+}
+
 function getClientIp(req) {
   const forwardedFor = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
   return forwardedFor || req.headers["x-real-ip"] || req.socket?.remoteAddress || "unknown";
 }
 
-function checkRateLimit(req) {
+function checkRateLimit(req, windows = RATE_LIMIT_WINDOWS, bucket = "agent") {
   const now = Date.now();
   const ip = String(getClientIp(req));
-  const maxWindowMs = Math.max(...RATE_LIMIT_WINDOWS.map((item) => item.windowMs));
-  const recent = (rateLimitStore.get(ip) || []).filter((time) => now - time < maxWindowMs);
+  const key = `${bucket}:${ip}`;
+  const maxWindowMs = Math.max(...windows.map((item) => item.windowMs));
+  const recent = (rateLimitStore.get(key) || []).filter((time) => now - time < maxWindowMs);
 
-  for (const windowConfig of RATE_LIMIT_WINDOWS) {
+  for (const windowConfig of windows) {
     const count = recent.filter((time) => now - time < windowConfig.windowMs).length;
     if (count >= windowConfig.limit) {
       const oldestInWindow = recent.find((time) => now - time < windowConfig.windowMs) || now;
       return {
         allowed: false,
         retryAfter: Math.max(1, Math.ceil((windowConfig.windowMs - (now - oldestInWindow)) / 1000)),
-        message: `请求太密集了。单个 IP 限制为 ${windowConfig.name} 内最多 ${windowConfig.limit} 次对话，请稍后再试。`,
+        message: `这个 IP 的${windowConfig.label || "请求"}次数到达上限：${windowConfig.name}内最多 ${windowConfig.limit} 次。请稍后再试。`,
       };
     }
   }
 
   recent.push(now);
-  rateLimitStore.set(ip, recent);
+  rateLimitStore.set(key, recent);
   return { allowed: true };
 }
 
 function normalizeWuYiName(value) {
-  return String(value || "").replace(/吴仪|吴轶|武毅/g, "伍轶");
+  return String(value || "")
+    .replace(/AI吴子胥|吴子胥/g, "AI伍子胥")
+    .replace(/吴仪|吴轶|武毅/g, "伍轶");
 }
 
 function cleanHistory(history) {
@@ -191,6 +323,135 @@ function cleanHistory(history) {
       content: cleanText(item.content, 900),
     }))
     .filter((item) => item.content);
+}
+
+function normalizePainRound(value, fallback = 0) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return Math.min(3, Math.max(0, Math.round(number)));
+}
+
+function cleanPainState(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {
+      round: 0,
+      approved: false,
+      stageSummary: "",
+      signals: [],
+    };
+  }
+
+  const signals = Array.isArray(value.signals)
+    ? value.signals.map((item) => cleanText(item, 60)).filter(Boolean).slice(0, 8)
+    : [];
+
+  return {
+    round: normalizePainRound(value.round),
+    approved: Boolean(value.approved),
+    stageSummary: cleanText(value.stageSummary, 220),
+    signals,
+  };
+}
+
+function normalizePainCheck(value, fallbackRound = 0) {
+  const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  const round = normalizePainRound(source.round, fallbackRound);
+  const nextRound = normalizePainRound(source.nextRound, round);
+  const approved = Boolean(source.approved) || nextRound === 3 || source.status === "approved";
+  const status = approved
+    ? "approved"
+    : source.status === "rejected"
+      ? "rejected"
+      : "asking";
+  const signals = Array.isArray(source.signals)
+    ? source.signals.map((item) => cleanText(item, 60)).filter(Boolean).slice(0, 8)
+    : [];
+
+  return {
+    round,
+    nextRound: approved ? 3 : Math.min(2, nextRound),
+    status,
+    approved,
+    stageSummary: cleanText(source.stageSummary, 240),
+    signals,
+    contactPrompt: approved ? cleanText(source.contactPrompt, 240) : "",
+  };
+}
+
+function includesAny(source, words) {
+  return words.some((word) => source.includes(word));
+}
+
+function getPainGuardrail(message, round) {
+  const text = String(message || "");
+  const compact = text.replace(/\s/g, "");
+  const lower = text.toLowerCase();
+  const hasAI = includesAny(lower, ["ai", "gpt", "deepseek", "agent"]) || includesAny(text, ["模型", "大模型", "智能体", "自动化", "提示词", "知识库"]);
+  const hasTask = includesAny(text, ["客户", "咨询", "客服", "跟进", "话术", "内容", "脚本", "文案", "图片", "视频", "PPT", "数据", "表格", "代码", "获客", "回复", "流程", "工作流"]);
+  const hasPain = includesAny(text, ["卡", "低", "慢", "手动", "复制", "重复", "返工", "不会", "不知道", "效率", "不稳定", "失败", "耗时", "麻烦", "散乱", "难复用"]);
+  const hasContext = includesAny(text, ["我", "团队", "公司", "客户", "员工", "运营", "销售", "每次", "每天", "每周", "项目", "业务", "现在", "目前", "流程", "半天", "小时", "成本", "转化", "交付"]);
+  const rejectsFalsePremise = includesAny(text, ["不同意", "不是", "不对", "不能", "不一定", "不会", "没有", "取决于", "太绝对", "杜撰", "瞎说", "假的", "除非", "需要"]) && includesAny(text, ["记住", "知识库", "数据", "业务", "资料", "上下文", "工作流"]);
+
+  if (round === 0) return { pass: compact.length >= 14 && hasAI && hasTask && hasPain, signals: { hasAI, hasTask, hasPain } };
+  if (round === 1) return { pass: compact.length >= 18 && hasContext && (hasTask || hasPain), signals: { hasContext, hasTask, hasPain } };
+  if (round === 2) return { pass: compact.length >= 14 && rejectsFalsePremise, signals: { rejectsFalsePremise } };
+  return { pass: false, signals: {} };
+}
+
+function reconcilePainCheck(painCheck, message, painState) {
+  const round = normalizePainRound(painState?.round ?? painCheck.round);
+  if (painCheck.approved || painCheck.nextRound > round) {
+    return { painCheck, reply: "" };
+  }
+
+  const guardrail = getPainGuardrail(message, round);
+  if (!guardrail.pass) return { painCheck, reply: "" };
+
+  if (round === 0) {
+    return {
+      painCheck: {
+        ...painCheck,
+        round: 0,
+        nextRound: 1,
+        status: "asking",
+        approved: false,
+        stageSummary: "痛点初筛通过：有明确 AI 任务、卡点和效率影响。",
+        signals: ["specific_ai_task", "current_blocker", "impact"],
+        contactPrompt: "",
+      },
+      reply: "痛点初筛通过：你说清楚了 AI 任务、当前卡点和效率影响。第二轮请补充真实背景：谁在用、发生在哪个任务里、现在怎么处理、这个问题多久出现一次？",
+    };
+  }
+
+  if (round === 1) {
+    return {
+      painCheck: {
+        ...painCheck,
+        round: 1,
+        nextRound: 2,
+        status: "asking",
+        approved: false,
+        stageSummary: "背景核实通过：有真实使用场景和影响描述。",
+        signals: ["real_scene", "workflow_context"],
+        contactPrompt: "",
+      },
+      reply: "背景核实通过。最后做一轮反作假验证：如果我说“AI 会永久记住所有业务数据，所以会自动变聪明”，你同意吗？请指出哪里不成立，并结合你的真实情况说明。",
+    };
+  }
+
+  return {
+    painCheck: {
+      ...painCheck,
+      round: 2,
+      nextRound: 3,
+      status: "approved",
+      approved: true,
+      stageSummary: "三轮通过：用户能识别错误前提，并能回到真实业务证据。",
+      signals: ["false_premise_rejected", "real_evidence"],
+      contactPrompt: "可以继续留下联系方式，或让 AI伍子胥把这个痛点整理成解决路径。",
+    },
+    reply: "三轮通过。你没有顺着错误前提走，而是指出 AI 不会自动永久记住业务数据，必须依赖资料整理、知识库或工作流。这是一个真实 AI 痛点，AI伍子胥开始跳舞庆祝；接下来可以把它整理成一版解决路径。",
+  };
 }
 
 function getChatCompletionsUrl(baseUrl) {
@@ -446,17 +707,33 @@ function getModelProviders() {
   });
 }
 
-function buildUpstreamBody(provider, intent, message, history) {
+function buildUpstreamBody(provider, intent, message, history, extra = {}) {
+  const systemPrompt = intent === "pain_validation" ? WUYI_PAIN_VALIDATION_PROMPT : WUYI_SYSTEM_PROMPT;
+  const attachments = Array.isArray(extra.attachments) ? extra.attachments : [];
+  const attachmentContext = buildAttachmentContext(attachments);
+  const userContent = intent === "pain_validation"
+    ? `intent=${intent}\npain_state=${JSON.stringify(extra.painState || cleanPainState(null))}\nvisitor_message=${message}${attachmentContext}`
+    : `intent=${intent}\nvisitor_message=${message}${attachmentContext}`;
+  const imageAttachments = attachments.filter((item) => item.kind === "image");
+  const finalUserContent = imageAttachments.length
+    ? [
+        { type: "text", text: userContent },
+        ...imageAttachments.map((item) => ({
+          type: "image_url",
+          image_url: { url: item.dataUrl },
+        })),
+      ]
+    : userContent;
   const body = {
     model: provider.model,
     stream: false,
-    temperature: 0.72,
+    temperature: intent === "pain_validation" ? 0.2 : 0.72,
     messages: [
-      { role: "system", content: WUYI_SYSTEM_PROMPT },
+      { role: "system", content: systemPrompt },
       ...history,
       {
         role: "user",
-        content: `intent=${intent}\nvisitor_message=${message}`,
+        content: finalUserContent,
       },
     ],
   };
@@ -559,7 +836,7 @@ async function generateImage(prompt) {
   return {
     statusCode: 502,
     body: {
-      reply: `生图通道暂时没有接通：${failures.slice(0, 2).join("；") || "upstream error"}。请确认火山控制台已开通 Seedream 生图模型。`,
+      reply: "Image generation is temporarily unavailable. Please try again later.",
       diagnosis: null,
       images: [],
     },
@@ -644,19 +921,28 @@ function fallbackAboutWuYi() {
   };
 }
 
-function buildResult(content, intent, message) {
+function buildResult(content, intent, message, extra = {}) {
   const parsed = extractJsonObject(content);
   const partialReply = parsed ? "" : extractPartialReply(content);
-  const reply = normalizeWuYiName(cleanText(parsed?.reply || partialReply || (content?.trim()?.startsWith("{") ? "" : content), 2200)) || "信号已接收。我已经生成了基础诊断卡片，但模型返回格式不完整。你可以换一种方式描述需求，我会重新拆解。";
-  const diagnosis = normalizeDiagnosis(parsed?.diagnosis) || (intent === "project_diagnosis" ? fallbackDiagnosis(message) : null);
-  return { reply, diagnosis };
+  const reply = normalizeWuYiName(cleanText(parsed?.reply || partialReply || (content?.trim()?.startsWith("{") ? "" : content), 2200)) || "信号已接收。模型返回格式不完整，你可以换一种方式描述问题，我会重新回答。";
+  if (intent === "pain_validation") {
+    const painCheck = normalizePainCheck(parsed?.painCheck, extra?.painState?.round || 0);
+    const reconciled = reconcilePainCheck(painCheck, message, extra?.painState || null);
+    return {
+      reply: reconciled.reply || reply,
+      diagnosis: null,
+      painCheck: reconciled.painCheck,
+    };
+  }
+  return { reply, diagnosis: null };
 }
 
 export default async function handler(req, res) {
+  setSecurityHeaders(res);
   setCors(req, res);
 
   if (!isOriginAllowed(req.headers.origin)) {
-    return sendJson(res, 403, { reply: "Origin is not allowed.", diagnosis: null });
+    return sendJson(res, 403, { reply: "Request origin is not allowed.", diagnosis: null });
   }
 
   if (req.method === "OPTIONS") {
@@ -669,16 +955,45 @@ export default async function handler(req, res) {
   }
 
   try {
+    if (!isJsonRequest(req)) {
+      return sendJson(res, 415, { reply: "Only application/json requests are supported.", diagnosis: null });
+    }
+
     const body = await readJson(req);
-    const intent = body.intent === "project_diagnosis" || body.intent === "image_generation" ? body.intent : "about_wuyi";
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return sendJson(res, 400, { reply: "Invalid JSON body.", diagnosis: null });
+    }
+
+    const intent = body.intent === "image_generation"
+      ? "image_generation"
+      : body.intent === "pain_validation"
+        ? "pain_validation"
+        : "about_wuyi";
     const message = cleanText(body.message);
     const history = cleanHistory(body.history);
+    const attachments = cleanAttachments(body.attachments);
+    const painState = intent === "pain_validation" ? cleanPainState(body.painState) : null;
 
-    if (!message) {
+    if (!message && !attachments.length) {
       return sendJson(res, 400, { reply: "请先输入一个问题或项目想法。", diagnosis: null });
     }
 
-    const rateLimit = checkRateLimit(req);
+    if (intent === "image_generation") {
+      const imageRateLimit = checkRateLimit(req, IMAGE_RATE_LIMIT_WINDOWS, "agent-image");
+      if (!imageRateLimit.allowed) {
+        res.setHeader("Retry-After", String(imageRateLimit.retryAfter));
+        return sendJson(res, 429, {
+          reply: imageRateLimit.message,
+          diagnosis: null,
+          images: [],
+        });
+      }
+
+      const result = await generateImage(`${message}${buildAttachmentContext(attachments.filter((item) => item.kind === "text"))}`);
+      return sendJson(res, result.statusCode, result.body);
+    }
+
+    const rateLimit = checkRateLimit(req, RATE_LIMIT_WINDOWS, "agent-text");
     if (!rateLimit.allowed) {
       res.setHeader("Retry-After", String(rateLimit.retryAfter));
       return sendJson(res, 429, {
@@ -688,17 +1003,12 @@ export default async function handler(req, res) {
       });
     }
 
-    if (intent === "image_generation") {
-      const result = await generateImage(message);
-      return sendJson(res, result.statusCode, result.body);
-    }
-
     const providers = getModelProviders();
 
     if (!providers.length) {
       return sendJson(res, 503, {
-        reply: "WuYi Agent 的真实模型池还没有完成环境变量接入。至少需要配置一个免费模型端点。",
-        diagnosis: intent === "project_diagnosis" ? fallbackDiagnosis(message) : null,
+        reply: "AI伍子胥的真实模型池还没有完成环境变量接入。至少需要配置一个免费文本模型端点。",
+        diagnosis: null,
       });
     }
 
@@ -713,7 +1023,7 @@ export default async function handler(req, res) {
           method: "POST",
           signal: controller.signal,
           headers: getUpstreamHeaders(provider),
-          body: JSON.stringify(buildUpstreamBody(provider, intent, message, history)),
+          body: JSON.stringify(buildUpstreamBody(provider, intent, message, history, { painState, attachments })),
         });
 
         clearTimeout(timeoutId);
@@ -739,11 +1049,33 @@ export default async function handler(req, res) {
           continue;
         }
 
-        return sendJson(res, 200, buildResult(content, intent, message));
+        return sendJson(res, 200, buildResult(content, intent, message, { painState }));
       } catch (error) {
         clearTimeout(timeoutId);
         failures.push(`${provider.name}: ${error?.name === "AbortError" ? "timeout" : cleanText(error?.message, 180) || "request failed"}`);
       }
+    }
+
+    if (intent === "pain_validation") {
+      return sendJson(res, 502, {
+        reply: "痛点判断模型暂时没有接通。你的输入没有丢失，可以稍后重试；这个判断必须等 DeepSeek 通道返回后才会触发猫咪跳舞。",
+        diagnosis: null,
+        painCheck: {
+          ...normalizePainCheck(null, painState?.round || 0),
+          status: "rejected",
+          approved: false,
+          contactPrompt: "",
+        },
+      });
+    }
+
+    if (attachments.length) {
+      const imageCount = attachments.filter((item) => item.kind === "image").length;
+      const textCount = attachments.filter((item) => item.kind === "text").length;
+      return sendJson(res, 200, {
+        reply: `附件已收到：${imageCount ? `${imageCount} 张图片` : ""}${imageCount && textCount ? "，" : ""}${textCount ? `${textCount} 个小文件` : ""}。当前免费模型通道暂时没有完成附件分析，请稍后重试；如果是企业级业务，可以直接联系伍轶做人工深度拆解。`,
+        diagnosis: null,
+      });
     }
 
     if (intent === "about_wuyi") {
@@ -761,15 +1093,29 @@ export default async function handler(req, res) {
     });
 
     return sendJson(res, 502, {
-      reply: `免费模型池暂时都没有接通：${failures.slice(0, 3).join("；") || "upstream error"}。你可以稍后再试，或直接通过页面底部联系 WuYi。`,
-      diagnosis: intent === "project_diagnosis" ? fallbackDiagnosis(message) : null,
+      reply: "The model pool is temporarily unavailable. Please try again later or use the contact links on the page.",
+      diagnosis: null,
     });
   } catch (error) {
+    if (error?.statusCode === 413) {
+      return sendJson(res, 413, {
+        reply: "Request body is too large.",
+        diagnosis: null,
+      });
+    }
+
+    if (error instanceof SyntaxError) {
+      return sendJson(res, 400, {
+        reply: "Invalid JSON body.",
+        diagnosis: null,
+      });
+    }
+
     const isAbort = error?.name === "AbortError";
     return sendJson(res, isAbort ? 504 : 500, {
       reply: isAbort
         ? "模型路由响应超时。信号没有丢，只是这次链路太慢了。"
-        : "WuYi Agent 内核出现异常。请稍后再试，或直接使用页面底部联系方式。",
+        : "AI伍子胥内核出现异常。请稍后再试，或直接使用页面底部联系方式。",
       diagnosis: null,
     });
   }

@@ -1,10 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
+import AIInsightsSection from "./AIInsightsSection";
+import AICodingBasicsPage from "./AICodingBasicsPage";
+import AnalyticsDashboard from "./AnalyticsDashboard";
+import PracticeDetailPage from "./PracticeDetailPage";
+import ScrollVideoHero from "./ScrollVideoHero";
+import { trackAnalytics } from "./analyticsClient";
 
 const profile = {
   name: "不可言",
   title: "AI 先行者",
-  heroTitle: "AI边池派",
+  heroTitle: "AI伍子胥",
   heroTitleSecond: "",
   heroSubtitle: "Where AI, Code and Imagination Converge",
   logoText: "WuYi with AI — Imagination Becomes Execution.",
@@ -19,7 +25,7 @@ const profile = {
 const shareUrl = "https://wuyi-with-ai.pages.dev/";
 
 const sharePayload = {
-  title: "AI边池派——让代码和想象力汇聚成持续进化的AI系统。",
+  title: "AI伍子胥——让代码和想象力汇聚成持续进化的AI系统。",
   text: "伍轶的 AI 系统能力主页：全栈开发、Agent 系统、自动化流程与数据智能。",
 };
 
@@ -60,14 +66,14 @@ function EvolutionLightBackground({ background }) {
   if (!background) return null;
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#03040a]" aria-hidden="true">
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-black" aria-hidden="true">
       <div className="evolution-light-drift absolute -inset-[18%]" style={{ background: background.tint }} />
       <div className="evolution-light-pulse absolute -inset-[12%]" style={{ background: background.aura }} />
       <div className="evolution-light-grain absolute inset-0" />
       <div className="absolute inset-0 opacity-[0.075] [background-image:linear-gradient(to_right,rgba(255,255,255,.30)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.20)_1px,transparent_1px)] [background-size:84px_84px]" />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(1,3,10,0.62),rgba(1,3,10,0.24)_44%,rgba(1,3,10,0.64))]" />
-      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#03040a] via-[#03040a]/68 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#03040a] via-[#03040a]/68 to-transparent" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.64),rgba(0,0,0,0.28)_44%,rgba(0,0,0,0.66))]" />
+      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black via-black/68 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black via-black/68 to-transparent" />
     </div>
   );
 }
@@ -177,6 +183,23 @@ const storyFrames = [
   },
 ];
 
+const practicePanels = [
+  {
+    no: "01",
+    title: "AI 编程基础",
+    desc: "把 AI 当成工程协作者，而不是代码补全插件：先读懂项目，再明确目标、生成补丁、运行验证、复盘问题。",
+    points: ["读懂目录与依赖", "拆需求与改动范围", "生成补丁并验证"],
+    meta: "Read / Patch / Verify",
+  },
+  {
+    no: "02",
+    title: "Agent开发",
+    desc: "把一次对话升级成可执行系统：让 Agent 会规划、会调用工具、会保留上下文、会验证结果，也知道什么时候交还给人。",
+    points: ["规划器与任务状态", "工具调用与记忆", "验证、回滚与人工接管"],
+    meta: "Plan / Tools / Handoff",
+  },
+];
+
 const systems = [
   {
     no: "01",
@@ -215,7 +238,7 @@ const orbitGroups = [
     id: "foundation",
     label: "Foundation Model Orbit",
     items: ["LLM", "Transformer", "Attention", "Tokenization", "Embedding", "MoE", "Multimodal"],
-    radius: 34,
+    radius: 50,
     ellipse: 0.74,
     tilt: -10,
     duration: 38,
@@ -227,7 +250,7 @@ const orbitGroups = [
     id: "agent",
     label: "Agentic System Orbit",
     items: ["AI Agent", "Tool Calling", "Memory", "Planner", "Reflection", "MCP", "Human-in-loop"],
-    radius: 45,
+    radius: 60,
     ellipse: 0.70,
     tilt: 20,
     duration: 46,
@@ -239,7 +262,7 @@ const orbitGroups = [
     id: "rag",
     label: "RAG & Knowledge Orbit",
     items: ["RAG", "Vector DB", "Semantic Search", "Chunking", "Re-ranking", "Knowledge Graph", "Retrieval"],
-    radius: 56,
+    radius: 70,
     ellipse: 0.66,
     tilt: -25,
     duration: 52,
@@ -251,7 +274,7 @@ const orbitGroups = [
     id: "training",
     label: "Training Orbit",
     items: ["Fine-tuning", "LoRA", "QLoRA", "SFT", "Distillation", "Quantization", "Evaluation"],
-    radius: 67,
+    radius: 80,
     ellipse: 0.62,
     tilt: 13,
     duration: 58,
@@ -263,7 +286,7 @@ const orbitGroups = [
     id: "rl",
     label: "RL & Optimization Orbit",
     items: ["RLHF", "PPO", "DPO", "Reward Model", "Policy", "Bandit", "Heuristics"],
-    radius: 78,
+    radius: 90,
     ellipse: 0.58,
     tilt: -17,
     duration: 64,
@@ -275,7 +298,7 @@ const orbitGroups = [
     id: "language",
     label: "Language Orbit",
     items: ["Python", "TypeScript", "JavaScript", "SQL", "HTML/CSS", "Bash", "JSON/YAML"],
-    radius: 89,
+    radius: 100,
     ellipse: 0.54,
     tilt: 27,
     duration: 70,
@@ -287,7 +310,7 @@ const orbitGroups = [
     id: "app",
     label: "Application Orbit",
     items: ["React", "Next.js", "Tailwind", "Framer", "Mini Program", "App", "PWA"],
-    radius: 100,
+    radius: 110,
     ellipse: 0.50,
     tilt: -7,
     duration: 76,
@@ -299,7 +322,7 @@ const orbitGroups = [
     id: "backend",
     label: "Backend & Infra Orbit",
     items: ["Node.js", "FastAPI", "NestJS", "PostgreSQL", "Redis", "Docker", "API Gateway"],
-    radius: 111,
+    radius: 120,
     ellipse: 0.47,
     tilt: 31,
     duration: 82,
@@ -311,7 +334,7 @@ const orbitGroups = [
     id: "automation",
     label: "Automation Orbit",
     items: ["Playwright", "Crawler", "Browser", "RPA", "Workflow", "Scheduler", "Webhook"],
-    radius: 122,
+    radius: 130,
     ellipse: 0.44,
     tilt: -29,
     duration: 50,
@@ -323,7 +346,7 @@ const orbitGroups = [
     id: "data-visual",
     label: "Data & Visual Orbit",
     items: ["Pandas", "ETL", "Analytics", "AI Image", "UI Design", "Motion", "Visual System"],
-    radius: 134,
+    radius: 140,
     ellipse: 0.42,
     tilt: 18,
     duration: 88,
@@ -369,6 +392,28 @@ function Icon({ name, className = "h-4 w-4" }) {
       <>
         <path d="m22 2-7 20-4-9-9-4Z" />
         <path d="M22 2 11 13" />
+      </>
+    ),
+    upload: (
+      <>
+        <path d="M12 16V4" />
+        <path d="m7 9 5-5 5 5" />
+        <path d="M5 20h14" />
+      </>
+    ),
+    file: (
+      <>
+        <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z" />
+        <path d="M14 3v5h5" />
+        <path d="M8 13h8" />
+        <path d="M8 17h5" />
+      </>
+    ),
+    image: (
+      <>
+        <rect x="3" y="5" width="18" height="14" rx="3" />
+        <circle cx="8.5" cy="10.5" r="1.5" />
+        <path d="m21 15-4.5-4.5L9 18" />
       </>
     ),
     share: (
@@ -467,6 +512,9 @@ function AICoreCanvas({ pointer, booting }) {
     let dpr = 1;
     let lastRenderTime = 0;
     const frameInterval = 1000 / 30;
+    let running = true;
+    let inView = true;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const mono = '"SF Mono", "JetBrains Mono", Consolas, monospace';
     const ui = 'Inter, "SF Pro Display", system-ui, sans-serif';
     const lerp = (a, b, t) => a + (b - a) * t;
@@ -524,8 +572,11 @@ function AICoreCanvas({ pointer, booting }) {
     };
 
     const render = (time = 0) => {
-      rafId = requestAnimationFrame(render);
-      if (time - lastRenderTime < frameInterval) return;
+      if (!running || !inView || prefersReducedMotion) return;
+      if (time - lastRenderTime < frameInterval) {
+        rafId = requestAnimationFrame(render);
+        return;
+      }
       lastRenderTime = time;
       frame += 1;
       const t = frame / 30;
@@ -715,13 +766,24 @@ function AICoreCanvas({ pointer, booting }) {
         ctx.fill();
         ctx.restore();
       }
+      rafId = requestAnimationFrame(render);
     };
 
     resize();
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = Boolean(entry?.isIntersecting);
+      if (inView && !prefersReducedMotion) {
+        window.cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(render);
+      }
+    }, { rootMargin: "220px 0px" });
+    observer.observe(canvas);
     window.addEventListener("resize", resize);
-    rafId = requestAnimationFrame(render);
+    if (!prefersReducedMotion) rafId = requestAnimationFrame(render);
     return () => {
+      running = false;
       cancelAnimationFrame(rafId);
+      observer.disconnect();
       window.removeEventListener("resize", resize);
     };
   }, []);
@@ -1244,24 +1306,276 @@ function SystemCard({ item, index }) {
   );
 }
 
+function CinematicOrbitPlanet() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return undefined;
+
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return undefined;
+
+    const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    const colors = [
+      [34, 217, 255],
+      [124, 236, 255],
+      [245, 194, 91],
+      [255, 155, 56],
+      [255, 93, 63],
+      [255, 229, 163],
+      [125, 92, 255],
+    ];
+    const rgba = (color, alpha) => `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
+    let seed = 9817;
+    const random = () => {
+      seed = (seed * 16807) % 2147483647;
+      return (seed - 1) / 2147483646;
+    };
+    const clusters = [
+      { theta: -0.18, y: 0.52, spreadTheta: 0.72, spreadY: 0.32, colors: [5, 2, 3] },
+      { theta: 0.18, y: -0.2, spreadTheta: 0.84, spreadY: 0.54, colors: [0, 1, 6] },
+      { theta: 0.46, y: -0.48, spreadTheta: 0.7, spreadY: 0.38, colors: [0, 1, 0] },
+      { theta: Math.PI - 0.22, y: 0.1, spreadTheta: 0.58, spreadY: 0.42, colors: [4, 3, 2] },
+      { theta: Math.PI + 0.18, y: -0.62, spreadTheta: 0.68, spreadY: 0.28, colors: [2, 5, 3] },
+    ];
+    const surfaceDots = Array.from({ length: prefersReducedMotion ? 320 : 980 }, (_, index) => {
+      const cluster = clusters[index % clusters.length];
+      const y = Math.max(-0.94, Math.min(0.94, cluster.y + (random() - 0.5) * cluster.spreadY));
+      const theta = cluster.theta + (random() - 0.5) * cluster.spreadTheta;
+      const color = colors[cluster.colors[index % cluster.colors.length]];
+      return { theta, y, color, size: 0.55 + random() * 1.3, pulse: random() * Math.PI * 2 };
+    });
+    const mistDots = Array.from({ length: prefersReducedMotion ? 360 : 1300 }, () => {
+      const cluster = clusters[Math.floor(random() * clusters.length)];
+      const y = Math.max(-0.94, Math.min(0.94, cluster.y + (random() - 0.5) * cluster.spreadY * 1.2));
+      const theta = cluster.theta + (random() - 0.5) * cluster.spreadTheta * 1.12;
+      const color = colors[cluster.colors[Math.floor(random() * cluster.colors.length)]];
+      return { theta, y, color, size: 0.8 + random() * 2.2, pulse: random() * Math.PI * 2 };
+    });
+    const haloDots = Array.from({ length: prefersReducedMotion ? 520 : 1800 }, (_, index) => {
+      const arm = [
+        { angle: -0.18, spread: 0.72, lift: 0.08, colors: [5, 2, 3] },
+        { angle: 1.34, spread: 0.58, lift: 0.02, colors: [0, 1, 5] },
+        { angle: 2.92, spread: 0.82, lift: -0.02, colors: [0, 1, 6] },
+        { angle: 4.42, spread: 0.68, lift: -0.08, colors: [2, 3, 4] },
+      ][index % 4];
+      const color = colors[arm.colors[Math.floor(random() * arm.colors.length)]];
+      return {
+        angle: arm.angle + (random() - 0.5) * arm.spread + (index / (prefersReducedMotion ? 520 : 1800)) * Math.PI * 1.36,
+        radius: 1.05 + Math.pow(random(), 0.62) * 0.72,
+        speed: 0.12 + random() * 0.12,
+        lift: arm.lift + (random() - 0.5) * 0.18,
+        wobble: 0.01 + random() * 0.05,
+        color,
+        size: 0.5 + random() * 1.05,
+      };
+    });
+
+    let frameId = 0;
+    let running = true;
+    let inView = true;
+    let lastRenderTime = 0;
+    const frameInterval = 1000 / 24;
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 1.8);
+      const width = Math.max(1, Math.round(rect.width * ratio));
+      const height = Math.max(1, Math.round(rect.height * ratio));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+    };
+
+    const drawSurfaceDot = (dot, cx, cy, radius, time, scale, alphaScale = 1) => {
+      const theta = dot.theta + time * scale;
+      const y = dot.y + Math.sin(time * 0.7 + dot.pulse) * 0.018;
+      const latitude = Math.sqrt(Math.max(0.02, 1 - y * y));
+      const x3 = Math.cos(theta) * latitude;
+      const z3 = Math.sin(theta) * latitude;
+      if (z3 < -0.4) return;
+      const edgeFade = Math.max(0, Math.min(1, (z3 + 0.42) / 1.42));
+      const x = cx + x3 * radius * 0.76;
+      const yy = cy + y * radius * 0.82;
+      const alpha = (0.08 + edgeFade * 0.72) * alphaScale;
+      ctx.fillStyle = rgba(dot.color, alpha);
+      ctx.fillRect(x, yy, dot.size, dot.size);
+    };
+
+    const render = (now) => {
+      if (!running || !inView) return;
+      if (!prefersReducedMotion && now - lastRenderTime < frameInterval) {
+        frameId = window.requestAnimationFrame(render);
+        return;
+      }
+      lastRenderTime = now;
+      resize();
+      const width = canvas.width;
+      const height = canvas.height;
+      const time = now * 0.001;
+      const cx = width / 2;
+      const cy = height / 2;
+      const radius = Math.min(width, height) * 0.27;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.globalCompositeOperation = "source-over";
+
+      const aura = ctx.createRadialGradient(cx, cy, radius * 0.08, cx, cy, radius * 2.25);
+      aura.addColorStop(0, "rgba(255, 229, 163, 0.18)");
+      aura.addColorStop(0.28, "rgba(34, 217, 255, 0.16)");
+      aura.addColorStop(0.54, "rgba(125, 92, 255, 0.08)");
+      aura.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = aura;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(-0.26);
+      ctx.globalCompositeOperation = "lighter";
+      haloDots.forEach((dot) => {
+        const angle = dot.angle + time * dot.speed;
+        const orbitRadius = radius * dot.radius + Math.sin(time * 0.8 + dot.angle) * radius * dot.wobble;
+        const x = Math.cos(angle) * orbitRadius;
+        const y = Math.sin(angle) * orbitRadius * 0.36 + dot.lift * radius;
+        ctx.fillStyle = rgba(dot.color, 0.12 + Math.sin(time * 1.4 + dot.angle) * 0.035);
+        ctx.fillRect(x, y, dot.size, dot.size);
+      });
+      ctx.restore();
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.clip();
+
+      const base = ctx.createRadialGradient(cx - radius * 0.34, cy - radius * 0.32, radius * 0.04, cx, cy, radius * 1.08);
+      base.addColorStop(0, "rgba(255, 244, 216, 0.96)");
+      base.addColorStop(0.1, "rgba(124, 236, 255, 0.78)");
+      base.addColorStop(0.32, "rgba(16, 51, 83, 0.98)");
+      base.addColorStop(0.58, "rgba(8, 17, 37, 1)");
+      base.addColorStop(1, "rgba(1, 2, 8, 1)");
+      ctx.fillStyle = base;
+      ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+
+      ctx.globalCompositeOperation = "screen";
+      for (let band = 0; band < 18; band += 1) {
+        const phase = time * (0.16 + band * 0.006) + band * 0.61;
+        const color = colors[band % colors.length];
+        ctx.beginPath();
+        const yBase = cy + Math.sin(phase * 0.8) * radius * 0.52 + (band - 9) * radius * 0.075;
+        ctx.moveTo(cx - radius * 1.05, yBase);
+        ctx.bezierCurveTo(
+          cx - radius * 0.46,
+          yBase - Math.sin(phase) * radius * 0.28,
+          cx + radius * 0.18,
+          yBase + Math.cos(phase * 0.72) * radius * 0.24,
+          cx + radius * 1.08,
+          yBase + Math.sin(phase * 1.2) * radius * 0.14
+        );
+        ctx.strokeStyle = rgba(color, 0.045 + (band % 3) * 0.026);
+        ctx.lineWidth = radius * (0.006 + (band % 4) * 0.003);
+        ctx.shadowBlur = radius * 0.16;
+        ctx.shadowColor = rgba(color, 0.34);
+        ctx.stroke();
+      }
+
+      ctx.shadowBlur = 0;
+      mistDots.forEach((dot) => drawSurfaceDot(dot, cx, cy, radius, time, -0.5, 0.36));
+      surfaceDots.forEach((dot) => drawSurfaceDot(dot, cx, cy, radius, time, 0.7, 0.86));
+
+      ctx.globalCompositeOperation = "source-over";
+      const terminator = ctx.createLinearGradient(cx - radius, cy - radius, cx + radius, cy + radius);
+      terminator.addColorStop(0, "rgba(255, 255, 255, 0.08)");
+      terminator.addColorStop(0.42, "rgba(0, 0, 0, 0)");
+      terminator.addColorStop(0.72, "rgba(0, 0, 0, 0.42)");
+      terminator.addColorStop(1, "rgba(0, 0, 0, 0.82)");
+      ctx.fillStyle = terminator;
+      ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+
+      const vignette = ctx.createRadialGradient(cx - radius * 0.22, cy - radius * 0.28, radius * 0.2, cx, cy, radius * 1.08);
+      vignette.addColorStop(0, "rgba(255, 255, 255, 0.18)");
+      vignette.addColorStop(0.48, "rgba(0, 0, 0, 0)");
+      vignette.addColorStop(0.84, "rgba(0, 0, 0, 0.46)");
+      vignette.addColorStop(1, "rgba(0, 0, 0, 0.82)");
+      ctx.fillStyle = vignette;
+      ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+      ctx.restore();
+
+      ctx.globalCompositeOperation = "lighter";
+      ctx.lineWidth = Math.max(1, radius * 0.025);
+      const rim = ctx.createLinearGradient(cx - radius, cy - radius, cx + radius, cy + radius);
+      rim.addColorStop(0, "rgba(255, 229, 163, 0.52)");
+      rim.addColorStop(0.4, "rgba(124, 236, 255, 0.38)");
+      rim.addColorStop(1, "rgba(125, 92, 255, 0.08)");
+      ctx.strokeStyle = rim;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius + 1, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(-0.34 + Math.sin(time * 0.2) * 0.04);
+      ctx.strokeStyle = "rgba(255, 229, 163, 0.11)";
+      ctx.lineWidth = Math.max(0.8, radius * 0.012);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, radius * 1.44, radius * 0.36, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      if (!prefersReducedMotion && running && inView) {
+        frameId = window.requestAnimationFrame(render);
+      }
+    };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = Boolean(entry?.isIntersecting);
+      if (inView) {
+        window.cancelAnimationFrame(frameId);
+        frameId = window.requestAnimationFrame(render);
+      }
+    }, { rootMargin: "260px 0px" });
+    observer.observe(canvas);
+    frameId = window.requestAnimationFrame(render);
+    window.addEventListener("resize", resize);
+
+    return () => {
+      running = false;
+      window.cancelAnimationFrame(frameId);
+      observer.disconnect();
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-visible rounded-full" aria-hidden="true">
+      <div className="absolute -inset-[20%] rounded-full">
+        <img
+          src="/media/ai-orbit-cinematic-planet-cutout.png"
+          alt=""
+          draggable="false"
+          className="absolute inset-0 h-full w-full select-none object-contain opacity-95 drop-shadow-[0_0_48px_rgba(125,249,255,0.30)]"
+          style={{
+            mixBlendMode: "screen",
+            WebkitMaskImage: "radial-gradient(circle at 50% 50%, black 0%, black 49%, rgba(0,0,0,0.84) 61%, rgba(0,0,0,0.32) 74%, transparent 88%)",
+            maskImage: "radial-gradient(circle at 50% 50%, black 0%, black 49%, rgba(0,0,0,0.84) 61%, rgba(0,0,0,0.32) 74%, transparent 88%)",
+          }}
+        />
+      </div>
+      <div className="absolute inset-[9%] rounded-full bg-[radial-gradient(circle_at_42%_38%,rgba(255,244,216,0.16),rgba(125,249,255,0.08)_28%,transparent_66%)] mix-blend-screen" />
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full opacity-38 mix-blend-screen" aria-hidden="true" />
+    </div>
+  );
+}
+
 function OrbitCore({ active }) {
   return (
     <motion.div
       animate={{ scale: active ? 1.08 : [1, 1.045, 1], opacity: active ? 1 : [0.92, 1, 0.92] }}
       transition={{ duration: active ? 0.35 : 4.2, repeat: active ? 0 : Infinity, ease: "easeInOut" }}
       style={{ x: "-50%", y: "-50%" }}
-      className="absolute left-1/2 top-1/2 z-40 grid h-44 w-44 place-items-center rounded-full border border-cyan-100/24 bg-[radial-gradient(circle_at_50%_36%,rgba(255,255,255,0.30),rgba(125,249,255,0.14)_32%,rgba(10,18,34,0.92)_72%)] shadow-[inset_0_0_42px_rgba(235,245,255,0.11),0_0_84px_rgba(125,249,255,0.22),0_0_150px_rgba(88,91,255,0.08)] backdrop-blur-md md:h-56 md:w-56"
+      className="absolute left-1/2 top-1/2 z-40 grid h-44 w-44 place-items-center rounded-full md:h-56 md:w-56"
     >
-      {[0, 1, 2].map((pulse) => (
-        <motion.div
-          key={`core-pulse-${pulse}`}
-          className="absolute rounded-full border border-cyan-100/18"
-          initial={false}
-          animate={{ scale: [0.72, 1.88], opacity: [0.34, 0] }}
-          transition={{ duration: 3.2, repeat: Infinity, ease: "easeOut", delay: pulse * 1.05 }}
-          style={{ inset: "14%" }}
-        />
-      ))}
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
@@ -1277,16 +1591,20 @@ function OrbitCore({ active }) {
         transition={{ duration: 36, repeat: Infinity, ease: "linear" }}
         className="absolute -inset-16 rounded-full border border-cyan-100/[0.045]"
       />
-      <div className="absolute -inset-20 rounded-full bg-[radial-gradient(circle,rgba(125,249,255,0.18),rgba(88,91,255,0.08)_38%,transparent_70%)] blur-2xl" />
+      <div className="absolute -inset-20 rounded-full bg-[radial-gradient(circle,rgba(104,210,255,0.20),rgba(88,91,255,0.08)_38%,transparent_70%)] blur-2xl" />
       <motion.div
         animate={{ rotate: [0, 360] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-8 rounded-full bg-[conic-gradient(from_90deg,transparent,rgba(125,249,255,0.16),transparent,rgba(168,138,255,0.14),transparent)] blur-sm"
+        transition={{ duration: 42, repeat: Infinity, ease: "linear" }}
+        className="absolute -inset-4 rounded-full bg-[conic-gradient(from_115deg,transparent,rgba(125,249,255,0.18),transparent_28%,rgba(255,255,255,0.10)_42%,transparent_56%,rgba(148,118,255,0.12),transparent)] blur-[2px]"
       />
-      <div className="relative text-center">
-        <Icon name="core" className="mx-auto mb-4 h-9 w-9 text-cyan-50/78 md:h-10 md:w-10" />
-        <p style={fontStyles.mono} className="text-[12px] font-semibold uppercase tracking-[0.34em] text-white/92 md:text-[14px]">AI CORE</p>
-        <p style={fontStyles.mono} className="mt-3 text-[11px] uppercase tracking-[0.14em] text-cyan-50/58 md:text-[12px]">WuYi System Stack</p>
+      <motion.div
+        animate={{ rotate: -360 }}
+        transition={{ duration: 48, repeat: Infinity, ease: "linear" }}
+        className="absolute -inset-7 rounded-full border border-cyan-100/[0.08] shadow-[0_0_42px_rgba(125,249,255,0.10)]"
+        style={{ transform: "rotateX(68deg) rotateZ(-18deg)" }}
+      />
+      <div className="relative h-[132%] w-[132%] overflow-visible">
+        <CinematicOrbitPlanet />
       </div>
     </motion.div>
   );
@@ -1315,12 +1633,12 @@ function OrbitRing({ ring, index }) {
         className="absolute inset-0 rounded-full border border-dashed"
         style={{
           borderColor: "rgba(255,255,255,0.024)",
-          opacity: 0.66,
+          opacity: 0.64,
         }}
       />
       <motion.span
-        className="absolute left-1/2 top-0 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_0_24px_rgba(160,232,255,0.95)]"
-        animate={{ opacity: [0.28, 0.9, 0.28], scale: [0.9, 1.12, 0.9] }}
+        className="absolute left-1/2 top-0 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-100 shadow-[0_0_20px_rgba(125,249,255,0.7)]"
+        animate={{ opacity: [0.36, 1, 0.36], scale: [0.82, 1.24, 0.82] }}
         transition={{ duration: 3.1 + index * 0.16, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.span
@@ -1343,7 +1661,7 @@ function OrbitRing({ ring, index }) {
 
       {orbitItems.map((item, itemIndex) => {
         const angle = (itemIndex / orbitItems.length) * Math.PI * 2 + index * 0.42;
-        const radiusTweak = 52 + ((itemIndex % 3) - 1) * 2.6;
+        const radiusTweak = 56 + ((itemIndex % 3) - 1) * 2.2;
         const x = 50 + Math.cos(angle) * radiusTweak;
         const y = 50 + Math.sin(angle) * radiusTweak;
         const isPriority = ring.priority?.includes(item);
@@ -1355,7 +1673,7 @@ function OrbitRing({ ring, index }) {
               transition={{ duration: ring.duration, repeat: Infinity, ease: "linear" }}
             >
               <div
-                className={`inline-flex max-w-[128px] items-center gap-1.5 rounded-full border bg-black/42 shadow-[0_14px_32px_rgba(0,0,0,0.20)] backdrop-blur md:max-w-[148px] ${sizeClass}`}
+                className={`inline-flex max-w-[128px] items-center gap-1.5 rounded-full border bg-black/48 shadow-[0_14px_32px_rgba(0,0,0,0.20)] backdrop-blur-md md:max-w-[148px] ${sizeClass}`}
                 style={{
                   borderColor: "rgba(255,255,255,0.065)",
                   opacity: isPriority ? 0.92 : 0.58,
@@ -1397,14 +1715,30 @@ function OrbitScene() {
       className="relative mx-auto aspect-[1.42/1] w-full max-w-[1560px] overflow-visible bg-transparent"
       style={{ transformStyle: "preserve-3d" }}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_58%,rgba(125,249,255,0.14),transparent_24%),radial-gradient(circle_at_28%_38%,rgba(77,163,255,0.07),transparent_32%),radial-gradient(circle_at_78%_36%,rgba(148,118,255,0.07),transparent_34%)]" />
-      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(720px circle at 50% 56%, rgba(180,238,255,0.09), transparent 44%)" }} />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_22%,rgba(255,255,255,0.48)_0_1px,transparent_1.6px),radial-gradient(circle_at_72%_28%,rgba(190,220,255,0.42)_0_1px,transparent_1.7px),radial-gradient(circle_at_46%_74%,rgba(255,255,255,0.30)_0_1px,transparent_1.6px)] [background-size:73px_73px,113px_113px,151px_151px] opacity-[0.24]" />
-      {Array.from({ length: 28 }).map((_, i) => (
-        <span
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_58%,rgba(125,249,255,0.13),transparent_24%),radial-gradient(circle_at_28%_38%,rgba(77,163,255,0.08),transparent_32%),radial-gradient(circle_at_78%_36%,rgba(148,118,255,0.10),transparent_34%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_22%,rgba(255,255,255,0.38)_0_1px,transparent_1.6px),radial-gradient(circle_at_72%_28%,rgba(190,220,255,0.32)_0_1px,transparent_1.7px),radial-gradient(circle_at_46%_74%,rgba(255,255,255,0.22)_0_1px,transparent_1.6px)] [background-size:73px_73px,113px_113px,151px_151px] opacity-[0.18]" />
+      {Array.from({ length: 0 }).map((_, i) => (
+        <motion.span
           key={`star-${i}`}
           className="pointer-events-none absolute h-px w-px rounded-full bg-white"
-          style={{ left: `${(i * 37) % 100}%`, top: `${(i * 53) % 100}%`, opacity: 0.12 + (i % 5) * 0.045 }}
+          style={{
+            left: `${(i * 37 + i * i * 3) % 100}%`,
+            top: `${(i * 53 + i * 11) % 100}%`,
+            width: `${1 + (i % 3) * 0.55}px`,
+            height: `${1 + (i % 3) * 0.55}px`,
+            boxShadow: i % 7 === 0 ? "0 0 18px rgba(255,255,255,0.86)" : "0 0 10px rgba(160,232,255,0.62)",
+          }}
+          animate={{ opacity: [0.12 + (i % 5) * 0.04, 0.55 + (i % 4) * 0.1, 0.12 + (i % 5) * 0.04], scale: [0.86, 1.22, 0.86] }}
+          transition={{ duration: 2.8 + (i % 9) * 0.42, repeat: Infinity, ease: "easeInOut", delay: (i % 13) * 0.12 }}
+        />
+      ))}
+      {[].map((i) => (
+        <motion.span
+          key={`comet-${i}`}
+          className="pointer-events-none absolute h-px w-32 rounded-full bg-gradient-to-r from-transparent via-white/80 to-transparent"
+          style={{ left: `${8 + i * 24}%`, top: `${18 + i * 21}%`, rotate: "-18deg" }}
+          animate={{ x: [-140, 280], opacity: [0, 0.82, 0] }}
+          transition={{ duration: 5.8 + i * 0.9, repeat: Infinity, ease: "easeInOut", delay: 1.4 + i * 2.2 }}
         />
       ))}
 
@@ -1443,7 +1777,28 @@ function OrbitScene() {
 }
 
 function TechnologyRadar() {
-  return <OrbitScene />;
+  const hostRef = useRef(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const element = hostRef.current;
+    if (!element) return undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      setActive(Boolean(entry?.isIntersecting));
+    }, { rootMargin: "360px 0px" });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={hostRef} className="relative mx-auto aspect-[1.42/1] w-full max-w-[1560px]">
+      {active ? (
+        <OrbitScene />
+      ) : (
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_58%,rgba(125,249,255,0.10),transparent_24%),radial-gradient(circle_at_28%_38%,rgba(77,163,255,0.06),transparent_32%),radial-gradient(circle_at_78%_36%,rgba(148,118,255,0.08),transparent_34%)]" />
+      )}
+    </div>
+  );
 }
 
 const AGENT_API_URL =
@@ -1453,24 +1808,158 @@ const AGENT_API_URL =
     : "/api/agent");
 const AGENT_TEXT_TIMEOUT_MS = 75000;
 const AGENT_IMAGE_TIMEOUT_MS = 140000;
+const AGENT_MAX_ATTACHMENTS = 3;
+const AGENT_MAX_IMAGE_BYTES = 900 * 1024;
+const AGENT_MAX_TEXT_FILE_BYTES = 80 * 1024;
+const AGENT_ATTACHMENT_ACCEPT = "image/png,image/jpeg,image/webp,image/gif,text/plain,text/markdown,text/csv,application/json,.txt,.md,.csv,.json";
+const PET_FRAME_VERSION = "kemusan-cutout-2";
+const PET_KEMUSAN_FRAME_MS = 220;
+const PET_KEMUSAN_REPEATS = 3;
+const PET_FRAMES = {
+  idle: `/media/ai-pet-agent-draw.png?v=${PET_FRAME_VERSION}`,
+  welcome: `/media/ai-pet-agent-welcome.png?v=${PET_FRAME_VERSION}`,
+  think: `/media/ai-pet-agent-think.png?v=${PET_FRAME_VERSION}`,
+  slash: `/media/ai-pet-agent-slash-air.png?v=${PET_FRAME_VERSION}`,
+  slashGuard: `/media/ai-pet-agent-slash-guard.png?v=${PET_FRAME_VERSION}`,
+  dance: `/media/ai-pet-agent-dance-hop.png?v=${PET_FRAME_VERSION}`,
+  danceTurn: `/media/ai-pet-agent-dance-turn.png?v=${PET_FRAME_VERSION}`,
+  crouch: `/media/ai-pet-agent-crouch.png?v=${PET_FRAME_VERSION}`,
+  kick: `/media/ai-pet-agent-sidekick.png?v=${PET_FRAME_VERSION}`,
+  flip: `/media/ai-pet-agent-flip.png?v=${PET_FRAME_VERSION}`,
+};
+const PET_KEMUSAN_STEPS = [
+  { src: PET_FRAMES.welcome, pose: "ready" },
+  { src: PET_FRAMES.dance, pose: "cross-left" },
+  { src: PET_FRAMES.danceTurn, pose: "cross-right" },
+  { src: PET_FRAMES.kick, pose: "front-push" },
+  { src: PET_FRAMES.danceTurn, pose: "turn-back" },
+  { src: PET_FRAMES.crouch, pose: "low-step" },
+  { src: PET_FRAMES.dance, pose: "bounce-back" },
+  { src: PET_FRAMES.welcome, pose: "finish" },
+];
+const PET_KEMUSAN_DURATION_MS = PET_KEMUSAN_FRAME_MS * PET_KEMUSAN_STEPS.length * PET_KEMUSAN_REPEATS;
+const petTrickNames = ["flip", "dance", "danceTurn", "slash", "kick", "welcome", "think", "crouch"];
+const petTrickAnimations = {
+  idle: { x: 0, y: 0, rotate: 0, rotateY: 0, scale: 1 },
+  flip: { y: [0, -92, -48, 0], rotate: [0, -10, 8, 0], rotateY: [0, 18, -12, 0], scale: [1, 1.08, 0.98, 1] },
+  dance: { x: [0, -13, 14, -10, 10, 0], y: [0, -13, 0, -10, 0, 0], rotate: [0, -8, 9, -7, 6, 0], scale: [1, 1.04, 0.99, 1.04, 1] },
+  danceTurn: { x: [0, 10, -8, 12, 0], y: [0, -10, -4, -12, 0], rotate: [0, 7, -9, 6, 0], rotateY: [0, 12, -8, 10, 0], scale: [1, 1.035, 1.01, 1.04, 1] },
+  kemusan: {
+    x: [0, -10, 9, 13, -8, -4, 6, 0],
+    y: [0, -8, -2, -9, 2, 5, -6, 0],
+    rotate: [0, -4, 3, 5, -5, -3, 4, 0],
+    rotateY: [-2, 5, -6, 7, -8, 4, -4, -2],
+    scale: [1, 1.025, 1.01, 1.03, 0.995, 1.018, 1.026, 1],
+  },
+  slash: { x: [0, -5, 18, 0], y: [0, -8, -14, 0], rotate: [0, -8, 14, 0], rotateY: [0, -14, 8, 0], scale: [1, 1.05, 1.03, 1] },
+  kick: { x: [0, -8, 12, 0], y: [0, -18, -10, 0], rotate: [0, -10, 8, 0], scale: [1, 1.05, 1.03, 1] },
+  welcome: { y: [0, -12, -4, -10, 0], rotate: [0, -5, 4, -3, 0], scale: [1, 1.055, 1.02, 1.04, 1] },
+  think: { y: [0, -8, -4, 0], rotate: [0, 4, -4, 0], scale: [1, 1.035, 1.02, 1] },
+  crouch: { y: [0, 8, -4, 0], rotate: [0, -4, 3, 0], scale: [1, 0.98, 1.03, 1] },
+};
+const petTrickTransitions = {
+  idle: { duration: 0.4 },
+  flip: { duration: 1.7, ease: [0.22, 1, 0.36, 1] },
+  dance: { duration: 2.15, ease: "easeInOut" },
+  danceTurn: { duration: 2.05, ease: "easeInOut" },
+  kemusan: { duration: PET_KEMUSAN_DURATION_MS / 1000, ease: "linear" },
+  slash: { duration: 1.15, ease: [0.16, 1, 0.3, 1] },
+  kick: { duration: 1.35, ease: [0.16, 1, 0.3, 1] },
+  welcome: { duration: 1.7, ease: [0.16, 1, 0.3, 1] },
+  think: { duration: 2.35, ease: "easeInOut" },
+  crouch: { duration: 1.85, ease: [0.16, 1, 0.3, 1] },
+};
 
 const agentModes = {
   about_wuyi: {
-    label: "认识伍轶",
-    placeholder: "问我：伍轶适合做什么 AI 项目？",
-    starter: "用 3 句话介绍伍轶，以及适合找他合作的项目类型。",
+    label: "对话",
+    placeholder: "问 AI伍子胥：AI 入门、模型选择、网页项目、Agent 思路都可以。",
+    starter: "用中文简单介绍一下这个网站，以及 AI 新手应该先看哪几个部分。",
   },
-  project_diagnosis: {
-    label: "项目诊断",
-    placeholder: "描述你的 AI 项目想法，我来拆成 MVP 路线。",
-    starter: "我想做一个 AI 自动化产品，请帮我诊断适合的 MVP 路线。",
+  pain_validation: {
+    label: "痛点判断",
+    placeholder: "先说一个真实 AI 痛点：你想用 AI 做什么，现在卡在哪里，带来了什么影响。",
+    starter: "我想用 AI 把获客内容、客户回复和跟进提醒串起来，但现在只是零散用聊天工具，效率低也很难复用。",
   },
   image_generation: {
     label: "AI 生图",
     placeholder: "描述你想生成的图片：主体、风格、构图、颜色、用途。",
-    starter: "生成一张赛博蓝色的 AI 个人网站头像，未来感，干净构图，适合放在作品集首页。",
+    starter: "生成一张适合 AI 学习路径页面的科技电影感配图，浅色背景，蓝白光，一条路径穿过模型、代码和产品界面节点，无文字。",
   },
 };
+
+const INITIAL_PAIN_STATE = {
+  round: 0,
+  approved: false,
+  stageSummary: "",
+  signals: [],
+};
+
+const painRoundCopies = [
+  {
+    title: "1 填写痛点",
+    placeholder: "留下你用AI过程中最痛的感受，我尽力思考解决...",
+    starter: "我用 AI 时最痛的是：",
+  },
+  {
+    title: "2 答案待确认",
+    placeholder: "痛点已记录。正式答案等确认之后再补上。",
+    starter: "我已确认，请在答案区给出思考。",
+  },
+];
+
+function getPainModeCopy(painState) {
+  if (painState?.approved) {
+    return {
+      ...agentModes.pain_validation,
+      placeholder: "痛点已记录。正式答案等确认之后再补上。",
+      starter: "我已确认，请在答案区给出思考。",
+    };
+  }
+
+  const round = Math.min(painRoundCopies.length - 1, Math.max(0, Number(painState?.round) || 0));
+  const copy = painRoundCopies[round];
+  return {
+    ...agentModes.pain_validation,
+    placeholder: copy.placeholder,
+    starter: copy.starter,
+  };
+}
+
+function formatBytes(bytes) {
+  const size = Number(bytes) || 0;
+  if (size >= 1024 * 1024) return `${(size / 1024 / 1024).toFixed(1)}MB`;
+  if (size >= 1024) return `${Math.round(size / 1024)}KB`;
+  return `${size}B`;
+}
+
+function isReadableTextFile(file) {
+  const type = String(file.type || "").toLowerCase();
+  return type.startsWith("text/") || /\.(txt|md|csv|json)$/i.test(file.name || "");
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(reader.error || new Error("read failed"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(reader.error || new Error("read failed"));
+    reader.readAsText(file, "utf-8");
+  });
+}
+
+function attachmentSummary(attachments = []) {
+  if (!attachments.length) return "";
+  return attachments.map((item) => `${item.kind === "image" ? "图片" : "文件"}：${item.name}`).join("\n");
+}
 
 function AgentImages({ images }) {
   if (!Array.isArray(images) || !images.length) return null;
@@ -1493,179 +1982,167 @@ function AgentImages({ images }) {
   );
 }
 
-function AgentDiagnosis({ diagnosis }) {
-  if (!diagnosis) return null;
-
-  const sections = [
-    ["技术路线", diagnosis.techRoute],
-    ["主要风险", diagnosis.risks],
-    ["MVP 步骤", diagnosis.mvpSteps],
-  ];
+function AgentAttachments({ attachments = [] }) {
+  if (!Array.isArray(attachments) || !attachments.length) return null;
 
   return (
-    <div className="mt-3 space-y-3 rounded-2xl border border-cyan-100/10 bg-black/24 p-4">
-      <div>
-        <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.16em] text-cyan-100/52">Diagnosis</p>
-        <p className="mt-1 text-sm font-medium text-white/84">{diagnosis.needType || "AI 项目诊断"}</p>
-      </div>
-      {sections.map(([title, items]) => Array.isArray(items) && items.length ? (
-        <div key={title}>
-          <p className="mb-2 text-sm font-medium text-cyan-50/60">{title}</p>
-          <div className="space-y-1.5">
-            {items.map((item, index) => (
-              <p key={`${title}-${item}`} className="rounded-xl border border-white/[0.06] bg-white/[0.035] px-3 py-2 text-sm leading-6 text-white/70">
-                <span style={fontStyles.mono} className="mr-2 text-cyan-100/42">{String(index + 1).padStart(2, "0")}</span>
-                {item}
-              </p>
-            ))}
-          </div>
+    <div className="mt-3 grid gap-2">
+      {attachments.map((item) => (
+        <div key={item.id || item.name} className="flex items-center gap-2 rounded-xl border border-white/[0.08] bg-black/18 px-3 py-2 text-xs text-white/60">
+          <Icon name={item.kind === "image" ? "image" : "file"} className="h-3.5 w-3.5 shrink-0 text-cyan-50/68" />
+          <span className="min-w-0 flex-1 truncate">{item.name}</span>
+          <span className="shrink-0 text-white/36">{formatBytes(item.size)}</span>
         </div>
-      ) : null)}
-      {diagnosis.collaborationAdvice ? (
-        <p className="rounded-xl border border-violet-100/10 bg-violet-100/[0.045] px-3 py-2 text-sm leading-6 text-white/70">{diagnosis.collaborationAdvice}</p>
-      ) : null}
+      ))}
     </div>
   );
 }
 
-function CyberAgentPet({ offset, onPointerDown, onOpen }) {
-  const [gaze, setGaze] = useState({ x: 0, y: 0 });
+function CyberAgentPet({ offset, onPointerDown, onOpen, dragging }) {
+  const [trick, setTrick] = useState("welcome");
+  const [kemusanFrameIndex, setKemusanFrameIndex] = useState(0);
   const petRef = useRef(null);
+  const trickTimeoutRef = useRef(null);
+  const resetTrickTimeoutRef = useRef(null);
+  const kemusanStep = PET_KEMUSAN_STEPS[kemusanFrameIndex] || PET_KEMUSAN_STEPS[0];
+  const petFrameSrc = dragging
+    ? PET_FRAMES.welcome
+    : trick === "kemusan"
+      ? kemusanStep.src
+    : trick === "dance"
+      ? PET_FRAMES.dance
+      : trick === "danceTurn"
+        ? PET_FRAMES.danceTurn
+      : trick === "slash"
+        ? PET_FRAMES.slash
+        : trick === "kick"
+          ? PET_FRAMES.kick
+        : trick === "think"
+          ? PET_FRAMES.think
+          : trick === "crouch"
+            ? PET_FRAMES.crouch
+          : trick === "welcome"
+            ? PET_FRAMES.welcome
+          : trick === "flip"
+            ? PET_FRAMES.flip
+            : PET_FRAMES.idle;
+  const petStageAnimate = dragging
+    ? { y: -18, rotateX: 10, rotateY: -12, scaleX: 1.045, scaleY: 0.965 }
+    : trick === "kemusan"
+      ? {
+          x: [0, -12, 12, -8, 10, -4, 0],
+          y: [0, -8, 0, -10, 0, -6, 0],
+          rotateX: [0, 2, 0, 3, 0],
+          rotateY: [-4, 7, -8, 6, -5, 4, -4],
+          rotateZ: [0, -4, 4, -3, 3, -2, 0],
+          scale: [1, 1.025, 1, 1.03, 1.01, 1.02, 1],
+        }
+      : { y: [0, -7, 0], rotateX: [0, 3, 0], rotateY: [-3, 4, -3] };
+  const petStageTransition = dragging
+    ? { duration: 0.16, ease: "easeOut" }
+    : trick === "kemusan"
+      ? { duration: 2.18, repeat: Infinity, ease: "easeInOut" }
+      : { duration: 4.2, repeat: Infinity, ease: "easeInOut" };
 
   useEffect(() => {
-    const updateGaze = (event) => {
-      const rect = petRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      const cx = rect.left + 96;
-      const cy = rect.top + 84;
-      const distance = Math.max(64, Math.min(window.innerWidth, window.innerHeight) * 0.32);
-      const clamp = (value) => Math.max(-1, Math.min(1, value));
-      setGaze({
-        x: clamp((event.clientX - cx) / distance),
-        y: clamp((event.clientY - cy) / distance),
-      });
+    Object.values(PET_FRAMES).forEach((src) => {
+      const image = new Image();
+      image.src = src;
+    });
+
+    const scheduleTrick = () => {
+      const delay = 6500 + Math.random() * 12500;
+      trickTimeoutRef.current = window.setTimeout(() => {
+        const nextTrick = petTrickNames[Math.floor(Math.random() * petTrickNames.length)];
+        setTrick(nextTrick);
+        resetTrickTimeoutRef.current = window.setTimeout(() => {
+          setTrick("idle");
+          scheduleTrick();
+        }, nextTrick === "slash" ? 1400 : nextTrick === "flip" ? 1700 : 2500);
+      }, delay);
     };
-    const resetGaze = () => setGaze({ x: 0, y: 0 });
-    window.addEventListener("pointermove", updateGaze, { passive: true });
-    window.addEventListener("blur", resetGaze);
+
+    const celebrate = (event) => {
+      window.clearTimeout(trickTimeoutRef.current);
+      window.clearTimeout(resetTrickTimeoutRef.current);
+      const nextTrick = event?.detail?.trick || "dance";
+      setTrick(nextTrick);
+      resetTrickTimeoutRef.current = window.setTimeout(() => {
+        setTrick("idle");
+        scheduleTrick();
+      }, nextTrick === "slash" ? 1600 : nextTrick === "kemusan" ? PET_KEMUSAN_DURATION_MS + 280 : 2800);
+    };
+
+    window.addEventListener("wuyi-agent-celebrate", celebrate);
+
+    resetTrickTimeoutRef.current = window.setTimeout(() => {
+      setTrick("idle");
+      scheduleTrick();
+    }, 2200);
     return () => {
-      window.removeEventListener("pointermove", updateGaze);
-      window.removeEventListener("blur", resetGaze);
+      window.removeEventListener("wuyi-agent-celebrate", celebrate);
+      window.clearTimeout(trickTimeoutRef.current);
+      window.clearTimeout(resetTrickTimeoutRef.current);
     };
   }, []);
 
-  const updateLocalGaze = (event) => {
-    const rect = petRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const cx = rect.left + 96;
-    const cy = rect.top + 84;
-    const clamp = (value) => Math.max(-1, Math.min(1, value));
-    setGaze({
-      x: clamp((event.clientX - cx) / 92),
-      y: clamp((event.clientY - cy) / 78),
-    });
-  };
+  useEffect(() => {
+    if (trick !== "kemusan") {
+      setKemusanFrameIndex(0);
+      return undefined;
+    }
+
+    setKemusanFrameIndex(0);
+    const frameTimer = window.setInterval(() => {
+      setKemusanFrameIndex((index) => (index + 1) % PET_KEMUSAN_STEPS.length);
+    }, PET_KEMUSAN_FRAME_MS);
+
+    return () => {
+      window.clearInterval(frameTimer);
+    };
+  }, [trick]);
 
   return (
     <motion.button
       ref={petRef}
       type="button"
       onPointerDown={onPointerDown}
-      onPointerMove={updateLocalGaze}
       onClick={onOpen}
       style={{ x: offset.x, y: offset.y }}
-      whileHover={{ scale: 1.035 }}
-      whileTap={{ scale: 0.98 }}
-      className="group fixed bottom-5 right-5 z-20 h-[170px] w-[238px] cursor-grab touch-none select-none active:cursor-grabbing md:bottom-7 md:right-[max(1.75rem,calc((100vw-1500px)/2+1.75rem))]"
-      aria-label="打开可拖拽 WuYi Agent 智能体宠物"
+      animate={dragging ? { rotate: -4, scale: 1.055 } : petTrickAnimations[trick]}
+      transition={dragging ? { duration: 0.18, ease: "easeOut" } : petTrickTransitions[trick]}
+      whileHover={{ scale: 1.055 }}
+      whileTap={{ scale: 1.01 }}
+      data-pet-trick={trick}
+      data-dragging={dragging ? "true" : "false"}
+      className="ai-pet-shell group fixed bottom-4 right-3 z-[80] h-[326px] w-[286px] cursor-grab touch-none select-none active:cursor-grabbing sm:right-5 md:bottom-7 md:right-[max(1.75rem,calc((100vw-1500px)/2+1.75rem))]"
+      aria-label="打开可拖拽 AI伍子胥智能体"
     >
-      <span className="pointer-events-none absolute bottom-5 left-[96px] h-5 w-28 -translate-x-1/2 rounded-full bg-cyan-100/18 blur-xl transition group-hover:bg-cyan-100/30" />
-      <motion.svg
-        viewBox="0 0 220 250"
+      <span className="ai-pet-orbit ai-pet-orbit-one" />
+      <span className="ai-pet-orbit ai-pet-orbit-two" />
+      <span className="ai-pet-ground" />
+      <motion.div
         aria-hidden="true"
-        animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute left-[21px] top-[-4px] h-[150px] w-[150px] overflow-visible drop-shadow-[0_0_32px_rgba(77,163,255,0.42)]"
+        animate={petStageAnimate}
+        transition={petStageTransition}
+        className="ai-pet-stage pointer-events-none absolute left-[10px] top-0 h-[286px] w-[266px]"
       >
-        <defs>
-          <radialGradient id="furSilver" cx="50%" cy="42%" r="72%">
-            <stop stopColor="#f7fbff" />
-            <stop offset="0.34" stopColor="#b9c3d8" />
-            <stop offset="0.7" stopColor="#64708c" />
-            <stop offset="1" stopColor="#252d43" />
-          </radialGradient>
-          <linearGradient id="earPink" x1="52" y1="18" x2="78" y2="118" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#ffd5f0" />
-            <stop offset="1" stopColor="#6c355f" />
-          </linearGradient>
-          <linearGradient id="neonBlue" x1="34" y1="32" x2="188" y2="214" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#4df4ff" />
-            <stop offset="0.58" stopColor="#36a6ff" />
-            <stop offset="1" stopColor="#a15cff" />
-          </linearGradient>
-          <radialGradient id="eyeBlue" cx="43%" cy="38%" r="65%">
-            <stop stopColor="#f6ffff" />
-            <stop offset="0.18" stopColor="#8cf5ff" />
-            <stop offset="0.54" stopColor="#1cbfff" />
-            <stop offset="0.82" stopColor="#075ba8" />
-            <stop offset="1" stopColor="#06132f" />
-          </radialGradient>
-          <linearGradient id="metalDark" x1="44" y1="50" x2="177" y2="232" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#263046" />
-            <stop offset="0.52" stopColor="#0c1220" />
-            <stop offset="1" stopColor="#050814" />
-          </linearGradient>
-          <filter id="catGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          <filter id="softFur" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="2" seed="8" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.7" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-
-        <path d="M50 18c15 6 45 31 65 61-20 6-37 18-50 34-9-30-16-67-15-95Z" fill="url(#earPink)" stroke="#f6b5ef" strokeWidth="3" filter="url(#catGlow)" />
-        <path d="M210 18c-15 6-45 31-65 61 20 6 37 18 50 34 9-30 16-67 15-95Z" fill="url(#earPink)" stroke="#b27cff" strokeWidth="3" filter="url(#catGlow)" />
-        <path d="M65 31c10 8 28 25 41 46-11 4-22 11-31 21-6-20-11-45-10-67Z" fill="#151b2c" stroke="#53eaff" strokeWidth="4" strokeLinecap="round" />
-        <path d="M195 31c-10 8-28 25-41 46 11 4 22 11 31 21 6-20 11-45 10-67Z" fill="#151b2c" stroke="#53eaff" strokeWidth="4" strokeLinecap="round" />
-        <path d="M37 124c4-40 39-70 93-70s89 30 93 70c18 11 28 30 28 52 0 48-41 74-95 74h-52c-54 0-95-26-95-74 0-22 10-41 28-52Z" fill="url(#furSilver)" filter="url(#softFur)" />
-        <path d="M87 66c8 31 19 47 36 62M130 62c-4 31-4 49 0 68M173 66c-8 31-19 47-36 62" fill="none" stroke="#2d354b" strokeWidth="5" strokeLinecap="round" opacity="0.38" />
-        <path d="M78 77c15 11 27 24 36 42M182 77c-15 11-27 24-36 42" fill="none" stroke="#edf6ff" strokeWidth="3" strokeLinecap="round" opacity="0.52" />
-        <path d="M104 63h52l8 31-34 31-34-31 8-31Z" fill="url(#metalDark)" stroke="#bcd6ff" strokeWidth="2" opacity="0.86" />
-        <path d="M118 74h24l6 18-18 16-18-16 6-18Z" fill="#1a2540" stroke="#62efff" strokeWidth="2" filter="url(#catGlow)" />
-        <path d="M126 84l4-4 4 4-4 4-4-4Z" fill="#eaffff" filter="url(#catGlow)" />
-        <path d="M54 67c13 8 28 20 42 36" fill="none" stroke="#101626" strokeWidth="8" strokeLinecap="round" />
-        <path d="M54 67c13 8 28 20 42 36" fill="none" stroke="#58eaff" strokeWidth="3" strokeLinecap="round" filter="url(#catGlow)" />
-        <circle cx="83" cy="95" r="13" fill="#101626" stroke="#5ff2ff" strokeWidth="3" />
-        <circle cx="83" cy="95" r="6" fill="#dfffff" filter="url(#catGlow)" />
-        <path d="M206 67c-13 8-28 20-42 36" fill="none" stroke="#101626" strokeWidth="8" strokeLinecap="round" />
-        <path d="M206 67c-13 8-28 20-42 36" fill="none" stroke="#58eaff" strokeWidth="3" strokeLinecap="round" filter="url(#catGlow)" />
-        <circle cx="177" cy="95" r="13" fill="#101626" stroke="#5ff2ff" strokeWidth="3" />
-        <circle cx="177" cy="95" r="6" fill="#dfffff" filter="url(#catGlow)" />
-        <ellipse cx="88" cy="151" rx="30" ry="32" fill="#101320" opacity="0.88" />
-        <ellipse cx="172" cy="151" rx="30" ry="32" fill="#101320" opacity="0.88" />
-        <motion.g animate={{ x: gaze.x * 8, y: gaze.y * 6 }} transition={{ type: "spring", stiffness: 360, damping: 18, mass: 0.42 }}>
-          <ellipse cx="88" cy="151" rx="22" ry="25" fill="url(#eyeBlue)" filter="url(#catGlow)" />
-          <ellipse cx="172" cy="151" rx="22" ry="25" fill="url(#eyeBlue)" filter="url(#catGlow)" />
-          <ellipse cx="94" cy="154" rx="7" ry="14" fill="#061329" opacity="0.58" />
-          <ellipse cx="178" cy="154" rx="7" ry="14" fill="#061329" opacity="0.58" />
-          <path d="M73 151c8 11 22 14 34 4M157 155c12 10 27 7 34-4" fill="none" stroke="#9efbff" strokeWidth="2.2" strokeLinecap="round" opacity="0.62" />
-          <circle cx="97" cy="141" r="5.5" fill="#fff" opacity="0.96" />
-          <circle cx="181" cy="141" r="5.5" fill="#fff" opacity="0.96" />
-          <circle cx="80" cy="160" r="3.5" fill="#a9fbff" opacity="0.58" />
-          <circle cx="164" cy="160" r="3.5" fill="#a9fbff" opacity="0.58" />
-        </motion.g>
-        <path d="M60 132c9-7 32-10 48-3M152 129c16-7 39-4 48 3" fill="none" stroke="#62eaff" strokeWidth="4" strokeLinecap="round" opacity="0.82" filter="url(#catGlow)" />
-        <path d="M131 173c3-2.2 7-2.2 10 0-1.2 2.4-3 3.5-5 3.5s-3.8-1.1-5-3.5Z" fill="#d79caf" stroke="#5a3442" strokeWidth="1.15" />
-        <path d="M117 189Q136 200 155 189" fill="none" stroke="#f4c5d7" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" opacity="0.98" />
-      </motion.svg>
-      <span className="pointer-events-none absolute bottom-[6px] left-[96px] -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-100/14 bg-black/46 px-3 py-1 text-[12px] font-semibold leading-none text-cyan-50/82 shadow-[0_10px_28px_rgba(0,0,0,0.30)] backdrop-blur-md">
-        <span className="tracking-[0.14em]">AI pet</span>
-        <span className="ml-2 tracking-normal text-cyan-50/58">点我一起唠唠嗑。</span>
+        <span className="ai-pet-backlight" />
+        <span className="ai-pet-side-glow" />
+        <span className="ai-pet-scanline" />
+        <span className="ai-pet-slash" />
+        <img
+          src={petFrameSrc}
+          alt=""
+          data-kemusan-frame={trick === "kemusan" ? kemusanFrameIndex + 1 : undefined}
+          data-kemusan-pose={trick === "kemusan" ? kemusanStep.pose : undefined}
+          className="ai-pet-avatar relative h-full w-full object-contain brightness-110 contrast-110 saturate-110"
+          draggable="false"
+        />
+      </motion.div>
+      <span className="ai-pet-label pointer-events-none absolute bottom-[10px] left-[143px] -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-100/20 bg-black/58 px-3 py-1 text-[12px] font-semibold leading-none text-cyan-50/86 shadow-[0_10px_28px_rgba(0,0,0,0.30)] backdrop-blur-md">
+        <span className="tracking-[0.14em]">AI伍子胥</span>
+        <span className="ml-2 tracking-normal text-cyan-50/58">对话 / 痛点 / 生图</span>
       </span>
     </motion.button>
   );
@@ -1675,19 +2152,46 @@ function WuYiAgent() {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState("about_wuyi");
   const [draft, setDraft] = useState("");
+  const [attachments, setAttachments] = useState([]);
+  const [attachmentError, setAttachmentError] = useState("");
+  const [painState, setPainState] = useState(INITIAL_PAIN_STATE);
   const [petOffset, setPetOffset] = useState({ x: 0, y: 0 });
+  const [petDragging, setPetDragging] = useState(false);
+  const fileInputRef = useRef(null);
   const petDraggedRef = useRef(false);
   const petDragStateRef = useRef(null);
+  const painDanceFiredRef = useRef(false);
+  const openRef = useRef(false);
   const [messages, setMessages] = useState([
     {
       id: "boot",
       role: "assistant",
-      content: "我是 WuYi Agent。可以快速介绍伍轶，也可以把你的 AI 项目想法拆成可执行的 MVP 路线。",
+      content: "我是 AI伍子胥。可以中文对话、快速收集 AI 痛点，也可以生成图片。痛点入口不做复杂审核，提交后会先给你正反馈。",
       diagnosis: null,
     },
   ]);
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
+
+  useEffect(() => {
+    openRef.current = open;
+  }, [open]);
+
+  useEffect(() => {
+    const replayCelebrationWhenPanelIsOpen = (event) => {
+      if (!openRef.current || event?.detail?.replayed) return;
+      const detail = { ...(event?.detail || {}), replayed: true };
+      setOpen(false);
+      window.setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("wuyi-agent-celebrate", { detail }));
+      }, 120);
+    };
+
+    window.addEventListener("wuyi-agent-celebrate", replayCelebrationWhenPanelIsOpen);
+    return () => {
+      window.removeEventListener("wuyi-agent-celebrate", replayCelebrationWhenPanelIsOpen);
+    };
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -1711,15 +2215,125 @@ function WuYiAgent() {
     ]);
   };
 
+  const applyPainCheck = (painCheck, requestMode) => {
+    if (requestMode !== "pain_validation" || !painCheck) return;
+
+    const nextRound = Math.min(3, Math.max(0, Number(painCheck.nextRound ?? painCheck.round ?? 0) || 0));
+    const nextState = {
+      round: painCheck.approved ? 3 : Math.min(2, nextRound),
+      approved: Boolean(painCheck.approved),
+      stageSummary: painCheck.stageSummary || "",
+      signals: Array.isArray(painCheck.signals) ? painCheck.signals.slice(0, 8) : [],
+    };
+    setPainState(nextState);
+
+    if (nextState.approved && !painDanceFiredRef.current) {
+      painDanceFiredRef.current = true;
+      window.dispatchEvent(new CustomEvent("wuyi-agent-celebrate", { detail: { trick: "kemusan", reason: "pain-approved" } }));
+    }
+  };
+
+  const submitLocalPain = (text, localAttachments = []) => {
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      content: text,
+      diagnosis: null,
+      attachments: localAttachments.map(({ dataUrl, text: fileText, ...item }) => item),
+    };
+    const assistantMessage = {
+      id: `assistant-${Date.now()}-${Math.random()}`,
+      role: "assistant",
+      content: "收到，我会进行深度思考之后在答案区给出思考，企业级业务可以联系我~",
+      diagnosis: null,
+      tone: "normal",
+    };
+
+    painDanceFiredRef.current = true;
+    setMessages((current) => [...current, userMessage, assistantMessage]);
+    setPainState({
+      round: 1,
+      approved: false,
+      stageSummary: text,
+      signals: ["pain_submitted", "answer_pending"],
+    });
+    setDraft("");
+    window.dispatchEvent(new CustomEvent("wuyi-agent-celebrate", { detail: { trick: "kemusan", reason: "pain-submitted" } }));
+  };
+
+  const handleAttachmentFiles = async (fileList) => {
+    const incoming = Array.from(fileList || []);
+    if (!incoming.length) return;
+
+    setAttachmentError("");
+    const availableSlots = Math.max(0, AGENT_MAX_ATTACHMENTS - attachments.length);
+    if (!availableSlots) {
+      setAttachmentError(`最多上传 ${AGENT_MAX_ATTACHMENTS} 个附件。`);
+      return;
+    }
+
+    const accepted = [];
+    const errors = [];
+    for (const file of incoming.slice(0, availableSlots)) {
+      const isImage = String(file.type || "").startsWith("image/");
+      const isText = isReadableTextFile(file);
+      const maxBytes = isImage ? AGENT_MAX_IMAGE_BYTES : AGENT_MAX_TEXT_FILE_BYTES;
+
+      if (!isImage && !isText) {
+        errors.push(`${file.name} 暂只支持图片、TXT、MD、CSV、JSON。`);
+        continue;
+      }
+
+      if (file.size > maxBytes) {
+        errors.push(`${file.name} 超过 ${formatBytes(maxBytes)}。`);
+        continue;
+      }
+
+      try {
+        const base = {
+          id: `${Date.now()}-${Math.random()}-${file.name}`,
+          name: file.name,
+          type: file.type || (isImage ? "image/*" : "text/plain"),
+          size: file.size,
+          kind: isImage ? "image" : "text",
+        };
+        if (isImage) {
+          accepted.push({ ...base, dataUrl: await readFileAsDataUrl(file) });
+        } else {
+          accepted.push({ ...base, text: (await readFileAsText(file)).slice(0, 18000) });
+        }
+      } catch {
+        errors.push(`${file.name} 读取失败，请换一个文件。`);
+      }
+    }
+
+    if (incoming.length > availableSlots) {
+      errors.push(`已达到 ${AGENT_MAX_ATTACHMENTS} 个附件上限，多余文件未添加。`);
+    }
+
+    if (accepted.length) setAttachments((current) => [...current, ...accepted]);
+    if (errors.length) setAttachmentError(errors.join(" "));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const sendMessage = async (overrideText) => {
     const text = String(overrideText || draft).trim();
-    if (!text || loading) return;
+    const outgoingAttachments = overrideText ? [] : attachments;
+    if ((!text && !outgoingAttachments.length) || loading) return;
+    const requestMode = mode;
+
+    if (requestMode === "pain_validation") {
+      submitLocalPain(text || attachmentSummary(outgoingAttachments) || "已上传附件，请记录这个痛点。", outgoingAttachments);
+      setAttachments([]);
+      return;
+    }
 
     const userMessage = {
       id: `user-${Date.now()}`,
       role: "user",
       content: text,
       diagnosis: null,
+      attachments: outgoingAttachments.map(({ dataUrl, text: fileText, ...item }) => item),
     };
     const nextMessages = [...messages, userMessage];
     const history = nextMessages
@@ -1729,10 +2343,12 @@ function WuYiAgent() {
 
     setMessages(nextMessages);
     setDraft("");
+    setAttachments([]);
+    setAttachmentError("");
     setLoading(true);
 
     const controller = new AbortController();
-    const timeoutMs = mode === "image_generation" ? AGENT_IMAGE_TIMEOUT_MS : AGENT_TEXT_TIMEOUT_MS;
+    const timeoutMs = requestMode === "image_generation" ? AGENT_IMAGE_TIMEOUT_MS : AGENT_TEXT_TIMEOUT_MS;
     const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
 
     try {
@@ -1740,13 +2356,20 @@ function WuYiAgent() {
         method: "POST",
         signal: controller.signal,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ intent: mode, message: text, history }),
+        body: JSON.stringify({
+          intent: requestMode,
+          message: text,
+          history,
+          attachments: outgoingAttachments,
+          painState: requestMode === "pain_validation" ? painState : undefined,
+        }),
       });
 
       window.clearTimeout(timeoutId);
       const payload = await response.json().catch(() => null);
 
       if (payload?.reply || payload?.diagnosis) {
+        applyPainCheck(payload?.painCheck, requestMode);
         appendAssistant(
           payload.reply || "信号已返回，但模型没有给出文字回复。",
           payload.diagnosis || null,
@@ -1757,10 +2380,12 @@ function WuYiAgent() {
       }
 
       setDraft((current) => current || text);
-      appendAssistant("WuYi Agent 收到了异常响应。输入内容已经保留，可以稍后重试，或直接通过页面底部联系伍轶。", null, "warning");
+      setAttachments((current) => current.length ? current : outgoingAttachments);
+      appendAssistant("AI伍子胥收到了异常响应。输入内容已经保留，可以稍后重试，或直接通过页面底部联系伍轶。", null, "warning");
     } catch (error) {
       window.clearTimeout(timeoutId);
       setDraft((current) => current || text);
+      setAttachments((current) => current.length ? current : outgoingAttachments);
       appendAssistant(
         error?.name === "AbortError"
           ? "链路响应超时。输入内容已经保留，可以稍后再试，或直接联系 WuYi。"
@@ -1799,6 +2424,7 @@ function WuYiAgent() {
   const handlePetPointerDown = (event) => {
     if (event.button !== 0) return;
     petDraggedRef.current = false;
+    setPetDragging(true);
     petDragStateRef.current = {
       startX: event.clientX,
       startY: event.clientY,
@@ -1820,10 +2446,13 @@ function WuYiAgent() {
     };
 
     const releasePet = () => {
+      const wasMoved = Boolean(petDragStateRef.current?.moved);
       window.removeEventListener("pointermove", movePet);
       window.removeEventListener("pointerup", releasePet);
       window.removeEventListener("pointercancel", releasePet);
       petDragStateRef.current = null;
+      setPetDragging(false);
+      if (!wasMoved) setOpen(true);
       window.setTimeout(() => {
         petDraggedRef.current = false;
       }, 90);
@@ -1834,12 +2463,12 @@ function WuYiAgent() {
     window.addEventListener("pointercancel", releasePet);
   };
 
-  const activeMode = agentModes[mode];
+  const activeMode = mode === "pain_validation" ? getPainModeCopy(painState) : agentModes[mode];
 
   return (
     <>
       {!open ? (
-        <CyberAgentPet offset={petOffset} onPointerDown={handlePetPointerDown} onOpen={openFromPet} />
+        <CyberAgentPet offset={petOffset} onPointerDown={handlePetPointerDown} onOpen={openFromPet} dragging={petDragging} />
       ) : null}
 
       {open ? <div className="fixed inset-0 bg-black/44 backdrop-blur-sm md:hidden" onClick={() => setOpen(false)} /> : null}
@@ -1852,7 +2481,7 @@ function WuYiAgent() {
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             className="relative ml-auto flex max-h-[86vh] w-full flex-col overflow-hidden rounded-t-[1.75rem] border border-cyan-100/14 bg-[#030814]/94 shadow-[0_-18px_68px_rgba(77,163,255,0.18)] backdrop-blur-md md:mr-0 md:max-h-[calc(100vh-3rem)] md:w-[420px] md:rounded-[1.55rem] md:shadow-[0_22px_84px_rgba(77,163,255,0.18)]"
-            aria-label="WuYi Agent"
+            aria-label="AI伍子胥"
           >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_22%_0%,rgba(125,249,255,0.16),transparent_34%),radial-gradient(circle_at_92%_18%,rgba(148,118,255,0.16),transparent_35%)]" />
           <div className="pointer-events-none absolute inset-0 opacity-[0.045] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.18)_1px,transparent_1px)] [background-size:34px_34px]" />
@@ -1869,12 +2498,12 @@ function WuYiAgent() {
                   </span>
                 </div>
                 <div>
-                <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.18em] text-cyan-100/58">WuYi Agent</p>
-                <h2 className="mt-1 text-lg font-medium text-white">AI 项目接口已接入</h2>
-                  <p className="mt-1 text-sm leading-6 text-white/52">wuyi 配置的这个智能体用的是各家免费的 API，额度有限请不要大量询问。</p>
+                <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.18em] text-cyan-100/58">AI WUZI XU</p>
+                <h2 className="mt-1 text-lg font-medium text-white">AI伍子胥</h2>
+                  <p className="mt-1 text-sm leading-6 text-white/52">免费 DeepSeek 对话 + Seedream 生图，另加一个本地轻量痛点入口。痛点提交不会卡 AI 判断通道；对话和生图仍受免费额度限制。</p>
                 </div>
               </div>
-              <button type="button" onClick={() => setOpen(false)} className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.035] text-white/54 transition hover:border-cyan-100/22 hover:text-white" aria-label="关闭 WuYi Agent">
+              <button type="button" onClick={() => setOpen(false)} className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.035] text-white/54 transition hover:border-cyan-100/22 hover:text-white" aria-label="关闭 AI伍子胥">
                 <Icon name="close" className="h-4 w-4" />
               </button>
             </div>
@@ -1891,22 +2520,40 @@ function WuYiAgent() {
                 </button>
               ))}
             </div>
+            {mode === "pain_validation" ? (
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                {painRoundCopies.map((item, index) => {
+                  const done = painState.approved || painState.round > index;
+                  const active = !painState.approved && painState.round === index;
+                  return (
+                    <div key={item.title} className={`rounded-2xl border px-3 py-2 text-[11px] leading-5 ${done ? "border-emerald-200/24 bg-emerald-200/[0.07] text-emerald-50/72" : active ? "border-cyan-100/20 bg-cyan-100/[0.08] text-cyan-50/78" : "border-white/[0.06] bg-white/[0.025] text-white/38"}`}>
+                      <span className="block font-semibold">0{index + 1}</span>
+                      <span className="block truncate">{item.title.replace(/^\d+\s/, "")}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
+            <div className="mt-3 grid gap-2 text-[12px] leading-5 text-white/48 sm:grid-cols-2">
+              <p className="rounded-2xl border border-white/[0.06] bg-white/[0.035] px-3 py-2">痛点：写一句最痛感受，提交后猫咪跳科目三。</p>
+              <p className="rounded-2xl border border-white/[0.06] bg-white/[0.035] px-3 py-2">对话 / 生图：适合 AI 咨询、网页内容和视觉实验。</p>
+            </div>
           </div>
 
           <div ref={scrollRef} className="relative flex-1 space-y-4 overflow-y-auto px-5 py-5">
             {messages.map((message) => (
               <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[88%] rounded-2xl border px-4 py-3 text-sm leading-6 ${message.role === "user" ? "border-cyan-100/16 bg-cyan-100/[0.08] text-cyan-50" : message.tone === "warning" ? "border-amber-100/16 bg-amber-100/[0.06] text-white/72" : "border-white/[0.07] bg-white/[0.04] text-white/68"}`}>
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  {message.content ? <p className="whitespace-pre-wrap">{message.content}</p> : null}
+                  <AgentAttachments attachments={message.attachments} />
                   <AgentImages images={message.images} />
-                  <AgentDiagnosis diagnosis={message.diagnosis} />
                 </div>
               </div>
             ))}
             {loading ? (
               <div className="flex justify-start">
                 <div className="rounded-2xl border border-cyan-100/10 bg-white/[0.04] px-4 py-3">
-                  <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.24em] text-cyan-100/46">信号传输中</p>
+                  <p style={fontStyles.mono} className="text-[11px] uppercase tracking-[0.24em] text-cyan-100/46">{mode === "image_generation" ? "AI 生图中" : "信号传输中"}</p>
                   <div className="mt-3 flex gap-1.5">
                     {[0, 1, 2].map((dot) => (
                       <motion.span key={dot} animate={{ opacity: [0.25, 1, 0.25], y: [0, -3, 0] }} transition={{ duration: 0.9, repeat: Infinity, delay: dot * 0.12 }} className="h-1.5 w-1.5 rounded-full bg-cyan-100/70" />
@@ -1918,10 +2565,54 @@ function WuYiAgent() {
           </div>
 
           <form onSubmit={submitMessage} className="relative border-t border-white/[0.07] bg-black/18 px-5 py-4">
-            <button type="button" onClick={() => sendMessage(activeMode.starter)} disabled={loading} className="mb-3 w-full rounded-2xl border border-cyan-100/10 bg-cyan-100/[0.045] px-4 py-2 text-left text-sm leading-6 text-cyan-50/66 transition hover:border-cyan-100/20 hover:text-cyan-50 disabled:cursor-not-allowed disabled:opacity-50">
-              {activeMode.starter}
-            </button>
+            {mode === "pain_validation" && painState.round === 1 ? (
+              <p className="mb-3 rounded-2xl border border-emerald-100/10 bg-emerald-100/[0.045] px-4 py-2 text-sm leading-6 text-emerald-50/70">
+                答案区已记录痛点，等确认后再给具体思考。
+              </p>
+            ) : (
+              <button type="button" onClick={() => sendMessage(activeMode.starter)} disabled={loading} className="mb-3 w-full rounded-2xl border border-cyan-100/10 bg-cyan-100/[0.045] px-4 py-2 text-left text-sm leading-6 text-cyan-50/66 transition hover:border-cyan-100/20 hover:text-cyan-50 disabled:cursor-not-allowed disabled:opacity-50">
+                {activeMode.starter}
+              </button>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept={AGENT_ATTACHMENT_ACCEPT}
+              className="hidden"
+              onChange={(event) => handleAttachmentFiles(event.target.files)}
+            />
+            {attachments.length ? (
+              <div className="mb-3 grid gap-2">
+                {attachments.map((item) => (
+                  <div key={item.id} className="flex items-center gap-2 rounded-2xl border border-cyan-100/10 bg-cyan-100/[0.045] px-3 py-2 text-xs text-cyan-50/70">
+                    <Icon name={item.kind === "image" ? "image" : "file"} className="h-3.5 w-3.5 shrink-0" />
+                    <span className="min-w-0 flex-1 truncate">{item.name}</span>
+                    <span className="shrink-0 text-cyan-50/40">{formatBytes(item.size)}</span>
+                    <button
+                      type="button"
+                      onClick={() => setAttachments((current) => current.filter((attachment) => attachment.id !== item.id))}
+                      className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-white/10 text-white/42 transition hover:border-rose-100/24 hover:text-rose-50"
+                      aria-label={`移除 ${item.name}`}
+                    >
+                      <Icon name="close" className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            {attachmentError ? <p className="mb-3 rounded-2xl border border-amber-100/12 bg-amber-100/[0.06] px-3 py-2 text-xs leading-5 text-amber-50/72">{attachmentError}</p> : null}
             <div className="flex items-end gap-2">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={loading || attachments.length >= AGENT_MAX_ATTACHMENTS}
+                className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.045] text-cyan-50/70 transition hover:border-cyan-100/24 hover:bg-cyan-100/[0.08] disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label="上传图片或小文件"
+                title="上传图片或小文件"
+              >
+                <Icon name="upload" className="h-4 w-4" />
+              </button>
               <textarea
                 value={draft}
                 onChange={(event) => setDraft(event.target.value)}
@@ -1929,10 +2620,11 @@ function WuYiAgent() {
                 rows={2}
                 className="min-h-[48px] flex-1 resize-none rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-white/28 focus:border-cyan-100/24 focus:bg-white/[0.065]"
               />
-              <button type="submit" disabled={loading || !draft.trim()} className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-cyan-100/18 bg-cyan-100/[0.10] text-cyan-50 transition hover:border-cyan-100/32 hover:bg-cyan-100/[0.16] disabled:cursor-not-allowed disabled:opacity-40" aria-label="发送给 WuYi Agent">
+              <button type="submit" disabled={loading || (!draft.trim() && !attachments.length)} className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-cyan-100/18 bg-cyan-100/[0.10] text-cyan-50 transition hover:border-cyan-100/32 hover:bg-cyan-100/[0.16] disabled:cursor-not-allowed disabled:opacity-40" aria-label="发送给 AI伍子胥">
                 <Icon name="send" className="h-4 w-4" />
               </button>
             </div>
+            <p className="mt-2 text-[11px] leading-5 text-white/32">支持图片、TXT、MD、CSV、JSON，小文件会随消息一起发送。</p>
           </form>
           </motion.aside>
         </div>
@@ -1954,12 +2646,39 @@ function GithubLaunchOverlay({ active }) {
   );
 }
 
+function WuYiAgentGate() {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const wakeAgent = (event) => {
+      if (event?.detail?.agentMountReplay) return;
+      setEnabled(true);
+      window.setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("wuyi-agent-celebrate", {
+          detail: { ...(event?.detail || {}), agentMountReplay: true },
+        }));
+      }, 80);
+    };
+
+    window.addEventListener("wuyi-agent-celebrate", wakeAgent);
+    return () => window.removeEventListener("wuyi-agent-celebrate", wakeAgent);
+  }, []);
+
+  return enabled ? <WuYiAgent /> : null;
+}
+
 export default function App() {
   const [githubBooting, setGithubBooting] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
-  const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 600], [0, -40]);
-  const coreY = useTransform(scrollY, [0, 600], [0, 38]);
+  const [sharePanelOpen, setSharePanelOpen] = useState(false);
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
+  const isAnalyticsRoute = pathname === "/admin-analytics";
+  const codingBasicsMatch = pathname.match(/^\/ai-coding-basics(?:\/([^/]+))?\/?$/);
+  const isCodingBasicsRoute = Boolean(codingBasicsMatch);
+  const codingBasicsTopicId = codingBasicsMatch?.[1] || "";
+  const practiceRoute = pathname === "/agent-development" || pathname === "/automation-productization"
+    ? pathname.slice(1)
+    : "";
 
   useEffect(() => {
     if (!window.location.hash) return undefined;
@@ -1978,6 +2697,31 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    trackAnalytics("page_view", { section: isAnalyticsRoute ? "admin-analytics" : "home" });
+  }, [isAnalyticsRoute]);
+
+  useEffect(() => {
+    if (isAnalyticsRoute) return undefined;
+    const seen = new Set();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.target.id && !seen.has(entry.target.id)) {
+          seen.add(entry.target.id);
+          trackAnalytics("section_view", { section: entry.target.id });
+        }
+      });
+    }, { threshold: 0.32 });
+
+    ["hero", "ai-roadmap", "ai-coding-basics", "model-benchmark", "coding-tools", "agent-development", "automation-productization", "radar", "contact"]
+      .map((id) => document.getElementById(id))
+      .filter(Boolean)
+      .forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
+  }, [isAnalyticsRoute]);
+
+  useEffect(() => {
+    if (isAnalyticsRoute) return undefined;
     const canScrollInside = (target, deltaY) => {
       if (!(target instanceof Element)) return false;
       if (target.closest("textarea,input,select,[contenteditable='true']")) return true;
@@ -2015,7 +2759,26 @@ export default function App() {
 
     window.addEventListener("wheel", handleWheel, { passive: true });
     return () => window.removeEventListener("wheel", handleWheel);
-  }, []);
+  }, [isAnalyticsRoute]);
+
+  useEffect(() => {
+    if (isAnalyticsRoute) return undefined;
+    let settleTimer = 0;
+    const markScrolling = () => {
+      document.documentElement.dataset.pageScrolling = "true";
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(() => {
+        delete document.documentElement.dataset.pageScrolling;
+      }, 180);
+    };
+
+    window.addEventListener("scroll", markScrolling, { passive: true });
+    return () => {
+      window.clearTimeout(settleTimer);
+      window.removeEventListener("scroll", markScrolling);
+      delete document.documentElement.dataset.pageScrolling;
+    };
+  }, [isAnalyticsRoute]);
 
   const scrollToSection = (targetId) => (event) => {
     event.preventDefault();
@@ -2035,79 +2798,131 @@ export default function App() {
     window.setTimeout(() => setGithubBooting(false), 850);
   };
 
+  const copyShareLink = async () => {
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        return true;
+      } catch {
+        // Fall through to the textarea copy fallback.
+      }
+    }
+
+    try {
+      const textarea = document.createElement("textarea");
+      textarea.value = shareUrl;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      textarea.style.top = "0";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      const copied = document.execCommand("copy");
+      document.body.removeChild(textarea);
+      return copied;
+    } catch {
+      return false;
+    }
+  };
+
   const shareSite = async () => {
     const nativeShare = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && navigator.share;
+    setSharePanelOpen(false);
 
     try {
       if (nativeShare) {
         await navigator.share({ ...sharePayload, url: shareUrl });
-        setShareStatus("分享成功");
-      } else if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(shareUrl);
-        setShareStatus("复制成功");
+        setShareStatus("已打开分享");
       } else {
-        window.prompt("复制分享链接", shareUrl);
+        await copyShareLink();
         setShareStatus("复制成功");
       }
     } catch (error) {
-      if (error?.name === "AbortError") return;
-      window.prompt("复制分享链接", shareUrl);
-      setShareStatus("复制成功");
+      if (error?.name === "AbortError") {
+        setShareStatus("分享已取消");
+      } else if (nativeShare) {
+        setSharePanelOpen(true);
+        setShareStatus("请手动复制");
+      } else {
+        await copyShareLink();
+        setShareStatus("复制成功");
+      }
     }
 
-    window.setTimeout(() => setShareStatus(""), 1800);
+    window.setTimeout(() => setShareStatus(""), 2200);
   };
 
+  if (isAnalyticsRoute) {
+    return <AnalyticsDashboard fontStyles={fontStyles} />;
+  }
+
+  if (isCodingBasicsRoute) {
+    return <AICodingBasicsPage fontStyles={fontStyles} topicId={codingBasicsTopicId} />;
+  }
+
+  if (practiceRoute) {
+    return <PracticeDetailPage type={practiceRoute} fontStyles={fontStyles} />;
+  }
+
   return (
-    <main style={fontStyles.ui} className="min-h-screen [overflow-x:clip] bg-[#03040a] text-white">
+    <main style={fontStyles.ui} className="min-h-screen [overflow-x:clip] bg-black text-white">
       <GithubLaunchOverlay active={githubBooting} />
-      <WuYiAgent />
-      <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_18%_14%,rgba(74,117,255,0.18),transparent_32%),radial-gradient(circle_at_82%_8%,rgba(137,83,255,0.16),transparent_34%),linear-gradient(180deg,#060711,#020207)]" />
+      <WuYiAgentGate />
+      {sharePanelOpen ? (
+        <div className="fixed inset-x-4 bottom-5 z-[80] mx-auto max-w-xl rounded-[1.35rem] border border-cyan-100/18 bg-[#070b14]/92 p-4 text-white shadow-[0_22px_80px_rgba(0,0,0,0.42)] backdrop-blur-2xl md:bottom-8">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.2em] text-cyan-100/52">Share Link</p>
+              <p className="mt-1 text-sm text-white/62">桌面端可复制网址；移动端会优先打开系统分享面板，微信通常会出现在可分享应用里。</p>
+            </div>
+            <button type="button" onClick={() => setSharePanelOpen(false)} className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/58 transition hover:text-white">
+              ×
+            </button>
+          </div>
+          <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-white/[0.08] bg-black/28 p-3 md:flex-row md:items-center">
+            <code className="min-w-0 flex-1 break-all text-sm text-cyan-50/78">{shareUrl}</code>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard?.writeText(shareUrl);
+                  setShareStatus("已复制链接");
+                } catch {
+                  setShareStatus("请手动复制");
+                }
+              }}
+              className="rounded-full border border-cyan-100/16 bg-cyan-100/[0.08] px-4 py-2 text-sm font-semibold text-cyan-50 transition hover:bg-cyan-100/[0.14]"
+            >
+              {shareStatus || "复制网址"}
+            </button>
+          </div>
+        </div>
+      ) : null}
+      <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_18%_12%,rgba(255,255,255,0.055),transparent_32%),radial-gradient(circle_at_82%_8%,rgba(255,255,255,0.04),transparent_34%),linear-gradient(180deg,#000,#050505_48%,#000)]" />
       <div className="fixed inset-0 -z-10 opacity-[0.035] [background-image:linear-gradient(to_right,rgba(255,255,255,.4)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.28)_1px,transparent_1px)] [background-size:56px_56px]" />
 
       <header className="relative z-20 mx-auto flex max-w-[1540px] items-center justify-between px-6 py-7 md:px-10">
         <a href="#hero" className="inline-flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.05]"><Icon name="core" /></span><span className="text-base font-medium text-white/50 transition hover:text-white">{profile.logoText}</span></a>
-        <nav className="hidden items-center gap-7 text-base text-white/50 md:flex"><a href="#capability" onClick={scrollToSection("#capability")} className="hover:text-white">能力</a><a href="#story" onClick={scrollToSection("#story")} className="hover:text-white">方法</a><a href="#systems" onClick={scrollToSection("#systems")} className="hover:text-white">系统</a><a href="#contact" onClick={scrollToSection("#contact")} className="hover:text-white">联系</a></nav>
+        <nav className="hidden items-center gap-5 text-base text-white/50 md:flex"><a href="#ai-roadmap" onClick={scrollToSection("#ai-roadmap")} className="hover:text-white">路径</a><a href="#ai-coding-basics" onClick={scrollToSection("#ai-coding-basics")} className="hover:text-white">编程基础</a><a href="#model-benchmark" onClick={scrollToSection("#model-benchmark")} className="hover:text-white">模型评测</a><a href="#coding-tools" onClick={scrollToSection("#coding-tools")} className="hover:text-white">编程智能体</a><a href="#agent-development" onClick={scrollToSection("#agent-development")} className="hover:text-white">Agent开发</a><a href="#automation-productization" onClick={scrollToSection("#automation-productization")} className="hover:text-white">自动化产品化</a><a href="#radar" onClick={scrollToSection("#radar")} className="hover:text-white">Radar</a><a href="#contact" onClick={scrollToSection("#contact")} className="hover:text-white">联系</a></nav>
       </header>
 
-      <section id="hero" className="relative z-30 [overflow-x:clip] px-5 pb-20 pt-6 sm:px-6 md:px-10 md:pb-24 md:pt-8">
-        <EvolutionLightBackground background={evolutionBackgrounds.hero} />
-        <div className="relative z-10 mx-auto grid min-h-[calc(100vh-92px)] max-w-[1540px] items-center gap-8 md:gap-12 lg:grid-cols-[0.72fr_1.28fr]">
-          <motion.div style={{ y: heroY }} className="relative z-[60]">
-            <motion.h1 initial={{ opacity: 0, y: 34, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.08, duration: 1.05 }} className="max-w-3xl">
-              <span className="relative block bg-gradient-to-b from-white via-cyan-50/90 to-white/34 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitle}</span>
-              {profile.heroTitleSecond ? <span className="relative mt-2 block bg-gradient-to-b from-white via-cyan-50/86 to-white/32 bg-clip-text text-[3.2rem] font-semibold leading-[0.96] tracking-[-0.065em] text-transparent md:text-[5.2rem] lg:text-[6.4rem]">{profile.heroTitleSecond}</span> : null}
-              <span className="mt-6 block max-w-2xl text-[1.12rem] font-medium leading-8 tracking-[-0.01em] text-cyan-50/74 md:text-[1.45rem]">{profile.heroSubtitle}</span>
-            </motion.h1>
-            <motion.p initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24, duration: 0.85 }} className="mt-7 max-w-xl text-[0.98rem] leading-8 text-white/50 md:text-[1.05rem]">{profile.line}</motion.p>
-            <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.85 }} className="ml-3 mt-8 grid max-w-xl grid-cols-3 gap-3 border-y border-white/[0.07] py-5">{[["01", "构想"], ["02", "构建"], ["03", "进化"]].map(([no, label]) => <div key={label}><p style={fontStyles.mono} className="text-[12px] tracking-[0.14em] text-cyan-100/52">{no}</p><p className="mt-1 text-base font-medium text-white/84">{label}</p></div>)}</motion.div>
-            <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42, duration: 0.85 }} className="-ml-3 mt-9 grid max-w-xl grid-cols-3 gap-3"><CTAButton href={profile.github} icon="github" onClick={launchGithub}>查看 GitHub</CTAButton><CTAButton href="#contact" variant="ghost" icon="mail" onClick={scrollToSection("#contact")}>联系我</CTAButton><ShareButton status={shareStatus} onShare={shareSite} /></motion.div>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.62, duration: 0.9 }} className="mt-8 flex items-center gap-3 text-[12px] text-white/34" style={fontStyles.mono}><span className="h-px w-10 bg-gradient-to-r from-cyan-100/0 via-cyan-100/35 to-cyan-100/0" />WUYi WITH AI / CODE FLOW / IMAGINATION SYSTEM</motion.div>
-          </motion.div>
-          <motion.div style={{ y: coreY }} className="relative mx-auto w-full max-w-[760px] lg:max-w-none"><div className="absolute -inset-6 bg-[radial-gradient(circle_at_50%_48%,rgba(77,163,255,0.16),transparent_56%)] blur-2xl md:-inset-10" /><AICoreScene booting={githubBooting} /></motion.div>
-        </div>
-      </section>
+      <ScrollVideoHero
+        profile={profile}
+        shareStatus={shareStatus}
+        onGithub={launchGithub}
+        onContact={scrollToSection("#contact")}
+        onShare={shareSite}
+        fontStyles={fontStyles}
+      />
 
-      <section id="capability" className="relative z-10 [overflow-x:clip] border-y border-white/[0.06] bg-[#05060c] px-6 py-28 md:px-10 md:py-36">
-        <EvolutionLightBackground background={evolutionBackgrounds.capability} />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(125,249,255,0.075),transparent_28%),radial-gradient(circle_at_82%_12%,rgba(148,118,255,0.12),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_28%,rgba(255,255,255,0.015))]" />
-        <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.18)_1px,transparent_1px)] [background-size:56px_56px]" />
-        <div className="relative z-10 mx-auto max-w-7xl">
-          <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.75 }} className="relative mx-auto mb-14 max-w-4xl text-center">
-            <h2 className="mx-auto bg-gradient-to-b from-white via-slate-100/90 to-white/42 bg-clip-text text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.055em] text-transparent md:text-[4.2rem]">Capability Matrix</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-cyan-50/58 md:text-lg">我的 AI 系统能力栈</p>
-            <p className="mx-auto mt-2 max-w-3xl text-base leading-8 text-white/48 md:text-lg">把开发、自动化、Agent、设计、数据与产品化能力组合成可运行的系统矩阵。</p>
-          </motion.div>
-          <div className="relative grid gap-5 md:grid-cols-2 lg:grid-cols-3">{capabilityItems.map((item, index) => <CapabilityChip key={item.title} item={item} index={index} />)}</div>
-        </div>
-      </section>
+      <AIInsightsSection fontStyles={fontStyles} CoreVisual={AICoreScene} />
 
-      <section id="story" className="relative z-10 [overflow-x:clip] border-y border-white/[0.06] bg-[#03040a] px-6 py-28 text-white md:px-10 md:py-36">
+      <section id="story-removed" className="hidden">
         <EvolutionLightBackground background={evolutionBackgrounds.story} />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(125,249,255,0.08),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(148,118,255,0.13),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_32%,rgba(255,255,255,0.012))]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.16)_1px,transparent_1px)] [background-size:58px_58px]" />
-        <div className="pointer-events-none absolute left-1/2 top-[54%] hidden h-px w-[76vw] -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan-100/22 to-transparent lg:block" />
-        <div className="relative z-10 mx-auto max-w-7xl">
+        <div className="relative z-10 mx-auto max-w-[1500px]">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -2116,72 +2931,115 @@ export default function App() {
             className="relative mx-auto mb-16 max-w-4xl text-center md:mb-20"
           >
             <h2 className="mx-auto bg-gradient-to-b from-white via-slate-100/90 to-white/42 bg-clip-text text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.055em] text-transparent md:text-[4.2rem]">
-              How I Build With AI
+              方法与案例
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-cyan-50/58 md:text-lg">
-              从混乱问题，到可执行系统。
+              从 AI 编程基础，到 Agent 开发，再到自动化和产品化交付。
             </p>
             <p className="mx-auto mt-2 max-w-3xl text-base leading-8 text-white/48 md:text-lg">
-              把问题拆成结构，把结构接入智能，再把智能落成可运行的产品流程。
+              这里不讲抽象概念，只讲如何把能力变成能运行、能验证、能复用的系统。
             </p>
           </motion.div>
 
-          <div className="relative grid gap-5 md:grid-cols-2 lg:grid-cols-5">
-            <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-cyan-100/20 to-transparent lg:hidden" />
-            {storyFrames.map((frame, index) => (
-              <div key={frame.no} className="relative pl-8 lg:pl-0">
-                <span className="absolute left-[18px] top-10 z-20 h-3 w-3 rounded-full border border-cyan-100/35 bg-cyan-100/70 shadow-[0_0_18px_rgba(125,249,255,0.65)] lg:left-1/2 lg:top-[-18px] lg:-translate-x-1/2" />
-                {index < storyFrames.length - 1 ? <span className="absolute left-1/2 top-[-13px] hidden h-px w-full bg-gradient-to-r from-cyan-100/22 to-transparent lg:block" /> : null}
-                <StoryFrame frame={frame} index={index} />
+          <div className="mb-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+              className="relative min-h-[320px] overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_34px_110px_rgba(125,160,200,0.20)]"
+            >
+              <img src="/media/ai-learning-path-light.png" alt="浅色 AI 实战路径视觉图" className="h-full min-h-[320px] w-full object-cover" loading="lazy" />
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.38))]" />
+            </motion.div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {practicePanels.map((panel, index) => (
+                <motion.article
+                  key={panel.no}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ delay: index * 0.08, duration: 0.64, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative overflow-hidden rounded-[1.6rem] border border-cyan-100/[0.10] bg-white/[0.045] p-6 backdrop-blur-xl"
+                >
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_12%,rgba(125,249,255,0.14),transparent_34%)]" />
+                  <div className="relative">
+                    <div className="flex items-center justify-between gap-4">
+                      <span style={fontStyles.mono} className="rounded-full border border-cyan-100/14 bg-cyan-100/[0.08] px-3 py-1 text-[11px] uppercase tracking-[0.16em] text-cyan-50/66">{panel.meta}</span>
+                      <span style={fontStyles.mono} className="text-xs text-white/32">{panel.no}</span>
+                    </div>
+                    <h3 className="mt-6 text-2xl font-semibold tracking-[-0.035em] text-white">{panel.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-white/56">{panel.desc}</p>
+                    <div className="mt-6 grid gap-2">
+                      {panel.points.map((point) => (
+                        <div key={point} className="flex items-center gap-2 text-sm text-cyan-50/68">
+                          <span className="h-1.5 w-1.5 rounded-full bg-cyan-100 shadow-[0_0_12px_rgba(125,249,255,0.72)]" />
+                          {point}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+              className="relative overflow-hidden rounded-[2rem] border border-cyan-100/[0.10] bg-white/[0.035] shadow-[0_36px_110px_rgba(0,0,0,0.38)]"
+            >
+              <img src="/media/ai-method-system-map-cinematic.png" alt="AI 方法与系统案例视觉图" className="min-h-[360px] w-full object-cover" loading="lazy" />
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(3,4,10,0.38)),radial-gradient(circle_at_72%_28%,rgba(125,249,255,0.18),transparent_34%)]" />
+              <div className="absolute bottom-5 left-5 right-5 grid gap-3 md:grid-cols-3">
+                {systems.map((item) => (
+                  <div key={item.no} className="rounded-2xl border border-white/[0.10] bg-black/44 p-4 backdrop-blur-md">
+                    <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.18em] text-cyan-100/46">{item.status}</p>
+                    <p className="mt-2 text-sm font-semibold text-white/84">{item.cnTitle}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </motion.div>
+
+            <div className="grid gap-4">
+              {storyFrames.map((frame, index) => (
+                <motion.article
+                  key={frame.no}
+                  initial={{ opacity: 0, x: 24 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ delay: index * 0.05, duration: 0.58 }}
+                  className="group relative overflow-hidden rounded-[1.55rem] border border-white/[0.08] bg-black/22 p-5 backdrop-blur-xl"
+                >
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_88%_18%,rgba(125,249,255,0.10),transparent_34%)] opacity-0 transition group-hover:opacity-100" />
+                  <div className="relative flex gap-4">
+                    <span style={fontStyles.mono} className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-cyan-100/14 bg-cyan-100/[0.08] text-sm text-cyan-50/78">{frame.no}</span>
+                    <div>
+                      <p style={fontStyles.mono} className="text-[10px] uppercase tracking-[0.18em] text-cyan-100/42">{frame.english}</p>
+                      <h3 className="mt-1 text-xl font-semibold text-white">{frame.title}</h3>
+                      <p className="mt-2 text-sm leading-7 text-white/55">{frame.desc}</p>
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="systems" className="relative z-10 [overflow-x:clip] border-y border-white/[0.06] bg-[#03040a] px-6 py-28 text-white md:px-10 md:py-36">
-        <EvolutionLightBackground background={evolutionBackgrounds.systems} />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_8%,rgba(160,232,255,0.09),transparent_30%),radial-gradient(circle_at_18%_22%,rgba(74,117,255,0.12),transparent_34%),radial-gradient(circle_at_86%_18%,rgba(148,118,255,0.14),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.035),transparent_30%,rgba(255,255,255,0.012))]" />
-        <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,rgba(255,255,255,.26)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.16)_1px,transparent_1px)] [background-size:58px_58px]" />
-        <div className="pointer-events-none absolute left-1/2 top-[58%] hidden h-px w-[72vw] -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan-100/22 to-transparent lg:block" />
-        <motion.div
-          className="pointer-events-none absolute left-1/2 top-[58%] hidden h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-white shadow-[0_0_18px_rgba(160,232,255,0.86)] lg:block"
-          animate={{ x: ["-36vw", "36vw", "-36vw"], opacity: [0, 1, 0] }}
-          transition={{ duration: 5.4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <div className="relative z-10 mx-auto max-w-7xl">
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-            className="relative mx-auto mb-16 max-w-4xl text-center md:mb-20"
-          >
-            <h2 className="mx-auto bg-gradient-to-b from-white via-slate-100/90 to-white/42 bg-clip-text text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.055em] text-transparent md:text-[4.2rem]">
-              Selected Systems
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-cyan-50/58 md:text-lg">
-              正在形成的 AI 系统模块
-            </p>
-            <p className="mx-auto mt-2 max-w-3xl text-base leading-8 text-white/48 md:text-lg">
-              自动化、产品界面与数据智能，是我把 AI 变成真实系统的三个核心落点。
-            </p>
-          </motion.div>
-          <div className="relative grid gap-6 lg:grid-cols-3">
-            {systems.map((item, index) => <SystemCard key={item.title} item={item} index={index} />)}
-          </div>
-        </div>
-      </section>
-
-      <section id="radar" className="relative z-10 [overflow-x:clip] bg-[#02030A] px-6 py-28 text-white md:px-10 md:py-36">
+      <section id="radar" className="relative z-10 [overflow-x:clip] bg-black px-6 py-28 text-white md:px-10 md:py-36">
         <EvolutionLightBackground background={evolutionBackgrounds.radar} />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#03040a] via-[#040713]/85 to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#03040a] via-[#070818]/80 to-transparent" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(125,249,255,0.08),transparent_26%),radial-gradient(circle_at_18%_20%,rgba(77,163,255,0.10),transparent_30%),radial-gradient(circle_at_84%_18%,rgba(148,118,255,0.14),transparent_30%),linear-gradient(180deg,#02030A_0%,#040712_48%,#0A0616_100%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black via-[#050505]/85 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black via-[#050505]/80 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.055),transparent_26%),radial-gradient(circle_at_18%_20%,rgba(255,255,255,0.04),transparent_30%),radial-gradient(circle_at_84%_18%,rgba(255,255,255,0.045),transparent_30%),linear-gradient(180deg,#000_0%,#050505_48%,#000_100%)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.018] [background-image:linear-gradient(to_right,rgba(255,255,255,.18)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.12)_1px,transparent_1px)] [background-size:72px_72px]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_28%,rgba(255,255,255,0.40)_0_1px,transparent_1.7px),radial-gradient(circle_at_78%_34%,rgba(190,220,255,0.38)_0_1px,transparent_1.7px),radial-gradient(circle_at_52%_78%,rgba(255,255,255,0.24)_0_1px,transparent_1.6px)] [background-size:88px_88px,132px_132px,176px_176px] opacity-[0.18]" />
-        <div className="pointer-events-none absolute -left-[20%] top-[24%] h-72 w-[72%] -rotate-12 rounded-full bg-[radial-gradient(ellipse,rgba(125,249,255,0.07),transparent_72%)] blur-3xl" />
-        <div className="pointer-events-none absolute right-[-18%] bottom-[18%] h-72 w-[72%] rotate-12 rounded-full bg-[radial-gradient(ellipse,rgba(148,118,255,0.10),transparent_72%)] blur-3xl" />
+        <div className="pointer-events-none absolute -left-[20%] top-[24%] h-72 w-[72%] -rotate-12 rounded-full bg-[radial-gradient(ellipse,rgba(255,255,255,0.045),transparent_72%)] blur-3xl" />
+        <div className="pointer-events-none absolute right-[-18%] bottom-[18%] h-72 w-[72%] rotate-12 rounded-full bg-[radial-gradient(ellipse,rgba(255,255,255,0.05),transparent_72%)] blur-3xl" />
 
         <div className="relative z-10 mx-auto max-w-[1500px]">
           <motion.div
@@ -2224,12 +3082,12 @@ export default function App() {
 
       <footer id="contact" className="relative z-10 [overflow-x:clip] px-6 py-32 text-white md:px-10 md:py-44">
         <EvolutionLightBackground background={evolutionBackgrounds.contact} />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(125,249,255,0.11),transparent_34%),radial-gradient(circle_at_82%_30%,rgba(148,118,255,0.13),transparent_38%),radial-gradient(circle_at_18%_68%,rgba(77,163,255,0.08),transparent_34%),linear-gradient(180deg,#02030A_0%,#040713_44%,#020207_100%)]" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[#02030A] via-[#071022]/70 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.055),transparent_34%),radial-gradient(circle_at_82%_30%,rgba(255,255,255,0.045),transparent_38%),radial-gradient(circle_at_18%_68%,rgba(255,255,255,0.035),transparent_34%),linear-gradient(180deg,#000_0%,#050505_44%,#000_100%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black via-[#050505]/70 to-transparent" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.022] [background-image:linear-gradient(to_right,rgba(255,255,255,.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.12)_1px,transparent_1px)] [background-size:72px_72px]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_28%,rgba(255,255,255,0.34)_0_1px,transparent_1.6px),radial-gradient(circle_at_78%_36%,rgba(190,220,255,0.30)_0_1px,transparent_1.6px),radial-gradient(circle_at_52%_78%,rgba(255,255,255,0.22)_0_1px,transparent_1.6px)] [background-size:96px_96px,148px_148px,196px_196px] opacity-[0.14]" />
         <div className="pointer-events-none absolute left-1/2 top-[24%] h-px w-[78vw] -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan-100/22 to-transparent" />
-        <div className="pointer-events-none absolute left-1/2 bottom-[18%] h-64 w-[70vw] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(125,249,255,0.08),rgba(148,118,255,0.06)_38%,transparent_72%)] blur-3xl" />
+        <div className="pointer-events-none absolute left-1/2 bottom-[18%] h-64 w-[70vw] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(255,255,255,0.045),rgba(255,255,255,0.035)_38%,transparent_72%)] blur-3xl" />
 
         <motion.div
           initial={{ opacity: 0, y: 34, filter: "blur(10px)" }}
@@ -2246,7 +3104,7 @@ export default function App() {
           <div className="mx-auto mt-12 h-px max-w-xl bg-gradient-to-r from-transparent via-cyan-100/26 to-transparent" />
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4">
-            <p style={fontStyles.serif} className="text-[2.7rem] font-light tracking-[0.18em] text-white/92 md:text-[4.2rem]">AI边池派</p>
+            <p style={fontStyles.serif} className="text-[2.7rem] font-light tracking-[0.18em] text-white/92 md:text-[4.2rem]">AI伍子胥</p>
             <p className="text-base font-medium tracking-[0.22em] text-cyan-50/56">{profile.location}</p>
           </div>
 
@@ -2257,9 +3115,9 @@ export default function App() {
             <a href={`mailto:${profile.email}`} className="rounded-full border border-cyan-100/10 bg-white/[0.035] px-5 py-3 backdrop-blur-xl transition hover:border-cyan-100/24 hover:bg-white/[0.075] hover:text-white">
               邮箱：{profile.email}
             </a>
-            <a href={`tel:${profile.phone}`} className="rounded-full border border-cyan-100/10 bg-white/[0.035] px-5 py-3 backdrop-blur-xl transition hover:border-cyan-100/24 hover:bg-white/[0.075] hover:text-white">
-              电话：{profile.phone}
-            </a>
+            <span className="rounded-full border border-cyan-100/10 bg-white/[0.035] px-5 py-3 backdrop-blur-xl">
+              合作/企业级AI能力学习：{profile.phone}
+            </span>
           </div>
         </motion.div>
       </footer>

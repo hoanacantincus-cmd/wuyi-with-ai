@@ -1,7 +1,182 @@
 # Current State
 
 ## Date
-2026-05-22
+2026-06-13
+
+## Latest Content Restructure Update
+- Date: 2026-06-13
+- Reworked the post-hero homepage into the requested six content areas only:
+  `AI 学习路径`, `大模型评测`, `AI 编程智能体评测`, `方法与案例`,
+  `AI Orbit Radar`, and the closing contact section.
+- Removed the independent `Capability Matrix` and `Selected Systems` rendered
+  sections. Their useful system tags are folded into the method/case story area.
+- `AI 学习路径` now pairs the restored `AICoreScene` planet/formula visual with
+  a short six-step roadmap and the new cinematic image
+  `public/media/ai-learning-path-cinematic.png`.
+- `大模型评测` is table-first, with model comparison, task selection, and source
+  snapshot tables. The source snapshot is static and should not be presented as
+  a live ranking.
+- `AI 编程智能体评测` now combines coding tool review and Agent capability review
+  with tables plus `public/media/ai-agent-workbench-cinematic.png`.
+- `方法与案例` now uses a cinematic system-map panel at
+  `public/media/ai-method-system-map-cinematic.png`, the five-step build story,
+  and three merged case tags from automation, product interface, and data
+  intelligence.
+- Updated visible brand and SEO metadata from `AI边池派` to `AI伍子胥`, including
+  `index.html`, share title, footer brand, and the page title.
+- Removed the `window.prompt()` share fallback that caused an in-app browser
+  console error; share now uses native share or Clipboard API and otherwise
+  reports copy failure without opening a prompt.
+- Local validation: `npm run build` succeeds. Browser checks at
+  `http://127.0.0.1:5173/` confirmed the six target sections, five tables,
+  `AICoreScene` canvas inside `#ai-roadmap`, all three cinematic images loading,
+  no `AI边池派` text in the page body, no `prompt()` console error, and 390px
+  mobile table wrappers using horizontal scroll with no detected text overflow.
+- Follow-up layout adjustment: removed the dark learning-path image from below
+  the `AICoreScene` planet/formula visual, generated a new light-background
+  path asset at `public/media/ai-learning-path-light.png`, and moved that visual
+  into the `方法与案例` area.
+- Follow-up content adjustment: replaced the learning-path right-side timeline
+  with `AI 编程基础`, `大模型评测`, `AI 编程智能体评测`, `Agent开发`,
+  `自动化与产品化`, and `AI Orbit Radar`. Removed the `How I Build With AI`
+  heading and added dedicated `AI 编程基础` plus `Agent开发` practice panels.
+- Follow-up validation: `npm run build` succeeds. Browser checks confirmed the
+  new six timeline items, old `AI 认知入口` and `RAG 与知识库` roadmap items are
+  absent, `How I Build With AI` is absent, the light path image loads in the new
+  story position, and 390px mobile layout has no detected text overflow.
+- Follow-up on 2026-06-13: aligned the hero module grid with the actual page
+  anchors: `AI 学习路径`, `AI 编程基础`, `大模型评测`, `AI 编程智能体评测`,
+  `Agent开发与产品化`, and `AI Orbit Radar`.
+- Added a standalone `#ai-coding-basics` section between the roadmap and model
+  benchmark. Added standalone `#agent-product` for `Agent开发、自动化与产品化`.
+- Removed the visible `方法与案例` section from navigation and page flow; the
+  old story block is hidden and no longer appears in rendered body text.
+- Reworked `大模型评测` and `AI 编程智能体评测` away from table-only layouts into
+  animated authority signal cards, task-routing bars, and coding-agent ability
+  bars. The page links to live authority sources and labels the local data as
+  a current snapshot rather than pretending to scrape the dynamic leaderboards.
+- Authority sources checked for this snapshot: Arena leaderboard, Artificial
+  Analysis models leaderboard, and Aider LLM leaderboards. Snapshot date is
+  `2026-06-13`.
+- Changed contact CTA text from `电话：15527138700` to `微信：15527138700`.
+- Validation: `npm run build` succeeds. Browser checks confirmed all new
+  anchors exist, hero module links point to them, `方法与案例` is no longer
+  visible, `微信：15527138700` is present, model live-source links render, and
+  390px mobile layout has no detected text overflow.
+- Follow-up on 2026-06-13: fixed share behavior by adding an in-page share
+  panel that always displays `https://wuyi-with-ai.pages.dev/`. Desktop tries
+  Clipboard API and falls back to visible manual copy; mobile first attempts
+  the native share sheet so WeChat can appear when the device/browser supports
+  it.
+- Rebuilt `AI 编程基础` for Chinese beginners with six clickable topic cards:
+  Doubao/DeepSeek/ChatGPT differences, no-VPN domestic AI coding path, domestic
+  coding tools such as Trae/通义灵码/MarsCode, task-first tools such as Coze/
+  Lovart/Dify, terminal agents such as Claude Code/Codex, and route selection.
+  Clicking a card jumps to `#ai-coding-detail` and swaps in a detailed panel
+  with action steps and external links.
+- Re-styled `大模型评测` and `AI 编程智能体评测` into softer, more rounded visual
+  cards with animated score bars, large score bubbles, pastel glows, and a more
+  playful graph-system feel while keeping authority-source links and snapshot
+  labeling.
+- Validation: `npm run build` succeeds. Browser checks confirmed the share panel
+  shows the URL, beginner cards and detail panel work, model/coding graph text
+  renders, and 390px mobile layout has no detected text overflow.
+
+## Latest Scroll Video Hero and Analytics Update
+- Date: 2026-06-12
+- Replaced the original first-screen hero with a scroll-driven video hero using
+  `public/media/ai-roadmap-hero.mp4`, copied from the user-provided
+  `C:\Users\Administrator\Desktop\6月12日.mp4`.
+- Added a new AI learning/benchmark section after the hero:
+  AI learning path, model benchmark snapshot, and objective AI coding tool
+  review.
+- Model benchmark v1 uses static snapshot data with source links to Arena,
+  Artificial Analysis, and Aider LLM Leaderboards. It does not auto-refresh.
+- Added anonymous analytics client tracking for page views, hero progress,
+  section views, and CTA clicks.
+- Added `api/analytics.js` for Vercel Serverless analytics ingestion and
+  summary reads. It uses Upstash Redis REST when configured, validates allowed
+  origins, rejects bad methods/content types/events, and never stores raw IPs.
+- Added `/admin-analytics` hidden React page for password-protected analytics
+  summary viewing.
+- Added `.env.example` analytics variables:
+  `VITE_ANALYTICS_API_URL`, `ANALYTICS_ALLOWED_ORIGINS`,
+  `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`,
+  `ANALYTICS_ADMIN_PASSWORD`, and `ANALYTICS_SALT`.
+- Added `public/_redirects` so Cloudflare Pages can serve SPA routes such as
+  `/admin-analytics`.
+- Local validation passed: production build succeeded, homepage DOM contains
+  the scroll-video hero and new sections, video metadata loaded in browser,
+  `/admin-analytics` rendered its password form, and mocked analytics API smoke
+  tests returned 204 for valid POST, 400 for unknown event, 403 for bad Origin,
+  401 for missing admin auth, and 200 configured=false when Redis vars are not
+  present.
+- Browser automation could not move the page scroll position in the in-app
+  browser despite the document having normal scroll height and no root overflow
+  lock; manual scroll behavior should be checked before deployment.
+- The bundled `ffmpeg/ffprobe` WinGet links failed to execute, so the original
+  61.5 MB video is currently used. Compress to 1080p/30fps plus a smaller mobile
+  variant before production deployment if performance is a priority.
+- Follow-up on 2026-06-12: located the real WinGet FFmpeg target and compressed
+  the hero video to 1920x1080, 30fps, no audio, faststart H.264. The active
+  website file is now `public/media/ai-roadmap-hero.mp4` at about 7.4 MB, with
+  the original kept as `public/media/ai-roadmap-hero-original.mp4`.
+- Local preview server was started on `http://127.0.0.1:5173/`; browser DOM
+  validation confirmed the compressed video loads as 1920x1080 with duration
+  about 12.43 seconds and `readyState` 4.
+- Follow-up visual adjustment: made the hero video the primary opening visual
+  instead of a dim background layer. The video is now visible by default,
+  muted/autoplay/loop/preload auto, uses a real extracted poster frame at
+  `public/media/ai-roadmap-hero-poster.jpg`, and the text is reduced into a
+  lighter bottom-left overlay.
+- Follow-up scroll-scrub adjustment: changed the hero video back to paused,
+  non-autoplay, non-loop playback. Mouse/page scrolling now drives video
+  `currentTime` through both Framer scroll progress and a native scroll listener
+  fallback, so the video rhythm follows scroll movement instead of playing by
+  itself.
+- Follow-up smoothness adjustment: re-encoded the original user video into a
+  scroll-scrub optimized active asset: `public/media/ai-roadmap-hero.mp4` is
+  now 1920x1080, 60fps, H.264, about 12.43 seconds and 20.4 MB, with dense
+  keyframes (`-g 6`) for smoother seek-on-scroll behavior. The previous 30fps
+  compressed version is kept as `public/media/ai-roadmap-hero-1080p30.mp4`, and
+  the original 4K source copy is kept as `public/media/ai-roadmap-hero-original.mp4`.
+- Deployment is not complete. Before deploying, configure Vercel env vars for
+  Upstash Redis and analytics admin password/salt, then use the known ASCII
+  worktree Vercel deploy workaround if the Chinese-path workspace times out.
+
+## Latest Security Hardening Update
+- Date: 2026-06-04
+- Added production security headers for Vercel and Cloudflare Pages:
+  CSP with `frame-ancestors 'none'`, HSTS, `nosniff`, `X-Frame-Options: DENY`,
+  `Referrer-Policy`, `Permissions-Policy`, and `Cross-Origin-Opener-Policy`.
+- Added `public/_headers` so Cloudflare Pages will publish the same static
+  security headers after the next successful Pages deployment.
+- Hardened `api/agent.js`: production requests without an allowed Origin are
+  blocked, non-JSON POSTs are rejected, JSON request bodies are capped at 16KB,
+  API responses are `no-store`, JSON parse/body-size failures return 400/413,
+  image generation has a stricter per-IP limit of 1 request/minute and
+  3 requests/15 minutes, and upstream failure details are no longer exposed.
+- Local validation passed: `node --check api/agent.js`, `npm run build`, no
+  sourcemaps in `dist`, `dist/_headers` exists, Vercel JSON parses, CSP hash
+  matches built `dist/index.html`, and mock API requests returned expected
+  403/204/415/413/429 statuses.
+- Vercel production deployment succeeded from ASCII temp directory
+  `C:\Users\Administrator\Desktop\wuyi-security-deploy-temp\20260604173616`;
+  deployment `https://wuyi-with-dsnob78qg-wuyi.vercel.app` was aliased to
+  `https://wuyi-with-ai.vercel.app`.
+- Vercel live smoke test passed: homepage returns HTTP 200 with CSP, HSTS, and
+  `X-Frame-Options: DENY`; `/api/agent` blocks bad Origin with 403, no Origin
+  with 403, oversized JSON with 413, and allows Cloudflare Pages preflight with
+  HTTP 204.
+- Cloudflare Pages deployment initially failed because the default Wrangler
+  OAuth callback timed out. Login succeeded with `npx wrangler login
+  --callback-host 127.0.0.1`, then `npx wrangler pages deploy dist
+  --project-name wuyi-with-ai` completed and produced preview URL
+  `https://326ce499.wuyi-with-ai.pages.dev`.
+- Cloudflare live smoke test passed for both `https://wuyi-with-ai.pages.dev`
+  and `https://326ce499.wuyi-with-ai.pages.dev`: HTTP 200 with CSP, HSTS,
+  `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and
+  `Cross-Origin-Opener-Policy: same-origin`.
 
 ## Latest Agent API Update
 - Diagnosed user-visible "链路响应超时" reports after the image/model update.
@@ -229,6 +404,36 @@
 - HTTP smoke tests for production home pages, robots.txt, and sitemap.xml
 
 ## Verified
+- 2026-06-12 local hero update: `ScrollVideoHero` now uses `AI伍子胥`,
+  removes the right-side "滚动控制视频进度" text, shows seven clickable module
+  entries, and animates the active hero copy in from above as scroll-controlled
+  video progress changes.
+- Local `npm run build` succeeds after the latest scroll-video hero changes.
+- In-app browser at `http://127.0.0.1:5173/` confirms `AI伍子胥` is present,
+  "滚动控制视频进度" is absent, the seven hero module links are present, and
+  the scrub video remains paused/non-autoplay with scroll-controlled progress.
+- 2026-06-12 local AI pet update: generated
+  `public/media/ai-pet-cat-avatar.jpg` from the scroll-video poster and
+  replaced the hand-drawn SVG pet face with the video cat avatar while keeping
+  pet drag/click behavior. Local build succeeds and the in-app browser confirms
+  the avatar image loads at 512x512.
+- 2026-06-12 local AI pet warrior update: generated
+  `public/media/ai-pet-cat-warrior.png` from the user-provided clear cat-warrior
+  screenshot as a transparent character asset, replaced the boxed avatar with a
+  floating full-body pet, added mouse-following pupil layers, and added random
+  30s-300s idle tricks (`flip`, `dance`, `pose`). Local build succeeds; browser
+  verification confirms the PNG loads, the pet is present, and both eye layers
+  move after pointer movement.
+- 2026-06-12 AI pet eye correction: removed the extra black-dot pupil overlays
+  and replaced them with small clipped windows of the original cat image so the
+  visible eye movement comes from the source artwork itself. Increased the pet
+  button/character display area to reduce clipping. Local build succeeds; browser
+  verification confirms zero black-dot eye overlays and moving image-based eye
+  masks.
+- 2026-06-12 AI pet eye correction follow-up: removed the image-window eye masks
+  too because they still looked like a moving patch instead of natural eye
+  motion. The pet now uses only the original cat artwork eyes, with zero
+  `[data-pet-eye]` overlays. Random idle tricks remain enabled.
 - User-visible timeout symptom was reproduced and fixed by reordering text
   model fallback plus increasing frontend timeouts by mode.
 - The exact project-diagnosis prompt from the screenshot class now returns
@@ -286,6 +491,21 @@
 - Local Vercel CLI deploy/build is unreliable from the Chinese-path workspace; use an ASCII-path worktree for direct CLI deployment if this repeats.
 
 ## Important Evidence
+- 2026-06-13 front-end iteration: AI 编程基础 now has a hub at
+  `/ai-coding-basics` plus six practical standalone pages:
+  `/ai-coding-basics/model-choice`, `/domestic-route`, `/task-agents`,
+  `/terminal-agents`, `/concept-aesthetics`, and `/open-skills`.
+- 2026-06-13 front-end iteration: homepage AI 编程基础 cards now link to the
+  standalone practical pages instead of same-page hash anchors.
+- 2026-06-13 front-end iteration: 大模型评测 now includes a Model Radar orbit
+  visual plus a task-router chart; AI 编程智能体评测 now includes an Agent
+  Capability Map plus capability cards.
+- 2026-06-13 validation: `npm run build` passed after the standalone-page and
+  evaluation-visual changes.
+- 2026-06-13 browser validation: desktop homepage links point to six standalone
+  routes, `/ai-coding-basics/model-choice` renders the practical detail page,
+  model/agent visual systems render, and 390px mobile checks had no horizontal
+  overflow.
 - Cloudflare frontend code routes pages.dev Agent calls to `https://wuyi-with-ai.vercel.app/api/agent`.
 - `npx vercel env ls production` shows encrypted `OPENROUTER_API_KEY`, `GROQ_API_KEY`, and `GEMINI_API_KEY`.
 - `POST https://wuyi-with-ai.vercel.app/api/agent` returned JSON successfully on 2026-05-20 after deploying from the ASCII temp worktree.
