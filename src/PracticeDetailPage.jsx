@@ -71,78 +71,7 @@ const pageConfigs = {
 6. 下次运行前的最小修改清单`,
       },
     ],
-  },
-  "automation-productization": {
-    eyebrow: "Automation Productization",
-    title: "自动化与产品化",
-    subtitle: "把重复动作变成可监控、可恢复、可收费的真实 MVP。",
-    image: "/media/ai-method-system-map-cinematic.png",
-    accent: "from-[#FF2D95] via-[#FF6B2D] to-[#FFD166]",
-    background:
-      "linear-gradient(135deg, #fff7df 0%, #e7fbf5 48%, #eef1ff 100%)",
-    gridTint: "rgba(15, 23, 42, 0.055)",
-    intro: "自动化的本质不是脚本，而是把高频流程做成可提交、可追踪、可交付的产品入口。",
-    principles: [
-      ["先算 ROI", "选每周重复、耗时明显、结果可验收的流程。"],
-      ["节点可重跑", "采集、清洗、生成、校验、通知分开做。"],
-      ["入口产品化", "用户能提交、看状态、拿结果、反馈失败。"],
-    ],
-    phases: [
-      ["01", "流程", "锁定一个高频重复流程。"],
-      ["02", "节点", "每一步都能单独测试和重跑。"],
-      ["03", "机制", "补日志、重试、告警、人工审核。"],
-      ["04", "入口", "做提交、状态、结果、反馈四个页面能力。"],
-    ],
-    projects: [
-      { name: "n8n", desc: "确定性流程和系统集成。", href: "https://github.com/n8n-io/n8n" },
-      { name: "Playwright", desc: "浏览器自动化和验证。", href: "https://playwright.dev/docs/intro" },
-      { name: "Dify", desc: "把 AI 工作流发布成应用。", href: "https://github.com/langgenius/dify" },
-      { name: "n8n 自动化案例", desc: "适合观察 AI 自动化从流程搭建到交付闭环的完整路径。", href: "https://www.youtube.com/results?search_query=n8n+AI+automation+full+course+AI+SaaS+MVP" },
-    ],
-    checklist: ["一个重复流程", "日志和状态", "重试和接管", "任务状态页"],
-    prompts: [
-      {
-        title: "把重复流程产品化",
-        body: `你是我的自动化产品经理。请把下面这个重复流程设计成可交付的自动化产品入口。
-
-流程描述：
-【写下现在人工怎么做】
-
-请输出：
-1. 用户提交入口需要哪些字段
-2. 流程拆成哪些节点
-3. 每个节点输入、输出、失败条件
-4. 哪些节点可以重试
-5. 哪些节点需要人工审核
-6. 用户怎么看状态
-7. 用户最终拿到什么结果
-8. 管理员怎么看日志
-9. 最小 MVP 页面有哪些
-10. 第一版不做什么
-
-要求：
-- 优先保证可追踪、可重跑、可交付。
-- 不要只写脚本，要设计成普通用户能用的入口。`,
-      },
-      {
-        title: "自动化 ROI 判断",
-        body: `请帮我判断一个流程值不值得自动化。
-
-流程：
-【写下流程】
-
-请按下面格式评估：
-1. 每周重复次数
-2. 单次人工耗时
-3. 出错成本
-4. 数据是否稳定
-5. 是否有明确输入输出
-6. 自动化难度：低 / 中 / 高
-7. 建议：先不做 / 做脚本 / 做工作流 / 做产品入口
-8. 第一版最小可交付方案`,
-      },
-    ],
-  },
+  }
 };
 
 function PhaseCard({ phase, index, fontStyles }) {

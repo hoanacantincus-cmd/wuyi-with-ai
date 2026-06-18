@@ -11,8 +11,7 @@ const heroModuleLinks = [
   { no: "03", title: "大模型评测", href: "#model-benchmark" },
   { no: "04", title: "AI 编程智能体评测", href: "#coding-tools" },
   { no: "05", title: "Agent开发", href: "#agent-development" },
-  { no: "06", title: "自动化与产品化", href: "#automation-productization" },
-  { no: "07", title: "AI Orbit Radar", href: "#radar" },
+  { no: "06", title: "AI Orbit Radar", href: "#radar" },
 ];
 
 function ProgressRail({ activeIndex, progress }) {
@@ -180,9 +179,9 @@ export default function ScrollVideoHero({ profile, shareStatus, onGithub, onCont
   };
 
   return (
-    <section id="hero" ref={sectionRef} className="relative z-30 h-[430vh] [overflow-x:clip]">
-      <div className="sticky top-0 min-h-screen overflow-hidden bg-black">
-        <div className="absolute inset-0 overflow-hidden bg-black">
+    <section id="hero" ref={sectionRef} className="relative z-30 min-h-[calc(100svh-96px)] [overflow-x:clip] md:h-[430vh]">
+      <div className="relative min-h-[calc(100svh-96px)] overflow-hidden bg-black md:sticky md:top-0 md:min-h-screen">
+        <div className="relative z-0 mx-5 mt-3 aspect-video overflow-hidden rounded-[1.35rem] border border-white/10 bg-black shadow-[0_20px_70px_rgba(77,163,255,0.18)] md:absolute md:inset-0 md:m-0 md:aspect-auto md:rounded-none md:border-0 md:shadow-none">
           <img
             src={HERO_POSTER_SRC}
             alt=""
@@ -191,7 +190,7 @@ export default function ScrollVideoHero({ profile, shareStatus, onGithub, onCont
           />
           <video
             ref={videoRef}
-            className="absolute inset-0 h-full w-full object-contain opacity-100"
+            className="absolute inset-0 h-full w-full object-cover opacity-100 md:object-contain"
             src={HERO_VIDEO_SRC}
             poster={HERO_POSTER_SRC}
             preload="auto"
@@ -205,53 +204,53 @@ export default function ScrollVideoHero({ profile, shareStatus, onGithub, onCont
             aria-hidden="true"
           />
         </div>
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.72),rgba(0,0,0,0.2)_36%,rgba(0,0,0,0.16)_68%,rgba(0,0,0,0.46))]" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[34vh] bg-gradient-to-t from-black via-black/48 to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-black/56 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(0,0,0,0.72),rgba(0,0,0,0.2)_36%,rgba(0,0,0,0.16)_68%,rgba(0,0,0,0.46))] md:block" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[34vh] bg-gradient-to-t from-black via-black/48 to-transparent md:block" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 hidden h-36 bg-gradient-to-b from-black/56 to-transparent md:block" />
 
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-[1540px] items-end px-5 pb-10 pt-24 sm:px-6 md:px-10 md:pb-12 lg:pt-20">
+        <div className="relative z-10 mx-auto flex max-w-[1540px] items-start px-5 pb-7 pt-5 sm:px-6 md:min-h-screen md:items-end md:px-10 md:pb-12 md:pt-20">
           <div className="grid w-full gap-5 lg:grid-cols-[0.8fr_0.12fr_0.62fr] lg:items-end">
-            <motion.div initial={{ opacity: 0, y: 36, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }} className="max-w-3xl rounded-[1.65rem] border border-white/[0.10] bg-black/28 p-5 shadow-[0_24px_90px_rgba(0,0,0,0.28)] backdrop-blur-md md:p-6">
+            <motion.div initial={{ opacity: 0, y: 24, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }} className="max-w-3xl rounded-[1.35rem] border border-white/[0.10] bg-black/42 p-4 shadow-[0_18px_60px_rgba(0,0,0,0.30)] backdrop-blur-md md:rounded-[1.65rem] md:bg-black/28 md:p-6">
               <motion.div
                 key={`falling-copy-${activeIndex}`}
                 initial={{ opacity: 0, y: -42 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
               >
-                <p style={fontStyles.mono} className="mb-4 text-[11px] uppercase tracking-[0.24em] text-cyan-100/62">
+                <p style={fontStyles.mono} className="mb-3 text-[11px] uppercase tracking-[0.24em] text-cyan-100/62 md:mb-4">
                   {activeChapter.eyebrow}
                 </p>
                 <h1>
-                  <span className="block bg-gradient-to-b from-white via-cyan-50/94 to-white/44 bg-clip-text text-[2.85rem] font-semibold leading-[0.96] tracking-[-0.055em] text-transparent md:text-[4.8rem] lg:text-[5.7rem]">
+                  <span className="block bg-gradient-to-b from-white via-cyan-50/94 to-white/44 bg-clip-text text-[2.28rem] font-semibold leading-[0.96] tracking-[-0.055em] text-transparent md:text-[4.8rem] lg:text-[5.7rem]">
                     AI伍子胥
                   </span>
-                  <span className="mt-4 block max-w-2xl text-[1rem] font-medium leading-7 text-cyan-50/78 md:text-[1.24rem]">
+                  <span className="mt-3 block max-w-2xl text-[0.96rem] font-medium leading-7 text-cyan-50/78 md:mt-4 md:text-[1.24rem]">
                     {activeChapter.title}
                   </span>
                 </h1>
-                <p className="mt-4 max-w-2xl text-sm leading-7 text-white/62 md:text-base">
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-white/62 md:mt-4 md:leading-7 md:text-base">
                   {activeChapter.desc}
                 </p>
-                <div className="mt-5 flex flex-wrap items-center gap-3 text-[10px] text-white/40" style={fontStyles.mono}>
+                <div className="mt-4 flex flex-wrap items-center gap-3 text-[10px] text-white/40 md:mt-5" style={fontStyles.mono}>
                   <span className="h-px w-10 bg-gradient-to-r from-transparent via-cyan-100/42 to-transparent" />
                   {activeChapter.meta}
                 </div>
               </motion.div>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a href="#model-benchmark" onClick={trackCta("model-benchmark")} className="rounded-full border border-cyan-100/16 bg-cyan-100/[0.10] px-5 py-3 text-sm font-semibold text-cyan-50 backdrop-blur-md transition hover:border-cyan-100/32 hover:bg-cyan-100/[0.16]">
+              <div className="mt-4 flex flex-wrap gap-2 md:mt-6 md:gap-3">
+                <a href="#model-benchmark" onClick={trackCta("model-benchmark")} className="rounded-full border border-cyan-100/16 bg-cyan-100/[0.10] px-4 py-2.5 text-sm font-semibold text-cyan-50 backdrop-blur-md transition hover:border-cyan-100/32 hover:bg-cyan-100/[0.16] md:px-5 md:py-3">
                   看模型榜单
                 </a>
-                <a href="#coding-tools" onClick={trackCta("coding-tools")} className="rounded-full border border-white/12 bg-white/[0.045] px-5 py-3 text-sm font-semibold text-white/72 backdrop-blur-md transition hover:border-white/24 hover:bg-white/[0.075] hover:text-white">
+                <a href="#coding-tools" onClick={trackCta("coding-tools")} className="rounded-full border border-white/12 bg-white/[0.045] px-4 py-2.5 text-sm font-semibold text-white/72 backdrop-blur-md transition hover:border-white/24 hover:bg-white/[0.075] hover:text-white md:px-5 md:py-3">
                   看编程软件评测
                 </a>
-                <a href={profile.github} onClick={trackCta("github", onGithub)} className="rounded-full border border-white/12 bg-white/[0.045] px-5 py-3 text-sm font-semibold text-white/72 backdrop-blur-md transition hover:border-white/24 hover:bg-white/[0.075] hover:text-white">
+                <a href={profile.github} onClick={trackCta("github", onGithub)} className="rounded-full border border-white/12 bg-white/[0.045] px-4 py-2.5 text-sm font-semibold text-white/72 backdrop-blur-md transition hover:border-white/24 hover:bg-white/[0.075] hover:text-white md:px-5 md:py-3">
                   GitHub
                 </a>
-                <button type="button" onClick={trackCta("share", onShare)} className="rounded-full border border-white/12 bg-white/[0.045] px-5 py-3 text-sm font-semibold text-white/72 backdrop-blur-md transition hover:border-white/24 hover:bg-white/[0.075] hover:text-white">
+                <button type="button" onClick={trackCta("share", onShare)} className="rounded-full border border-white/12 bg-white/[0.045] px-4 py-2.5 text-sm font-semibold text-white/72 backdrop-blur-md transition hover:border-white/24 hover:bg-white/[0.075] hover:text-white md:px-5 md:py-3">
                   {shareStatus || "分享主页"}
                 </button>
               </div>
-              <div className="mt-5 lg:hidden">
+              <div className="mt-5 hidden sm:block lg:hidden">
                 <ModuleLinkGrid activeIndex={activeModuleIndex} onTrack={(target) => trackAnalytics("cta_click", { section: "hero-module-mobile", target })} />
               </div>
             </motion.div>

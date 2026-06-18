@@ -4,7 +4,7 @@ export const heroChapters = [
   {
     eyebrow: "Learning Path",
     title: "AI 学习路径",
-    desc: "先看整站地图：学习路径、编程基础、模型评测、编程智能体、Agent 开发和自动化产品化。",
+    desc: "先看整站地图：学习路径、编程基础、模型评测、编程智能体和 Agent 开发。",
     meta: "Roadmap / Formula Planet / System Builder",
   },
   {
@@ -32,16 +32,10 @@ export const heroChapters = [
     meta: "Task / Tools / Eval",
   },
   {
-    eyebrow: "Automation Productization",
-    title: "自动化与产品化",
-    desc: "把重复流程做成有触发、队列、状态、日志、重试、审核和交付入口的真实 MVP。",
-    meta: "Workflow / ROI / MVP",
-  },
-  {
     eyebrow: "AI Orbit Radar",
     title: "AI Orbit Radar",
-    desc: "把基础模型、Agent、RAG、训练优化、工程栈和自动化放进一张运行中的技术雷达。",
-    meta: "Orbit / LLM / RAG / Automation",
+    desc: "把基础模型、Agent、RAG、训练优化和工程栈放进一张运行中的技术雷达。",
+    meta: "Orbit / LLM / RAG / Engineering",
   },
 ];
 
@@ -50,8 +44,7 @@ export const learningPath = [
   ["02", "大模型评测", "读懂综合能力、价格、速度、上下文、多模态和中文体验，不迷信单一排名。"],
   ["03", "AI 编程智能体评测", "比较 Codex、Cursor、Claude Code、Copilot、Trae 等工具的真实交付能力。"],
   ["04", "Agent开发", "学习任务规划、工具调用、记忆、验证、回滚和人工接管机制。"],
-  ["05", "自动化与产品化", "把流程做成可监控、可恢复、可上线的真实 MVP。"],
-  ["06", "AI Orbit Radar", "持续观察模型、Agent、RAG、工程栈和自动化能力的技术星图。"],
+  ["05", "AI Orbit Radar", "持续观察模型、Agent、RAG 和工程栈能力的技术星图。"],
 ];
 
 export const benchmarkSources = [

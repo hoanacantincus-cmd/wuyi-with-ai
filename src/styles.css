@@ -659,6 +659,52 @@ html[data-page-scrolling="true"] .ai-pet-ground {
   }
 
   .ai-pet-shell {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 0.6rem) !important;
+    right: 0.35rem !important;
+    height: 174px !important;
+    width: 148px !important;
     transform-origin: bottom right;
+  }
+
+  .ai-pet-shell::before {
+    inset: 20px 14px 28px 14px;
+    filter: blur(14px);
+  }
+
+  .ai-pet-shell::after {
+    left: 26px;
+    right: 26px;
+    bottom: 10px;
+    height: 22px;
+    filter: blur(7px);
+  }
+
+  .ai-pet-stage {
+    left: 4px !important;
+    top: 0 !important;
+    height: 148px !important;
+    width: 140px !important;
+  }
+
+  .ai-pet-orbit {
+    inset: 18px 12px 24px 12px;
+  }
+
+  .ai-pet-ground {
+    left: 22px;
+    right: 22px;
+    bottom: 13px;
+    height: 18px;
+  }
+
+  .ai-pet-label {
+    bottom: 3px !important;
+    left: 74px !important;
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  .ai-pet-label span + span {
+    display: none;
   }
 }

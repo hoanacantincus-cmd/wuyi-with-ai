@@ -2647,7 +2647,7 @@ function GithubLaunchOverlay({ active }) {
 }
 
 function WuYiAgentGate() {
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(true);
 
   useEffect(() => {
     const wakeAgent = (event) => {
@@ -2676,7 +2676,7 @@ export default function App() {
   const codingBasicsMatch = pathname.match(/^\/ai-coding-basics(?:\/([^/]+))?\/?$/);
   const isCodingBasicsRoute = Boolean(codingBasicsMatch);
   const codingBasicsTopicId = codingBasicsMatch?.[1] || "";
-  const practiceRoute = pathname === "/agent-development" || pathname === "/automation-productization"
+  const practiceRoute = pathname === "/agent-development"
     ? pathname.slice(1)
     : "";
 
@@ -2712,7 +2712,7 @@ export default function App() {
       });
     }, { threshold: 0.32 });
 
-    ["hero", "ai-roadmap", "ai-coding-basics", "model-benchmark", "coding-tools", "agent-development", "automation-productization", "radar", "contact"]
+    ["hero", "ai-roadmap", "ai-coding-basics", "model-benchmark", "coding-tools", "agent-development", "radar", "contact"]
       .map((id) => document.getElementById(id))
       .filter(Boolean)
       .forEach((element) => observer.observe(element));
@@ -2904,7 +2904,7 @@ export default function App() {
 
       <header className="relative z-20 mx-auto flex max-w-[1540px] items-center justify-between px-6 py-7 md:px-10">
         <a href="#hero" className="inline-flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.05]"><Icon name="core" /></span><span className="text-base font-medium text-white/50 transition hover:text-white">{profile.logoText}</span></a>
-        <nav className="hidden items-center gap-5 text-base text-white/50 md:flex"><a href="#ai-roadmap" onClick={scrollToSection("#ai-roadmap")} className="hover:text-white">路径</a><a href="#ai-coding-basics" onClick={scrollToSection("#ai-coding-basics")} className="hover:text-white">编程基础</a><a href="#model-benchmark" onClick={scrollToSection("#model-benchmark")} className="hover:text-white">模型评测</a><a href="#coding-tools" onClick={scrollToSection("#coding-tools")} className="hover:text-white">编程智能体</a><a href="#agent-development" onClick={scrollToSection("#agent-development")} className="hover:text-white">Agent开发</a><a href="#automation-productization" onClick={scrollToSection("#automation-productization")} className="hover:text-white">自动化产品化</a><a href="#radar" onClick={scrollToSection("#radar")} className="hover:text-white">Radar</a><a href="#contact" onClick={scrollToSection("#contact")} className="hover:text-white">联系</a></nav>
+        <nav className="hidden items-center gap-5 text-base text-white/50 md:flex"><a href="#ai-roadmap" onClick={scrollToSection("#ai-roadmap")} className="hover:text-white">路径</a><a href="#ai-coding-basics" onClick={scrollToSection("#ai-coding-basics")} className="hover:text-white">编程基础</a><a href="#model-benchmark" onClick={scrollToSection("#model-benchmark")} className="hover:text-white">模型评测</a><a href="#coding-tools" onClick={scrollToSection("#coding-tools")} className="hover:text-white">编程智能体</a><a href="#agent-development" onClick={scrollToSection("#agent-development")} className="hover:text-white">Agent开发</a><a href="#radar" onClick={scrollToSection("#radar")} className="hover:text-white">Radar</a><a href="#contact" onClick={scrollToSection("#contact")} className="hover:text-white">联系</a></nav>
       </header>
 
       <ScrollVideoHero

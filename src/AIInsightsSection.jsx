@@ -6,7 +6,6 @@ import { trackAnalytics } from "./analyticsClient";
 
 const LIGHT_PATH_IMAGE = "/media/ai-learning-path-light.png";
 const AGENT_IMAGE = "/media/ai-agent-workbench-cinematic.png";
-const SYSTEM_MAP_IMAGE = "/media/ai-method-system-map-cinematic.png";
 const ARK_FREE_QUOTA_IMAGE = "/media/volcengine-ark-free-quota.png";
 
 const authorityEvidence = [
@@ -84,21 +83,6 @@ const practicePages = [
     ],
     proof: "能连续跑、能看日志、能人工接管，才算落地。",
     tint: "from-[#00E5FF] via-[#2F7BFF] to-[#6E43FF]",
-  },
-  {
-    id: "automation-productization",
-    href: "/automation-productization",
-    title: "自动化与产品化",
-    kicker: "本质：把省下来的人工变成可交付产品",
-    desc: "自动化不是脚本演示，而是把触发、状态、重试、日志、审核和结果交付做成普通用户能用的入口。",
-    image: SYSTEM_MAP_IMAGE,
-    tags: ["n8n", "Playwright", "API"],
-    takeaways: ["先算 ROI", "节点可重跑", "状态页交付"],
-    signals: [
-      ["一句话", "确定性流程交给工作流，模糊判断交给 Agent，最后用产品入口交付。"],
-    ],
-    proof: "用户能提交、追踪、拿结果，才算产品化。",
-    tint: "from-[#FF2D95] via-[#FF6B2D] to-[#FFD166]",
   },
 ];
 
@@ -706,7 +690,7 @@ export default function AIInsightsSection({ fontStyles, CoreVisual }) {
           <SectionTitle
             eyebrow="AI Learning Roadmap"
             title="AI 学习路径"
-            desc="这里是整站地图：先理解路径，再进入编程基础、模型评测、编程智能体、Agent 开发和自动化产品化。"
+            desc="这里是整站地图：先理解路径，再进入编程基础、模型评测、编程智能体和 Agent 开发。"
             fontStyles={fontStyles}
           />
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
